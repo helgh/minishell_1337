@@ -6,7 +6,7 @@
 #    By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/07/27 22:23:59 by hael-ghd          #+#    #+#              #
-#    Updated: 2024/08/02 09:52:28 by hael-ghd         ###   ########.fr        #
+#    Updated: 2024/08/03 15:43:14 by hael-ghd         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,7 +16,7 @@ CC = CC
 
 FLAGS = -Wall -Wextra -Werror
 
-SOURCE = main.c \
+SOURCE = main.c ft_split.c \
 
 OBJ_SRC = $(SOURCE:.c=.o)
 
