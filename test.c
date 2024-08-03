@@ -9,13 +9,15 @@
 
 int     s_d_qoutes(char *str)
 {
-    int i;
+    int     i;
+    char    c;
 
     i = 0;
+    c = *str;
     str++;
     while (*str)
     {
-        if (*str == '\'')
+        if (*str == c)
             return (++i);
         i++;
         str++;
@@ -50,7 +52,7 @@ int main() {
     char *str;
     int    i = 0;
     
-    str = "\"\'\"\'hell\'o\'\"\'";
+    str = "\'\'\'\'\'\"";
     i = check_qoutes(str);
     printf("%d\n", i);
 }

@@ -6,20 +6,85 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 09:44:43 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/08/03 12:25:37 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/08/03 14:06:46 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+int	ft_strlen(char *str)
+{
+	int	i;
 
+	i = -1;
+	while (str[++i])
+		;
+	return (i);
+}
+
+int     s_d_qoutes(char *str, char *s, int *l)
+{
+    int     i;
+    char    c;
+
+    i = 0;
+    c = *str;
+    str++;
+    while (*str)
+    {
+		if (*str == 124)
+			s[(*l)++] = -1;
+        if (*str == c)
+            return (++i);
+		if (*str != 124)
+			s[(*l)++] = *str;
+        i++;
+        str++;
+    }
+    return (-1);
+}
+
+char	*check_qoutes(char *str)
+{
+	int 	n;
+	int 	i;
+	int 	l;
+	char	*s;
+
+    i = -1;
+    n = 0;
+	l = 0;
+	s = malloc(sizeof(char) * (ft_strlen(str) + 1));
+	if (!s)
+		return (NULL);
+	while (str[++i])
+    {
+		if (str[i] == '\"' || str[i] == '\'')
+		{
+            n = s_d_qoutes(&str[i], s, &l);
+        	if (n == -1)
+            	return (free(s), NULL);
+        	else
+            	i += n;
+		}
+		else
+			s[l++] = str[i];
+    }
+	s[l] = 0;
+	return (s);
+}
 
 void	parsing(char *str, char **env)
 {
-	char	**envp;
+	(void) 	env;
+	char	*s;
 
-	if (qoutes(str) == -1)
-		exit(1);
+	s = check_qoutes(str);
+	if (!s)
+		return (printf("Error qoutes!\n"), exit (1));
+	else
+		printf("%s\n", s);
+
 	
 }
 
