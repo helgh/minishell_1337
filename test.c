@@ -7,7 +7,7 @@
 // #include <stdio.h>
 // #include <process.h>
 
-int     single_qoutes(char *str)
+int     s_d_qoutes(char *str)
 {
     int i;
 
@@ -16,28 +16,7 @@ int     single_qoutes(char *str)
     while (*str)
     {
         if (*str == '\'')
-        {
-            i++;
-            return (i);
-        }
-        i++;
-        str++;
-    }
-    return (-1);
-}
-int     double_qoutes(char *str)
-{
-    int i;
-
-    i = 0;
-    str++;
-    while (*str)
-    {
-        if (*str == '\"')
-        {
-            i++;
-            return (i);
-        }
+            return (++i);
         i++;
         str++;
     }
@@ -56,10 +35,8 @@ int		check_qoutes(char *str)
     flag = 0;
 	while (str[++i])
     {
-		if (str[i] == '\"')
-            n = double_qoutes(&str[i]);
-		else if (str[i] == '\'')
-            n = single_qoutes(&str[i]);
+		if (str[i] == '\"' || str[i] == '\'')
+            n = s_d_qoutes(&str[i]);
         if (n == -1)
             return (-1);
         else
@@ -73,7 +50,7 @@ int main() {
     char *str;
     int    i = 0;
     
-    str = "hallo";
+    str = "\"\'\"\'hell\'o\'\"\'";
     i = check_qoutes(str);
     printf("%d\n", i);
 }

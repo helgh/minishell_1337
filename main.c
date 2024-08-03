@@ -6,36 +6,19 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 09:44:43 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/08/03 10:21:51 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/08/03 12:25:37 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int		check_qoutes(char *str)
-{
-	char	c;
-	int		n;
 
-	while (*(str++))
-		if (*str == '\"' || *str == '\'')
-			break ;
-	c = *str;
-	while (*(str++))
-	{
-		if (c == *str)
-			n++;
-	}
-	if (n % 2 != 0)
-		return (-1);
-	return (0);
-}
 
 void	parsing(char *str, char **env)
 {
 	char	**envp;
 
-	if (check_qoutes(str) == -1)
+	if (qoutes(str) == -1)
 		exit(1);
 	
 }
