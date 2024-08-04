@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 09:44:43 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/08/03 18:12:26 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/08/04 16:29:10 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,9 +70,10 @@ void	space_between_oper(char *str, char *s, int *i, int *l)
 			s[(*l)++] = str[*i];
 		(*i)++;
 	}
+	*i -= 1;
 }
 
-char	**check_qoutes(char *str, int len)
+char	*check_qoutes(char *str, int len)
 {
 	int 	n;
 	int 	i;
@@ -98,7 +99,7 @@ char	**check_qoutes(char *str, int len)
 		else
 			space_between_oper(str, s, &i, &l);
     }
-	return (s[l] = 0, printf("%s\n", s), ft_split(s, 124));
+	return (s[l] = 0, s);
 }
 
 int		length_line(char *str)
@@ -129,22 +130,59 @@ int		length_line(char *str)
 	return (n);
 }
 
-void	parsing(char *str, char **env)
+char	**split_and_replace(char *str)
+{
+	int		i;
+	char	c;
+	int		s;
+	int		n;
+	char	**spl;
+
+	i = -1;
+	spl = ft_split(str, 124);
+	if (!spl)
+		return (free(str), NULL);
+	while (spl[++i])
+	{
+		s = -1;
+		while (spl[i][++s])
+		{
+			if (spl[i][s] == '\'' || spl[i][s] == '\"')
+			{
+				c = spl[i][++s];
+				n = 1;
+				while (spl[i][++s] && spl[i][s] != c)
+				{
+					if (spl[i][s] == -1)
+						spl[i][s] = 124;
+					else if (spl[i][s] == 32)
+						spl[i][s] = -1;
+				}
+				n = 0;
+			}
+		}
+	}
+	return (spl);
+}
+
+int	parsing(char *str, char **env)
 {
 	(void) 	env;
-	char	**s;
+	char	*s;
+	char	**spl;
 	int		len;
 
 	len = length_line(str);
 	s = check_qoutes(str, len);
 	if (!s)
-		return (printf("Error qoutes!\n"), exit (1));
-	// while (*s)
-	// {
-	// 	printf("%s\n", *s);
-	// 	s++;
-	// }
-
+		return (printf("Error qoutes!\n"), 1);
+	spl = split_and_replace(s);
+	while (*spl)
+	{
+		printf("%s\n", *spl);
+		spl++;
+	}
+	return (0);
 	
 }
 
