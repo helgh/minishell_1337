@@ -3,14 +3,42 @@
 /*                                                        :::      ::::::::   */
 /*   ft_env.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mthamir <mthamir@student.42.fr>            +#+  +:+       +#+        */
+/*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/03 13:31:12 by mthamir           #+#    #+#             */
-/*   Updated: 2024/08/04 16:41:11 by mthamir          ###   ########.fr       */
+/*   Updated: 2024/08/07 22:59:50 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+// #include "minishell.h"
+
+#include "libft_mini_shell/libft.h"
+#include <unistd.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <fcntl.h>
+#include <limits.h>
+#include <string.h>
+#include <readline/readline.h>
+#include <readline/history.h>
+
+#define GET		1
+#define SET		2
+#define ADD		3
+#define INIT	4
+
+typedef struct s_leaks
+{
+	char *adress;
+	struct s_leaks *next;
+}	t_leaks;
+
+
+typedef struct s_env
+{
+	char *var;
+	char *value;
+}	t_env;
 
 int	ft_strcmp(const char *s1, const char *s2)
 {
@@ -21,7 +49,7 @@ int	ft_strcmp(const char *s1, const char *s2)
 	d1 = (unsigned char *)s1;
 	d2 = (unsigned char *)s2;
 	i = 0;
-	while (d1[i] != '=' || d2[i] != '\0')
+	while (d1[i])
 	{
 		if (d1[i] != d2[i])
 			return (d1[i] - d2[i]);
@@ -56,10 +84,10 @@ void *ft_malloc(size_t size)
 	return (for_leaks);	
 }
 
-t_env	*global_env(void	*var, void	*value, int operation)
+t_env	*global_env(void *var, void *value, int operation)
 {
 	static t_env	env[ARG_MAX];
-	void	*ret;
+	void			*ret;
 	static int		i;
 	int				t;
 
@@ -71,27 +99,23 @@ t_env	*global_env(void	*var, void	*value, int operation)
 		i++;
 	}
 	else if (operation == GET)
-
-	{
-		ret = env;
-		return (ret);
-	}
+		return (ret = env, ret);
 	else if (operation == ADD)
 	{
 		env[i].var = var;
 		env[i].value = value;
 		env[i + 1].var = NULL;
-		// printf("%s=%s\n", env[i].var, env[i].value);
 		i++;
 	}
 	else if (operation == SET)
 	{
-		while (t < i && ft_strcmp(env[i].var, var))
+		while (t < i && ft_strcmp(env[t].var, var) != 0)
 			t++;
-		env->value = value;
+		env[t].value = value;
 	}
 	return (NULL);
 }
+
 
 void init_env(char **env)
 {
@@ -122,10 +146,11 @@ int main(int ac, char **av, char **env)
 	// 	str = readline("prompt: >");
 	// 		add_history(str);
 	// }
-	// envr = global_env("", "", GET);
-	// while (envr[i].var)
-	// {
-	// 	printf("%s=%s\n", envr[i].var, envr[i].value);
-	// 	i++;
-	// }
-} 
+	global_env("SHLVL", "1", SET);
+	envr = global_env("", "", GET);
+	while (envr[i].var)
+	{
+		printf("%s=%s\n", envr[i].var, envr[i].value);
+		i++;
+	}
+}

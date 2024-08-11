@@ -6,13 +6,13 @@
 #    By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/07/27 22:23:59 by hael-ghd          #+#    #+#              #
-#    Updated: 2024/08/03 15:43:14 by hael-ghd         ###   ########.fr        #
+#    Updated: 2024/08/04 16:50:24 by hael-ghd         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = minishell
 
-CC = CC
+CC = cc
 
 FLAGS = -Wall -Wextra -Werror
 

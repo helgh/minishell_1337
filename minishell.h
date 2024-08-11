@@ -3,17 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mthamir <mthamir@student.42.fr>            +#+  +:+       +#+        */
+/*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 09:42:01 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/08/04 16:39:24 by mthamir          ###   ########.fr       */
+/*   Updated: 2024/08/11 02:21:20 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef	MINISHELL_H
 #define	MINISHELL_H
 
-#include "libft/libft.h"
+//#include "libft_mini_shell/libft.h"
 #include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -23,50 +23,73 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 
-#define GET		1
-#define SET		2
-#define ADD		3
-#define INIT	4
+#define GET			1
+#define SET			2
+#define ADD			3
+#define INIT		4
 
+typedef struct s_leaks t_leaks;
 typedef struct s_leaks
 {
-	char *adress;
+	void	*adress;
 	t_leaks *next;
 }	t_leaks;
 
+// typedef struct s_env
+// {
+// 	char *var;
+// 	char *value;
+// }	t_env;
 
-typedef struct s_env
+// typedef enum s_type
+// {
+// 	CMD,
+// 	OPTION,
+// 	IN_FILE,
+// 	OUT_FILE,
+// 	RED_IN,
+// 	RED_OUT,
+// 	HERDOC,
+// 	APPEND,
+// 	LIM,
+// 	ARG,
+// } 	t_type;
+
+// typedef struct s_token
+// {
+// 	char 		*str;
+// 	enum s_type	type;
+// }	t_token;
+
+// typedef struct	s_cmd
+// {
+// 	char *str;
+// 	t_token *line;
+// }	t_cmd;
+
+typedef struct	s_tokens
 {
-	char *var;
-	char *value;
-}	t_env;
+  char				*str;
+  char				*type;
+//   struct s_tokens	*next;
+}				t_tokens;
 
-typedef enum e_type
+typedef struct	s_cmd_info
 {
-	CMD,
-	OPTION,
-	IN_FILE,
-	OUT_FILE,
-	RED_IN,
-	RED_OUT,
-	HERDOC,
-	APPEND,
-	SPACE,
+	char				*cmd_line;
+	char				**all_token;
+	int					nbr_token;
+	t_tokens			*token;
+	// struct s_cmd_info	*next;
+}				t_cmd_info;
 
-} s_type;
-typedef struct s_token
+typedef struct	s_parse
 {
-	char *str;
-	enum type;
-
-} t_token;
-
-typedef struct	s_cmd
-{
-	char *str;
-	t_token line[1024];
-	t_cmd *next;
-}	t_cmd;
+	char		*line;
+	char		**all_cmd;
+	int			nbr_cmd;
+	t_cmd_info	*cmd_info;
+}				t_parse;
 
 char	**ft_split(char const *s, char c);
 

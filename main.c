@@ -6,12 +6,53 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 09:44:43 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/08/04 16:29:10 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/08/11 03:28:50 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+t_leaks *leaks_collector(void *for_leaks, int operation)
+{
+	static t_leaks	*catch_leaks;
+	static t_leaks	*head;
+	t_leaks	*new;
+	static size_t	i;
+
+	if (operation == ADD)
+	{
+		new = malloc(sizeof(t_leaks));
+		if (!new)
+			return (NULL);
+		new->adress = for_leaks;
+		new->next = NULL;
+		if (i == 0)
+		{
+			catch_leaks = new;
+			head = catch_leaks;
+		}
+		else
+		{
+			catch_leaks->next = new;
+			catch_leaks = catch_leaks->next;
+		}
+		i++;
+	}
+	if (operation == GET)
+		return (head);
+	return (NULL);
+}
+/* ft_ malloc that i will use to allocate mamory */
+
+void *ft_malloc(size_t size)
+{
+	char	*new;
+	new = malloc (size);
+	if (!new)
+		exit(EXIT_FAILURE);
+	leaks_collector(new, ADD);
+	return (new);
+}
 
 int	ft_strlen(char *str)
 {
@@ -73,33 +114,33 @@ void	space_between_oper(char *str, char *s, int *i, int *l)
 	*i -= 1;
 }
 
-char	*check_qoutes(char *str, int len)
+char	*check_qoutes(char *str, int len, t_parse *data_info)
 {
 	int 	n;
 	int 	i;
 	int 	l;
-	char	*s;
 
     i = -1;
     n = 0;
 	l = 0;
-	s = malloc(sizeof(char) * (len + 1));
-	if (!s)
-		return (NULL);
+	data_info->line = ft_malloc(sizeof(char) * (len + 1));
+	if (!data_info->line)
+		return (printf("Failed allocation!\n"), NULL);
 	while (str[++i])
     {
 		if (str[i] == '\"' || str[i] == '\'')
 		{
-            n = s_d_qoutes(&str[i], s, &l);
+            n = s_d_qoutes(&str[i], data_info->line, &l);
         	if (n == -1)
-            	return (free(s), NULL);
+            	return (printf("Unclosed qoutes!\n"), free(data_info->line), NULL);
         	else
             	i += n;
 		}
 		else
-			space_between_oper(str, s, &i, &l);
+			space_between_oper(str, data_info->line, &i, &l);
     }
-	return (s[l] = 0, s);
+	data_info->line[l] = 0;
+	return (free(str), data_info->line);
 }
 
 int		length_line(char *str)
@@ -130,77 +171,158 @@ int		length_line(char *str)
 	return (n);
 }
 
-char	**split_and_replace(char *str)
+void	replace_value_within_quotes(char **str, int i, int *s)
 {
-	int		i;
 	char	c;
-	int		s;
-	int		n;
-	char	**spl;
 
-	i = -1;
-	spl = ft_split(str, 124);
-	if (!spl)
-		return (free(str), NULL);
-	while (spl[++i])
+	c = str[i][*s];
+	while (str[i][++(*s)] && str[i][*s] != c)
 	{
-		s = -1;
-		while (spl[i][++s])
-		{
-			if (spl[i][s] == '\'' || spl[i][s] == '\"')
-			{
-				c = spl[i][++s];
-				n = 1;
-				while (spl[i][++s] && spl[i][s] != c)
-				{
-					if (spl[i][s] == -1)
-						spl[i][s] = 124;
-					else if (spl[i][s] == 32)
-						spl[i][s] = -1;
-				}
-				n = 0;
-			}
-		}
+		if (str[i][*s] == -1)
+			str[i][*s] = 124;
+		else if (str[i][*s] == 32)
+			str[i][*s] = -1;
 	}
-	return (spl);
 }
 
-int	parsing(char *str, char **env)
+char	**split_and_replace(t_parse *data_info)
+{
+	int		i;
+	int		s;
+
+	i = -1;
+	data_info->all_cmd = ft_split(data_info->line, 124);
+	if (!data_info->all_cmd)
+		return (free(data_info->line), NULL);
+	data_info->nbr_cmd = 0;
+	while (data_info->all_cmd[++i])
+		data_info->nbr_cmd++;
+	i = -1;
+	while (data_info->all_cmd[++i])
+	{
+		s = -1;
+		while (data_info->all_cmd[i][++s])
+		{
+			if (data_info->all_cmd[i][s] == '\'' || data_info->all_cmd[i][s] == '\"')
+				replace_value_within_quotes(data_info->all_cmd, i, &s);
+		}
+	}
+	return (data_info->all_cmd);
+}
+
+char	*get_type_token(char **spl, int s)
+{
+	if (strcmp(spl[s], ">") == 0)
+		return (strdup("red_out"));
+	else if (strcmp(spl[s], "<") == 0)
+		return (strdup("red_in"));
+	else if (strcmp(spl[s], ">>") == 0)
+		return (strdup("append"));
+	else if (strcmp(spl[s], "<<") == 0)
+		return (strdup("herdoc"));
+	else if (s > 0 && strcmp(spl[s - 1], ">") == 0)
+		return (strdup("out_file"));
+	else if (s > 0 && strcmp(spl[s - 1], "<") == 0)
+		return (strdup("in_file"));
+	else if (s > 0 && strcmp(spl[s - 1], "<<") == 0)
+		return (strdup("delim"));
+	else if (s > 0 && strcmp(spl[s - 1], ">>") == 0)
+		return (strdup("app_file"));
+	else if (s == 0)
+		return (strdup("cmd"));
+	return (strdup("arg"));
+}
+
+t_tokens	*tokens_struct(t_cmd_info *info, int s)
+{
+	int	i;
+
+	i = -1;
+	info[s].token = ft_malloc(sizeof(t_tokens) * info[s].nbr_token);
+	if (!info[s].token)
+		return (NULL);
+	while (++i < info[s].nbr_token)
+	{
+		info[s].token[i].str = info[s].all_token[i];
+		info[s].token[i].type = get_type_token(info[s].all_token, i);
+		printf("%s\n", info[s].token[i].type);
+	}
+	return (info[s].token);
+}
+
+t_cmd_info	*cmd_info_struct(t_parse *data_info)
+{
+	int	i;
+	int	s;
+
+	i = -1;
+	data_info->cmd_info = ft_malloc((sizeof(t_cmd_info) * data_info->nbr_cmd) + 1);
+	if (!data_info->cmd_info)
+		return (NULL);
+	while (++i < data_info->nbr_cmd)
+	{
+		s = -1;
+		data_info->cmd_info[i].cmd_line = data_info->all_cmd[i];
+		data_info->cmd_info[i].all_token = ft_split(data_info->all_cmd[i], 32);
+		data_info->cmd_info[i].nbr_token = 0;
+		while (data_info->cmd_info[i].all_token[++s])
+			data_info->cmd_info[i].nbr_token++;
+		if (!tokens_struct(data_info->cmd_info, i))
+			return (NULL);
+	}
+	// data_info->cmd_info[i] = NULL;
+	return (data_info->cmd_info);
+}
+
+int	check_if_only_space_and_tab(char *str)
+{
+	int	i;
+
+	i = -1;
+	while (str[++i])
+		if (str[i] != 32 && str[i] != 9)
+			return (1);
+	return (0);
+}
+
+int	parsing(char *str, char **env, t_parse *data_info)
 {
 	(void) 	env;
-	char	*s;
-	char	**spl;
-	int		len;
 
-	len = length_line(str);
-	s = check_qoutes(str, len);
-	if (!s)
-		return (printf("Error qoutes!\n"), 1);
-	spl = split_and_replace(s);
-	while (*spl)
-	{
-		printf("%s\n", *spl);
-		spl++;
-	}
+	if (check_if_only_space_and_tab(str) == 0)
+		return (1);
+	if (!check_qoutes(str, length_line(str), data_info))
+		return (free(str), 1);
+	if (!split_and_replace(data_info))
+		return (printf("Failed allocation!\n"));
+	if (!cmd_info_struct(data_info))
+		return (printf("Failed allocation!\n"));
+	// int	i = 0;
+	// while (cmd[i].str)
+	// {
+	// 	printf("%s\n", cmd[i].str);
+	// 	i++;
+	// }
 	return (0);
-	
 }
 
 int main(int ac, char **av, char **envp)
 {
 	char	*line;
+	t_parse	*data_info;
 
 	(void) av;
 	(void) envp;
 	if (ac != 1)
 		exit(EXIT_FAILURE);
+	data_info = ft_malloc(sizeof(t_parse));
 	rl_readline_name = "myshell";
 	while (1)
 	{
 		line = readline("\033[0;31mM_H$\033[0m ");
 		if (!strcmp(line, "exit"))
 			return (printf("exit\n"), 1);
-		parsing(line, envp);
+		parsing(line, envp, data_info);
 		if (*line)
 			add_history(line);
 		free(line);

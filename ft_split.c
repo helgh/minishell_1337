@@ -6,11 +6,20 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/03 15:42:08 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/08/03 15:42:34 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/08/11 03:29:44 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "libft_mini_shell/libft.h"
+#include <unistd.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <fcntl.h>
+#include <limits.h>
+#include <string.h>
+#include <readline/readline.h>
+#include <readline/history.h>
+
 
 static int	count_str(char const *str, char c)
 {
@@ -57,7 +66,7 @@ static char	*coppy(char const *str, int l, char **all, int h)
 	char	*s1;
 
 	i = 0;
-	s1 = (char *) malloc(sizeof(char) * l + 1);
+	s1 = malloc(sizeof(char) * l + 1);
 	if (s1 == NULL)
 	{
 		while (h > 0)
@@ -91,7 +100,7 @@ char	**ft_split(char const *s, char c)
 	if (s == NULL)
 		return (NULL);
 	len = count_str(s, c);
-	all = (char **) malloc(sizeof(char *) * (len + 1));
+	all = malloc(sizeof(char *) * (len + 1));
 	if (all == NULL)
 		return (NULL);
 	while (i < len)
