@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 09:44:43 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/08/11 03:28:50 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/08/13 06:18:43 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -140,7 +140,7 @@ char	*check_qoutes(char *str, int len, t_parse *data_info)
 			space_between_oper(str, data_info->line, &i, &l);
     }
 	data_info->line[l] = 0;
-	return (free(str), data_info->line);
+	return (data_info->line);
 }
 
 int		length_line(char *str)
@@ -210,32 +210,33 @@ char	**split_and_replace(t_parse *data_info)
 	return (data_info->all_cmd);
 }
 
-char	*get_type_token(char **spl, int s)
+char	*get_type_token(char **spl, char *type, int s)
 {
-	if (strcmp(spl[s], ">") == 0)
+	if (!strcmp(spl[s], ">"))
 		return (strdup("red_out"));
-	else if (strcmp(spl[s], "<") == 0)
+	else if (!strcmp(spl[s], "<"))
 		return (strdup("red_in"));
-	else if (strcmp(spl[s], ">>") == 0)
+	else if (!strcmp(spl[s], ">>"))
 		return (strdup("append"));
-	else if (strcmp(spl[s], "<<") == 0)
+	else if (!strcmp(spl[s], "<<"))
 		return (strdup("herdoc"));
-	else if (s > 0 && strcmp(spl[s - 1], ">") == 0)
+	else if (s > 0 && !strcmp(spl[s - 1], ">"))
 		return (strdup("out_file"));
-	else if (s > 0 && strcmp(spl[s - 1], "<") == 0)
+	else if (s > 0 && !strcmp(spl[s - 1], "<"))
 		return (strdup("in_file"));
-	else if (s > 0 && strcmp(spl[s - 1], "<<") == 0)
+	else if (s > 0 && !strcmp(spl[s - 1], "<<"))
 		return (strdup("delim"));
-	else if (s > 0 && strcmp(spl[s - 1], ">>") == 0)
+	else if (s > 0 && !strcmp(spl[s - 1], ">>"))
 		return (strdup("app_file"));
-	else if (s == 0)
+	else if (s == 0 || !strcmp(type, "delim") || !strcmp(type, "in_file"))
 		return (strdup("cmd"));
 	return (strdup("arg"));
 }
 
 t_tokens	*tokens_struct(t_cmd_info *info, int s)
 {
-	int	i;
+	int		i;
+	char	*type;
 
 	i = -1;
 	info[s].token = ft_malloc(sizeof(t_tokens) * info[s].nbr_token);
@@ -244,8 +245,10 @@ t_tokens	*tokens_struct(t_cmd_info *info, int s)
 	while (++i < info[s].nbr_token)
 	{
 		info[s].token[i].str = info[s].all_token[i];
-		info[s].token[i].type = get_type_token(info[s].all_token, i);
-		printf("%s\n", info[s].token[i].type);
+		if (i > 0)
+			type = info[s].token[i - 1].type;
+		info[s].token[i].type = get_type_token(info[s].all_token, type, i);
+		// printf("%s\n", info[s].token[i].type);
 	}
 	return (info[s].token);
 }
@@ -285,10 +288,86 @@ int	check_if_only_space_and_tab(char *str)
 	return (0);
 }
 
+int	check_if_operator(char *type)
+{
+	if (!strcmp(type, "red_in"))
+		return (0);
+	else if (!strcmp(type, "red_out"))
+		return (0);
+	else if (!strcmp(type, "append"))
+		return (0);
+	else if (!strcmp(type, "herdoc"))
+		return (0);
+	return (1);
+}
+
+int	check_syntax_error(t_parse *data)
+{
+	int		i;
+	int		s;
+	int		flag;
+
+	i = -1;
+	while (++i < data->nbr_cmd)
+	{
+		s = -1;
+		flag = 0;
+		while (++s < data->cmd_info[i].nbr_token)
+		{
+			if ((s + 1) == data->cmd_info[i].nbr_token)
+			{
+				if (check_if_operator(data->cmd_info[i].token[s].type) == 0)
+					return (0);
+			}
+			else if (check_if_operator(data->cmd_info[i].token[s].type) == 0)
+				if (check_if_operator(data->cmd_info[i].token[s + 1].type) == 0)
+					return (0);
+			flag = 1;
+		}
+		if (flag == 0)
+			return (0);
+	}
+	return (1);
+}
+
+char	*check_dollar_sign(char *str)
+{
+	int	i;
+
+	i = -1;
+	while (str[++i])
+	{
+		if (str[0] == '\'')
+			return (strdup(str + 1));
+	}
+	return (NULL);
+}
+
+// void	expantion(t_parse *data)
+// {
+// 	int		i;
+// 	int		s;
+// 	char	*tmp;
+
+// 	i = -1;
+// 	while (++i < data->nbr_cmd)
+// 	{
+// 		s = -1;
+// 		while (++s < data->cmd_info[i].nbr_token)
+// 		{
+// 			tmp = data->cmd_info[i].token[s].str;
+// 			tmp = check_dollar_sign(tmp);
+// 			tmp[ft_strlen(tmp) - 1] = 0;
+// 			free (data->cmd_info[i].token[s].str);
+// 			data->cmd_info[i].token[s].str = tmp;
+// 			printf("%s\n", data->cmd_info[i].token[s].str);
+// 		}
+// 	}
+// }
+
 int	parsing(char *str, char **env, t_parse *data_info)
 {
 	(void) 	env;
-
 	if (check_if_only_space_and_tab(str) == 0)
 		return (1);
 	if (!check_qoutes(str, length_line(str), data_info))
@@ -297,16 +376,13 @@ int	parsing(char *str, char **env, t_parse *data_info)
 		return (printf("Failed allocation!\n"));
 	if (!cmd_info_struct(data_info))
 		return (printf("Failed allocation!\n"));
-	// int	i = 0;
-	// while (cmd[i].str)
-	// {
-	// 	printf("%s\n", cmd[i].str);
-	// 	i++;
-	// }
+	if (check_syntax_error(data_info) == 0)
+		return (printf("M_H: syntax error near unexpected token `newline'\n"));
+	// expantion(data_info);
 	return (0);
 }
 
-int main(int ac, char **av, char **envp)
+int	main(int ac, char **av, char **envp)
 {
 	char	*line;
 	t_parse	*data_info;
