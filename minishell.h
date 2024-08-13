@@ -6,14 +6,14 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 09:42:01 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/08/11 02:21:20 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/08/13 06:52:49 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef	MINISHELL_H
 #define	MINISHELL_H
 
-//#include "libft_mini_shell/libft.h"
+#include "libft_mini_shell/libft.h"
 #include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>

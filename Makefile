@@ -6,11 +6,13 @@
 #    By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/07/27 22:23:59 by hael-ghd          #+#    #+#              #
-#    Updated: 2024/08/04 16:50:24 by hael-ghd         ###   ########.fr        #
+#    Updated: 2024/08/13 06:52:21 by hael-ghd         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = minishell
+
+LIBFT = ./libft_mini_shell/libft.a
 
 CC = cc
 
@@ -22,16 +24,23 @@ OBJ_SRC = $(SOURCE:.c=.o)
 
 all: $(NAME)
 
-$(NAME): $(OBJ_SRC)
-	$(CC) $(FLAGS) $(OBJ_SRC) -lreadline -o $(NAME)
+$(NAME): $(LIBFT) $(OBJ_SRC)
+	@$(CC) $(FLAGS) $(LIBFT) $(OBJ_SRC) -lreadline -o $(NAME)
+
+$(LIBFT):
+	@$(MAKE) -C ./libft_mini_shell
+	@echo "Success"
 
 %.o: %.c minishell.h
 	$(CC) $(FLAGS) -c $<
 
 clean:
-	rm -f $(OBJ_SRC)
+	@echo "Cleaning"
+	@rm -f $(OBJ_SRC)
+	@rm -f ./libft_mini_shell/*.o
 
 fclean: clean
-	rm -f $(NAME)
+	@rm -f $(NAME)
+	@rm -f $(LIBFT)
 
 re: fclean all

@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 09:44:43 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/08/13 06:18:43 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/08/13 06:58:38 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,16 +52,6 @@ void *ft_malloc(size_t size)
 		exit(EXIT_FAILURE);
 	leaks_collector(new, ADD);
 	return (new);
-}
-
-int	ft_strlen(char *str)
-{
-	int	i;
-
-	i = -1;
-	while (str[++i])
-		;
-	return (i);
 }
 
 int     s_d_qoutes(char *str, char *s, int *l)
@@ -212,25 +202,25 @@ char	**split_and_replace(t_parse *data_info)
 
 char	*get_type_token(char **spl, char *type, int s)
 {
-	if (!strcmp(spl[s], ">"))
-		return (strdup("red_out"));
-	else if (!strcmp(spl[s], "<"))
-		return (strdup("red_in"));
-	else if (!strcmp(spl[s], ">>"))
-		return (strdup("append"));
-	else if (!strcmp(spl[s], "<<"))
-		return (strdup("herdoc"));
-	else if (s > 0 && !strcmp(spl[s - 1], ">"))
-		return (strdup("out_file"));
-	else if (s > 0 && !strcmp(spl[s - 1], "<"))
-		return (strdup("in_file"));
-	else if (s > 0 && !strcmp(spl[s - 1], "<<"))
-		return (strdup("delim"));
-	else if (s > 0 && !strcmp(spl[s - 1], ">>"))
-		return (strdup("app_file"));
-	else if (s == 0 || !strcmp(type, "delim") || !strcmp(type, "in_file"))
-		return (strdup("cmd"));
-	return (strdup("arg"));
+	if (!ft_strcmp(spl[s], ">"))
+		return (ft_strdup("red_out"));
+	else if (!ft_strcmp(spl[s], "<"))
+		return (ft_strdup("red_in"));
+	else if (!ft_strcmp(spl[s], ">>"))
+		return (ft_strdup("append"));
+	else if (!ft_strcmp(spl[s], "<<"))
+		return (ft_strdup("herdoc"));
+	else if (s > 0 && !ft_strcmp(spl[s - 1], ">"))
+		return (ft_strdup("out_file"));
+	else if (s > 0 && !ft_strcmp(spl[s - 1], "<"))
+		return (ft_strdup("in_file"));
+	else if (s > 0 && !ft_strcmp(spl[s - 1], "<<"))
+		return (ft_strdup("delim"));
+	else if (s > 0 && !ft_strcmp(spl[s - 1], ">>"))
+		return (ft_strdup("app_file"));
+	else if (s == 0 || !ft_strcmp(type, "delim") || !ft_strcmp(type, "in_file"))
+		return (ft_strdup("cmd"));
+	return (ft_strdup("arg"));
 }
 
 t_tokens	*tokens_struct(t_cmd_info *info, int s)
@@ -290,13 +280,13 @@ int	check_if_only_space_and_tab(char *str)
 
 int	check_if_operator(char *type)
 {
-	if (!strcmp(type, "red_in"))
+	if (!ft_strcmp(type, "red_in"))
 		return (0);
-	else if (!strcmp(type, "red_out"))
+	else if (!ft_strcmp(type, "red_out"))
 		return (0);
-	else if (!strcmp(type, "append"))
+	else if (!ft_strcmp(type, "append"))
 		return (0);
-	else if (!strcmp(type, "herdoc"))
+	else if (!ft_strcmp(type, "herdoc"))
 		return (0);
 	return (1);
 }
@@ -330,18 +320,18 @@ int	check_syntax_error(t_parse *data)
 	return (1);
 }
 
-char	*check_dollar_sign(char *str)
-{
-	int	i;
+// char	*check_dollar_sign(char *str)
+// {
+// 	int	i;
 
-	i = -1;
-	while (str[++i])
-	{
-		if (str[0] == '\'')
-			return (strdup(str + 1));
-	}
-	return (NULL);
-}
+// 	i = -1;
+// 	while (str[++i])
+// 	{
+// 		if (str[0] == '\'')
+// 			return (ft_strdup(str + 1));
+// 	}
+// 	return (NULL);
+// }
 
 // void	expantion(t_parse *data)
 // {
@@ -396,7 +386,7 @@ int	main(int ac, char **av, char **envp)
 	while (1)
 	{
 		line = readline("\033[0;31mM_H$\033[0m ");
-		if (!strcmp(line, "exit"))
+		if (!ft_strcmp(line, "exit"))
 			return (printf("exit\n"), 1);
 		parsing(line, envp, data_info);
 		if (*line)
