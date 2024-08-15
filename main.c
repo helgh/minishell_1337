@@ -6,78 +6,107 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 09:44:43 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/08/13 06:58:38 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/08/15 06:46:09 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-t_leaks *leaks_collector(void *for_leaks, int operation)
+void	free_all_memory(t_leaks *heap)
 {
-	static t_leaks	*catch_leaks;
-	static t_leaks	*head;
-	t_leaks	*new;
-	static size_t	i;
+	t_leaks	*tmp;
 
-	if (operation == ADD)
+	while (heap && heap->next)
 	{
-		new = malloc(sizeof(t_leaks));
-		if (!new)
-			return (NULL);
-		new->adress = for_leaks;
-		new->next = NULL;
-		if (i == 0)
+		tmp = heap;
+		heap = heap->next;
+		if (tmp->adress)
 		{
-			catch_leaks = new;
-			head = catch_leaks;
+			free (tmp->adress);
+			free (tmp->t_struct);
 		}
-		else
-		{
-			catch_leaks->next = new;
-			catch_leaks = catch_leaks->next;
-		}
-		i++;
 	}
-	if (operation == GET)
-		return (head);
+	if (heap)
+	{
+		free (heap->adress);
+		free (heap->t_struct);
+	}
+}
+
+t_leaks	*leaks_collector(void *for_leaks, t_leaks **heap)
+{
+	t_leaks	*tmp;
+	t_leaks	*new;
+
+	tmp = *heap;
+	new = malloc(sizeof(t_leaks));
+	if (!new)
+		return (free_all_memory(*heap), NULL);
+	new->adress = for_leaks;
+	new->t_struct = new;
+	new->next = NULL;
+	if (!*heap)
+		return (*heap = new);
+	while (tmp->next)
+		tmp = tmp->next;
+	tmp->next = new;
 	return (NULL);
 }
+
 /* ft_ malloc that i will use to allocate mamory */
 
-void *ft_malloc(size_t size)
+void	*ft_malloc(size_t size, t_leaks **heap)
 {
 	char	*new;
+
 	new = malloc (size);
 	if (!new)
 		exit(EXIT_FAILURE);
-	leaks_collector(new, ADD);
+	leaks_collector(new, heap);
 	return (new);
 }
 
-int     s_d_qoutes(char *str, char *s, int *l)
+int	count_size(t_cmd_info *lst)
 {
-    int     i;
-    char    c;
+	int			count;
+	t_cmd_info	*ptr;
 
-    i = 0;
-    c = *str;
+	count = 0;
+	if (lst == NULL)
+		return (0);
+	ptr = lst;
+	while (ptr != NULL)
+	{
+		count++;
+		ptr = ptr->next;
+	}
+	return (count);
+}
+
+int	s_d_qoutes(char *str, char *s, int *l)
+{
+	int		i;
+	char	c;
+
+	i = 0;
+	c = *str;
 	s[(*l)++] = c;
-    str++;
-    while (*str)
-    {
+	str++;
+	while (*str)
+	{
 		if (*str == 124)
 			s[(*l)++] = -1;
-        if (*str == c)
+		if (*str == c)
 		{
 			s[(*l)++] = c;
-            return (++i);
+			return (++i);
 		}
 		if (*str != 124)
 			s[(*l)++] = *str;
-        i++;
-        str++;
-    }
-    return (-1);
+		i++;
+		str++;
+	}
+	return (-1);
 }
 
 void	space_between_oper(char *str, char *s, int *i, int *l)
@@ -106,34 +135,34 @@ void	space_between_oper(char *str, char *s, int *i, int *l)
 
 char	*check_qoutes(char *str, int len, t_parse *data_info)
 {
-	int 	n;
-	int 	i;
-	int 	l;
+	int	n;
+	int	i;
+	int	l;
 
-    i = -1;
-    n = 0;
+	i = -1;
+	n = 0;
 	l = 0;
-	data_info->line = ft_malloc(sizeof(char) * (len + 1));
+	data_info->line = ft_malloc(sizeof(char) * (len + 1), &data_info->heap);
 	if (!data_info->line)
 		return (printf("Failed allocation!\n"), NULL);
 	while (str[++i])
-    {
+	{
 		if (str[i] == '\"' || str[i] == '\'')
 		{
-            n = s_d_qoutes(&str[i], data_info->line, &l);
-        	if (n == -1)
-            	return (printf("Unclosed qoutes!\n"), free(data_info->line), NULL);
-        	else
-            	i += n;
+			n = s_d_qoutes(&str[i], data_info->line, &l);
+			if (n == -1)
+				return (printf("Unclosed qoutes!\n"), free(data_info->line), NULL);
+			else
+				i += n;
 		}
 		else
 			space_between_oper(str, data_info->line, &i, &l);
-    }
+	}
 	data_info->line[l] = 0;
 	return (data_info->line);
 }
 
-int		length_line(char *str)
+int	length_line(char *str)
 {
 	int	i;
 	int	n;
@@ -181,7 +210,7 @@ char	**split_and_replace(t_parse *data_info)
 	int		s;
 
 	i = -1;
-	data_info->all_cmd = ft_split(data_info->line, 124);
+	data_info->all_cmd = ft_split(data_info->line, 124, &data_info->heap);
 	if (!data_info->all_cmd)
 		return (free(data_info->line), NULL);
 	data_info->nbr_cmd = 0;
@@ -200,70 +229,108 @@ char	**split_and_replace(t_parse *data_info)
 	return (data_info->all_cmd);
 }
 
-char	*get_type_token(char **spl, char *type, int s)
+char	*get_type_token(char **spl, char *type, int s, t_leaks **heap)
 {
 	if (!ft_strcmp(spl[s], ">"))
-		return (ft_strdup("red_out"));
+		return (ft_dup_str("red_out", heap));
 	else if (!ft_strcmp(spl[s], "<"))
-		return (ft_strdup("red_in"));
+		return (ft_dup_str("red_in", heap));
 	else if (!ft_strcmp(spl[s], ">>"))
-		return (ft_strdup("append"));
+		return (ft_dup_str("append", heap));
 	else if (!ft_strcmp(spl[s], "<<"))
-		return (ft_strdup("herdoc"));
+		return (ft_dup_str("herdoc", heap));
 	else if (s > 0 && !ft_strcmp(spl[s - 1], ">"))
-		return (ft_strdup("out_file"));
+		return (ft_dup_str("out_file", heap));
 	else if (s > 0 && !ft_strcmp(spl[s - 1], "<"))
-		return (ft_strdup("in_file"));
+		return (ft_dup_str("in_file", heap));
 	else if (s > 0 && !ft_strcmp(spl[s - 1], "<<"))
-		return (ft_strdup("delim"));
+		return (ft_dup_str("delim", heap));
 	else if (s > 0 && !ft_strcmp(spl[s - 1], ">>"))
-		return (ft_strdup("app_file"));
+		return (ft_dup_str("app_file", heap));
 	else if (s == 0 || !ft_strcmp(type, "delim") || !ft_strcmp(type, "in_file"))
-		return (ft_strdup("cmd"));
-	return (ft_strdup("arg"));
+		return (ft_dup_str("cmd", heap));
+	return (ft_dup_str("arg", heap));
 }
 
-t_tokens	*tokens_struct(t_cmd_info *info, int s)
+void	add_node_to_struct(t_tokens **lst, t_tokens *new)
 {
-	int		i;
-	char	*type;
+	t_tokens	*ptr;
+
+	if (lst == NULL)
+		return ;
+	if (*lst == NULL)
+	{
+		*lst = new;
+		return ;
+	}
+	ptr = *lst;
+	while (ptr->next != NULL)
+		ptr = ptr->next;
+	ptr->next = new;
+}
+
+t_tokens	*tokens_struct(t_parse *info, t_cmd_info *cmd, t_leaks **heap)
+{
+	t_tokens	*tokens;
+	int			i;
+	int			s;
+	char		*type;
 
 	i = -1;
-	info[s].token = ft_malloc(sizeof(t_tokens) * info[s].nbr_token);
-	if (!info[s].token)
-		return (NULL);
-	while (++i < info[s].nbr_token)
+	while (++i < cmd->nbr_token)
 	{
-		info[s].token[i].str = info[s].all_token[i];
-		if (i > 0)
-			type = info[s].token[i - 1].type;
-		info[s].token[i].type = get_type_token(info[s].all_token, type, i);
-		// printf("%s\n", info[s].token[i].type);
+		s = -1;
+		tokens = ft_malloc(sizeof(t_tokens), heap);
+		tokens->str = cmd->all_token[i];
+		while (tokens->str[++s])
+			if (tokens->str[s] == -1)
+				tokens->str[s] = 32;
+		tokens->type = get_type_token(cmd->all_token, type, i, heap);
+		type = tokens->type;
+		tokens->next = NULL;
+		add_node_to_struct(&info->token, tokens);
 	}
-	return (info[s].token);
+	return (info->token);
+}
+
+void	add_to_struct(t_cmd_info **lst, t_cmd_info *new)
+{
+	t_cmd_info	*ptr;
+
+	if (lst == NULL)
+		return ;
+	if (*lst == NULL)
+	{
+		*lst = new;
+		return ;
+	}
+	ptr = *lst;
+	while (ptr->next != NULL)
+		ptr = ptr->next;
+	ptr->next = new;
 }
 
 t_cmd_info	*cmd_info_struct(t_parse *data_info)
 {
-	int	i;
-	int	s;
+	t_cmd_info	*cmd;
+	int			i;
+	int			s;
 
 	i = -1;
-	data_info->cmd_info = ft_malloc((sizeof(t_cmd_info) * data_info->nbr_cmd) + 1);
-	if (!data_info->cmd_info)
-		return (NULL);
+	cmd = NULL;
 	while (++i < data_info->nbr_cmd)
 	{
+		cmd = ft_malloc(sizeof(t_cmd_info), &data_info->heap);
 		s = -1;
-		data_info->cmd_info[i].cmd_line = data_info->all_cmd[i];
-		data_info->cmd_info[i].all_token = ft_split(data_info->all_cmd[i], 32);
-		data_info->cmd_info[i].nbr_token = 0;
-		while (data_info->cmd_info[i].all_token[++s])
-			data_info->cmd_info[i].nbr_token++;
-		if (!tokens_struct(data_info->cmd_info, i))
-			return (NULL);
+		cmd->cmd_line = data_info->all_cmd[i];
+		cmd->all_token = ft_split(data_info->all_cmd[i], 32, &data_info->heap);
+		cmd->nbr_token = 0;
+		cmd->next = NULL;
+		while (cmd->all_token[++s])
+			cmd->nbr_token++;
+		tokens_struct(data_info, cmd, &data_info->heap);
+		add_to_struct(&data_info->cmd_info, cmd);
 	}
-	// data_info->cmd_info[i] = NULL;
 	return (data_info->cmd_info);
 }
 
@@ -293,71 +360,46 @@ int	check_if_operator(char *type)
 
 int	check_syntax_error(t_parse *data)
 {
-	int		i;
-	int		s;
-	int		flag;
+	int			i;
+	int			s;
+	t_tokens	*tmp;
+	t_cmd_info	*cmd;
+	int			flag;
 
 	i = -1;
+	tmp = data->token;
+	cmd = data->cmd_info;
 	while (++i < data->nbr_cmd)
 	{
 		s = -1;
 		flag = 0;
-		while (++s < data->cmd_info[i].nbr_token)
+		while (++s < cmd->nbr_token)
 		{
-			if ((s + 1) == data->cmd_info[i].nbr_token)
-			{
-				if (check_if_operator(data->cmd_info[i].token[s].type) == 0)
-					return (0);
-			}
-			else if (check_if_operator(data->cmd_info[i].token[s].type) == 0)
-				if (check_if_operator(data->cmd_info[i].token[s + 1].type) == 0)
-					return (0);
+			if ((s + 1) == cmd->nbr_token && check_if_operator(tmp->type) == 0)
+				return (0);
+			else if (check_if_operator(tmp->type) == 0 && check_if_operator(tmp->next->type) == 0)
+				return (0);
 			flag = 1;
+			tmp = tmp->next;
 		}
 		if (flag == 0)
 			return (0);
+		cmd = cmd->next;
 	}
 	return (1);
 }
 
-// char	*check_dollar_sign(char *str)
-// {
-// 	int	i;
+void	expantion(t_parse *data, t_tokens **token)
+{
+	t_tokens	*tok;
 
-// 	i = -1;
-// 	while (str[++i])
-// 	{
-// 		if (str[0] == '\'')
-// 			return (ft_strdup(str + 1));
-// 	}
-// 	return (NULL);
-// }
-
-// void	expantion(t_parse *data)
-// {
-// 	int		i;
-// 	int		s;
-// 	char	*tmp;
-
-// 	i = -1;
-// 	while (++i < data->nbr_cmd)
-// 	{
-// 		s = -1;
-// 		while (++s < data->cmd_info[i].nbr_token)
-// 		{
-// 			tmp = data->cmd_info[i].token[s].str;
-// 			tmp = check_dollar_sign(tmp);
-// 			tmp[ft_strlen(tmp) - 1] = 0;
-// 			free (data->cmd_info[i].token[s].str);
-// 			data->cmd_info[i].token[s].str = tmp;
-// 			printf("%s\n", data->cmd_info[i].token[s].str);
-// 		}
-// 	}
-// }
+	tok = *token;
+	while ()
+}
 
 int	parsing(char *str, char **env, t_parse *data_info)
 {
-	(void) 	env;
+	(void) env;
 	if (check_if_only_space_and_tab(str) == 0)
 		return (1);
 	if (!check_qoutes(str, length_line(str), data_info))
@@ -368,8 +410,13 @@ int	parsing(char *str, char **env, t_parse *data_info)
 		return (printf("Failed allocation!\n"));
 	if (check_syntax_error(data_info) == 0)
 		return (printf("M_H: syntax error near unexpected token `newline'\n"));
-	// expantion(data_info);
+	expantion(data_info, &data_info->token);
 	return (0);
+}
+
+void	leaks()
+{
+	system("leaks -quiet minishell");
 }
 
 int	main(int ac, char **av, char **envp)
@@ -381,16 +428,22 @@ int	main(int ac, char **av, char **envp)
 	(void) envp;
 	if (ac != 1)
 		exit(EXIT_FAILURE);
-	data_info = ft_malloc(sizeof(t_parse));
+	atexit(leaks);
+	data_info = malloc(sizeof(t_parse));
+	data_info->heap = NULL;
 	rl_readline_name = "myshell";
 	while (1)
 	{
+		data_info->token = NULL;
+		data_info->cmd_info = NULL;
 		line = readline("\033[0;31mM_H$\033[0m ");
 		if (!ft_strcmp(line, "exit"))
-			return (printf("exit\n"), 1);
+			return (free_all_memory(data_info->heap), free(data_info), free(line), printf("exit\n"), 1);
 		parsing(line, envp, data_info);
+		// while (data)
 		if (*line)
 			add_history(line);
 		free(line);
 	}
+	// free_all_memory(data_info->heap);
 }

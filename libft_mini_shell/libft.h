@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/05 19:27:48 by mthamir           #+#    #+#             */
-/*   Updated: 2024/08/13 06:57:42 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/08/15 06:16:02 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ void	*ft_memset(void *b, int c, size_t len);
 void	ft_putchar_fd(char c, int fd);
 void	ft_putstr_fd(char *s, int fd);
 void	ft_putendl_fd(char *s, int fd);
-char	**ft_split(char const *s, char c);
+char	**ft_spl(char const *s, char c);
 char	*ft_strchr(const char *s, int c);
 char	*ft_strdup(const char	*s1);
 void	ft_striteri(char *s, void (*f)(unsigned int, char *));

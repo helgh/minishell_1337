@@ -6,7 +6,7 @@
 #    By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/07/27 22:23:59 by hael-ghd          #+#    #+#              #
-#    Updated: 2024/08/13 06:52:21 by hael-ghd         ###   ########.fr        #
+#    Updated: 2024/08/15 06:29:31 by hael-ghd         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,7 +16,7 @@ LIBFT = ./libft_mini_shell/libft.a
 
 CC = cc
 
-FLAGS = -Wall -Wextra -Werror
+FLAGS = -Wall -Wextra -Werror -g #-fsanitize=address
 
 SOURCE = main.c ft_split.c \
 

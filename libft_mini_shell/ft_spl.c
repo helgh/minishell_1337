@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_split.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mthamir <mthamir@student.42.fr>            +#+  +:+       +#+        */
+/*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/06 22:24:39 by mthamir           #+#    #+#             */
-/*   Updated: 2023/12/01 14:41:57 by mthamir          ###   ########.fr       */
+/*   Updated: 2024/08/15 05:48:16 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ static char	**spl(const char *s, char c, char **str, int d)
 	return (str);
 }
 
-char	**ft_split(char const *s, char c)
+char	**ft_spl(char const *s, char c)
 {
 	int		count;
 	char	**str;

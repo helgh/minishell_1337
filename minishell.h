@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 09:42:01 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/08/13 06:52:49 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/08/15 06:22:43 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,50 +28,19 @@
 #define ADD			3
 #define INIT		4
 
-typedef struct s_leaks t_leaks;
+// typedef struct s_leaks t_leaks;
 typedef struct s_leaks
 {
-	void	*adress;
-	t_leaks *next;
-}	t_leaks;
-
-// typedef struct s_env
-// {
-// 	char *var;
-// 	char *value;
-// }	t_env;
-
-// typedef enum s_type
-// {
-// 	CMD,
-// 	OPTION,
-// 	IN_FILE,
-// 	OUT_FILE,
-// 	RED_IN,
-// 	RED_OUT,
-// 	HERDOC,
-// 	APPEND,
-// 	LIM,
-// 	ARG,
-// } 	t_type;
-
-// typedef struct s_token
-// {
-// 	char 		*str;
-// 	enum s_type	type;
-// }	t_token;
-
-// typedef struct	s_cmd
-// {
-// 	char *str;
-// 	t_token *line;
-// }	t_cmd;
+	void			*adress;
+	void			*t_struct;
+	struct s_leaks 	*next;
+}				t_leaks;
 
 typedef struct	s_tokens
 {
   char				*str;
   char				*type;
-//   struct s_tokens	*next;
+  struct s_tokens	*next;
 }				t_tokens;
 
 typedef struct	s_cmd_info
@@ -79,8 +48,7 @@ typedef struct	s_cmd_info
 	char				*cmd_line;
 	char				**all_token;
 	int					nbr_token;
-	t_tokens			*token;
-	// struct s_cmd_info	*next;
+	struct s_cmd_info	*next;
 }				t_cmd_info;
 
 typedef struct	s_parse
@@ -89,8 +57,11 @@ typedef struct	s_parse
 	char		**all_cmd;
 	int			nbr_cmd;
 	t_cmd_info	*cmd_info;
+	t_leaks		*heap;
+	t_tokens	*token;
 }				t_parse;
 
-char	**ft_split(char const *s, char c);
+char	**ft_split(char const *s, char c, t_leaks **heap);
+char	*ft_dup_str(const char *s1, t_leaks **heap);
 
 #endif
