@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 09:44:43 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/08/16 04:47:42 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/08/16 06:24:10 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -427,7 +427,7 @@ int	count_new_str(char *str, char c)
 	count = 0;
 	while (str[++i])
 	{
-		while (str[i] != c)
+		while (str[i] && str[i] != c)
 			i++;
 		if (str[i++] == c)
 			count++;
@@ -446,37 +446,44 @@ char	*remove_qoutes(char *str, char c, t_leaks **heap)
 	char	*s;
 
 	len = count_new_str(str, c);
+	printf("%d\n", len);
 	i = -1;
-	s = ft_malloc(ft_strlen(str) - (len + 1), heap);
+	s = ft_malloc((ft_strlen(str) - len) + 1, heap);
+	len = 0;
 	while (str[++i])
-	{
-		if (str[i] == c)
-			i++;
-		if (str[i])
-			s[i] = str[i];
-	}
-	s[i] = 0;
+		if (str[i] && str[i] != c)
+			s[len++] = str[i];
+	s[len] = 0;
 	return (s);
 }
 
 char	*check_exit_status(t_parse *data, char *str, t_leaks **heap)
 {
 	int		i;
+	int		n;
 	int		l;;
 	char	*s;
+	char	*tmp;
 
 	i = -1;
 	s = NULL;
+	l = 0;
 	while (str[++i])
 	{
+		n = i;
+		while (str[i++] && str[i] != '$' && str[i + 1] != '?')
+			l++;
+		if (l != 0)
+			tmp = ft_substr(str, n, l);
 		if (str[i] == '$' && str[i + 1] == '?')
 		{
-			s = ft_strjoin(ft_substr(str, ft_strlen(), i), i_to_a(data->exit_status, heap));
 			i++;
+			s = ft_strjoin(tmp, i_to_a(data->exit_status, heap));
 		}
+		if (str[i] == '?')
+			tmp = s;
+		l++;
 	}
-	if (s)
-		return (s);
 	return (str);
 }
 
@@ -505,8 +512,8 @@ void	expantion(t_parse *data, t_tokens *token)
 			tok->str = remove_qoutes(tok->str, 39, &data->heap);
 		else if (tok->type_qoute != 1)
 		{
-			if (prev && ft_strcmp(prev->str, "<<") != 0 && tok->sign_dollar == 1)
-				tok->str = set_value(data, tok->str, &data->heap);
+			// if (tok->sign_dollar == 1)
+			// 	tok->str = set_value(data, tok->str, &data->heap);
 			if (tok->type_qoute == 2)
 				tok->str = remove_qoutes(tok->str, 34, &data->heap);
 		}

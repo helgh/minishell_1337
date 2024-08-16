@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/06 19:28:48 by mthamir           #+#    #+#             */
-/*   Updated: 2024/08/16 04:29:42 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/08/16 05:31:28 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ char	*ft_itoa(int n)
 
 	i = 0;
 	c = count_case(n, i);
-	str = ft_malloc ((c + 1) * sizeof(char), heap);
+	str = malloc ((c + 1) * sizeof(char));
 	if (!str)
 		return (NULL);
 	d = dd(str, c, n);
