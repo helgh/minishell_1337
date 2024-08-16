@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 09:44:43 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/08/15 06:46:09 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/08/16 04:47:42 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,8 +52,6 @@ t_leaks	*leaks_collector(void *for_leaks, t_leaks **heap)
 	tmp->next = new;
 	return (NULL);
 }
-
-/* ft_ malloc that i will use to allocate mamory */
 
 void	*ft_malloc(size_t size, t_leaks **heap)
 {
@@ -151,7 +149,7 @@ char	*check_qoutes(char *str, int len, t_parse *data_info)
 		{
 			n = s_d_qoutes(&str[i], data_info->line, &l);
 			if (n == -1)
-				return (printf("Unclosed qoutes!\n"), free(data_info->line), NULL);
+				return (printf("Unclosed qoutes!\n"), NULL);
 			else
 				i += n;
 		}
@@ -269,6 +267,35 @@ void	add_node_to_struct(t_tokens **lst, t_tokens *new)
 	ptr->next = new;
 }
 
+int	set_flag_qoutes(char *str)
+{
+	int	i;
+
+	i = -1;
+	while (str[++i])
+	{
+		if (str[i] == 39)
+			return (1);
+		else if (str[i] == 34)
+			return (2);
+	}
+	return (0);
+}
+
+int	set_flag_dollar(t_tokens *token)
+{
+	int	i;
+
+	i = -1;
+	while (token->str[++i])
+	{
+		if (token->type_qoute == 2 || token->type_qoute == 0)
+			if (token->str[i] == '$')
+				return(1);
+	}
+	return (0);
+}
+
 t_tokens	*tokens_struct(t_parse *info, t_cmd_info *cmd, t_leaks **heap)
 {
 	t_tokens	*tokens;
@@ -282,6 +309,8 @@ t_tokens	*tokens_struct(t_parse *info, t_cmd_info *cmd, t_leaks **heap)
 		s = -1;
 		tokens = ft_malloc(sizeof(t_tokens), heap);
 		tokens->str = cmd->all_token[i];
+		tokens->type_qoute = set_flag_qoutes(tokens->str);
+		tokens->sign_dollar = set_flag_dollar(tokens);
 		while (tokens->str[++s])
 			if (tokens->str[s] == -1)
 				tokens->str[s] = 32;
@@ -389,12 +418,101 @@ int	check_syntax_error(t_parse *data)
 	return (1);
 }
 
-void	expantion(t_parse *data, t_tokens **token)
+int	count_new_str(char *str, char c)
+{
+	int	i;
+	int	count;
+
+	i = -1;
+	count = 0;
+	while (str[++i])
+	{
+		while (str[i] != c)
+			i++;
+		if (str[i++] == c)
+			count++;
+		while (str[i] && str[i] != c)
+			i++;
+		if (str[i] == 0)
+			return (count * 2);
+	}
+	return (count * 2);
+}
+
+char	*remove_qoutes(char *str, char c, t_leaks **heap)
+{
+	int		len;
+	int		i;
+	char	*s;
+
+	len = count_new_str(str, c);
+	i = -1;
+	s = ft_malloc(ft_strlen(str) - (len + 1), heap);
+	while (str[++i])
+	{
+		if (str[i] == c)
+			i++;
+		if (str[i])
+			s[i] = str[i];
+	}
+	s[i] = 0;
+	return (s);
+}
+
+char	*check_exit_status(t_parse *data, char *str, t_leaks **heap)
+{
+	int		i;
+	int		l;;
+	char	*s;
+
+	i = -1;
+	s = NULL;
+	while (str[++i])
+	{
+		if (str[i] == '$' && str[i + 1] == '?')
+		{
+			s = ft_strjoin(ft_substr(str, ft_strlen(), i), i_to_a(data->exit_status, heap));
+			i++;
+		}
+	}
+	if (s)
+		return (s);
+	return (str);
+}
+
+char	*set_value(t_parse *data, char *str, t_leaks **heap)
+{
+	int		i;
+	// int		len;
+	char	*s;
+
+	i = -1;
+	// len = ft_strlen(str);
+	s = check_exit_status(data, str, heap);
+	return (s);
+}
+
+void	expantion(t_parse *data, t_tokens *token)
 {
 	t_tokens	*tok;
+	t_tokens	*prev;
 
-	tok = *token;
-	while ()
+	tok = token;
+	prev = NULL;
+	while (tok)
+	{
+		if (tok->type_qoute == 1)
+			tok->str = remove_qoutes(tok->str, 39, &data->heap);
+		else if (tok->type_qoute != 1)
+		{
+			if (prev && ft_strcmp(prev->str, "<<") != 0 && tok->sign_dollar == 1)
+				tok->str = set_value(data, tok->str, &data->heap);
+			if (tok->type_qoute == 2)
+				tok->str = remove_qoutes(tok->str, 34, &data->heap);
+		}
+		prev = tok;
+		tok = tok->next;
+	}
 }
 
 int	parsing(char *str, char **env, t_parse *data_info)
@@ -410,7 +528,7 @@ int	parsing(char *str, char **env, t_parse *data_info)
 		return (printf("Failed allocation!\n"));
 	if (check_syntax_error(data_info) == 0)
 		return (printf("M_H: syntax error near unexpected token `newline'\n"));
-	expantion(data_info, &data_info->token);
+	expantion(data_info, data_info->token);
 	return (0);
 }
 
@@ -431,6 +549,7 @@ int	main(int ac, char **av, char **envp)
 	atexit(leaks);
 	data_info = malloc(sizeof(t_parse));
 	data_info->heap = NULL;
+	data_info->exit_status = 0;
 	rl_readline_name = "myshell";
 	while (1)
 	{
@@ -440,6 +559,11 @@ int	main(int ac, char **av, char **envp)
 		if (!ft_strcmp(line, "exit"))
 			return (free_all_memory(data_info->heap), free(data_info), free(line), printf("exit\n"), 1);
 		parsing(line, envp, data_info);
+		while (data_info->token)
+		{
+			printf("%s\n", data_info->token->str);
+			data_info->token = data_info->token->next;
+		}
 		// while (data)
 		if (*line)
 			add_history(line);

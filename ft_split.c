@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/03 15:42:08 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/08/15 06:21:02 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/08/16 04:28:54 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,65 @@ t_leaks *leaks_collector(void *for_leaks, t_leaks *heap);
 void *ft_malloc(size_t size, t_leaks **heap);
 
 char	*get_type_token(char **spl, char *type, int s, t_leaks **heap);
+
+static	int	count_case(int nb, int i)
+{
+	long int	d;
+
+	d = nb;
+	if (d == 0)
+		return (1);
+	if (d < 0)
+	{
+		d = -d;
+		i++;
+	}
+	while (d > 0)
+	{
+		d = d / 10;
+		i++;
+	}
+	return (i);
+}
+
+static char	*dd(char *str, int c, int n)
+{
+	long int	k;
+
+	k = n;
+	str[c] = '\0';
+	c--;
+	if (k < 0)
+	{
+		str[0] = '-';
+		k = -k;
+	}
+	if (k == 0)
+		str[c] = 48;
+	while (k > 0)
+	{
+		str[c] = (k % 10) + 48;
+		c--;
+		k = k / 10;
+	}
+	return (str);
+}
+
+char	*i_to_a(int n, t_leaks **heap)
+{
+	int		i;
+	int		c;
+	char	*str;
+	char	*d;
+
+	i = 0;
+	c = count_case(n, i);
+	str = ft_malloc ((c + 1) * sizeof(char), heap);
+	if (!str)
+		return (NULL);
+	d = dd(str, c, n);
+	return (d);
+}
 
 char	*ft_dup_str(const char *s1, t_leaks **heap)
 {
