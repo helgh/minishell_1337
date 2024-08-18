@@ -6,14 +6,14 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 09:42:01 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/08/16 04:31:47 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/08/18 17:43:31 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef	MINISHELL_H
 #define	MINISHELL_H
 
-#include "libft_mini_shell/libft.h"
+// #include "libft_mini_shell/libft.h"
 #include <unistd.h>
 #include <stdio.h>
 #include <stdbool.h>
@@ -30,6 +30,13 @@
 #define INIT		4
 
 // typedef struct s_leaks t_leaks;
+
+typedef struct s_env
+{
+	char *var;
+	char *value;
+}	t_env;
+
 typedef struct s_leaks
 {
 	void			*adress;
@@ -60,13 +67,40 @@ typedef struct	s_parse
 	char		**all_cmd;
 	int			nbr_cmd;
 	int			exit_status;
+  t_env				*envir;
 	t_cmd_info	*cmd_info;
-	t_leaks		*heap;
 	t_tokens	*token;
+	t_leaks		*heap;
 }				t_parse;
 
-char	**ft_split(char const *s, char c, t_leaks **heap);
-char	*ft_dup_str(const char *s1, t_leaks **heap);
-char	*i_to_a(int n, t_leaks **heap);
+char		**ft_split(char const *s, char c, t_leaks **heap);
+char		*ft_dup_str(char *s1, t_leaks **heap);
+char		*i_to_a(int n);
+char		*join_str(t_parse *data, char *str, char *s, int l);
+int			ft_strcmp(const char *s1, const char *s2);
+int			ft_strlen(char *str);
+int			ft_strncmp(const char *s1, const char *s2, size_t n);
+int			ft_isalpha(int c);
+int			ft_isdigit(int c);
+int			ft_isprint(int c);
+
+void		free_all_memory(t_leaks *heap);
+
+char		*check_qoutes(char *str, int len, t_parse *data_info);
+int			length_line(char *str);
+void		expantion(t_parse *data, t_tokens *token);
+char		*remove_qoutes(char *str, char c, t_leaks **heap);
+char		*set_value(t_parse *data, char *str, t_leaks **heap);
+char		**split_and_replace(t_parse *data_info);
+int			check_if_only_space_and_tab(char *str);
+int			check_if_operator(char *type);
+int			check_syntax_error(t_parse *data);
+char		*get_type_token(char **spl, char *type, int s, t_leaks **heap);
+int			set_flag_dollar(t_tokens *token);
+int			set_flag_qoutes(char *str);
+t_cmd_info	*cmd_info_struct(t_parse *data_info);
+t_tokens	*tokens_struct(t_parse *info, t_cmd_info *cmd, t_leaks **heap);
+
+void		*ft_malloc(size_t size, t_leaks **heap);
 
 #endif
