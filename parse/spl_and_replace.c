@@ -6,13 +6,13 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/18 16:44:19 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/08/18 18:18:29 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/08/20 11:12:01 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-static void	replace_value_within_quotes(char **str, int i, int *s)
+void	replace_value(char **str, int i, int *s)
 {
 	char	c;
 
@@ -23,30 +23,32 @@ static void	replace_value_within_quotes(char **str, int i, int *s)
 			str[i][*s] = 124;
 		else if (str[i][*s] == 32)
 			str[i][*s] = -1;
+		else if (str[i][*s] == '\t')
+			str[i][*s] = -2;
 	}
 }
 
-char	**split_and_replace(t_parse *data_info)
+char	**split_and_replace(t_parse *data)
 {
 	int		i;
 	int		s;
 
 	i = -1;
-	data_info->all_cmd = ft_split(data_info->line, 124, &data_info->heap);
-	if (!data_info->all_cmd)
-		return (free(data_info->line), NULL);
-	data_info->nbr_cmd = 0;
-	while (data_info->all_cmd[++i])
-		data_info->nbr_cmd++;
+	data->all_cmd = ft_split(data->line, 124, 124, &data->heap);
+	if (!data->all_cmd)
+		return (free(data->line), NULL);
+	data->nbr_cmd = 0;
+	while (data->all_cmd[++i])
+		data->nbr_cmd++;
 	i = -1;
-	while (data_info->all_cmd[++i])
+	while (data->all_cmd[++i])
 	{
 		s = -1;
-		while (data_info->all_cmd[i][++s])
+		while (data->all_cmd[i][++s])
 		{
-			if (data_info->all_cmd[i][s] == '\'' || data_info->all_cmd[i][s] == '\"')
-				replace_value_within_quotes(data_info->all_cmd, i, &s);
+			if (data->all_cmd[i][s] == '\'' || data->all_cmd[i][s] == '\"')
+				replace_value(data->all_cmd, i, &s);
 		}
 	}
-	return (data_info->all_cmd);
+	return (data->all_cmd);
 }

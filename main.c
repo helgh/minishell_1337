@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 09:44:43 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/08/18 17:18:10 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/08/20 14:39:09 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,12 +48,12 @@ void init_env(char **env, t_parse *data)
 	int i = 0;
 	char **spl;
 
-	spl = ft_split(env[i], '=', &data->heap);
+	spl = ft_split(env[i], '=', '=', &data->heap);
 	global_env(spl[0], spl[1], INIT, data->envir);
 	i++;
 	while (env[i])
 	{
-		spl = ft_split(env[i], '=', &data->heap);
+		spl = ft_split(env[i], '=', '=', &data->heap);
 		global_env(spl[0], spl[1], ADD, data->envir);
 		i++;
 	}
@@ -90,13 +90,26 @@ int	parsing(char *str, char **env, t_parse *data_info)
 		return (printf("Failed allocation!\n"));
 	if (check_syntax_error(data_info) == 0)
 		return (printf("M_H: syntax error near unexpected token `newline'\n"));
-	expantion(data_info, data_info->token);
+	expantion(data_info);
 	return (0);
 }
 
 void	leaks()
 {
 	system("leaks -quiet minishell");
+}
+
+int	cmp_str(char *str)
+{
+	int	i;
+
+	i = -1;
+	while (str[++i] && (str[i] == 32 || str[i] == '\t'))
+		;
+	if (!ft_strncmp(&str[i], "exit", 4))
+		if (!str[i + 4] || str[i + 4] == 32 || str[i + 4] == '\t')
+			return (0);
+	return (1);
 }
 
 int	main(int ac, char **av, char **envp)
@@ -118,18 +131,23 @@ int	main(int ac, char **av, char **envp)
 	rl_readline_name = "myshell";
 	while (1)
 	{
-		data_info->token = NULL;
+		// data_info->token = NULL;
 		data_info->cmd_info = NULL;
 		line = readline("\033[0;31mM_H$\033[0m ");
-		if (!ft_strcmp(line, "exit"))
+		if (!cmp_str(line))
 			return (free_all_memory(data_info->heap), free(data_info), free(line), printf("exit\n"), 1);
 		parsing(line, envp, data_info);
-		while (data_info->token)
+		t_cmd_info *ok;
+		ok = data_info->cmd_info;
+		while (ok)
 		{
-			printf("%s -- %s\n", data_info->token->type, data_info->token->str);
-			data_info->token = data_info->token->next;
+			while (ok->token)
+			{
+				printf("%s -- %s\n", ok->token->type, ok->token->str);
+				ok->token = ok->token->next;
+			}
+			ok = ok->next;
 		}
-		// while (data)
 		if (*line)
 			add_history(line);
 		free(line);

@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/18 16:48:07 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/08/18 18:19:37 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/08/20 14:32:10 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ static void	add_to_struct(t_cmd_info **lst, t_cmd_info *new)
 	ptr->next = new;
 }
 
-t_tokens	*tokens_struct(t_parse *info, t_cmd_info *cmd, t_leaks **heap)
+t_tokens	*tokens_struct(t_cmd_info *cmd, t_leaks **heap)
 {
 	t_tokens	*tokens;
 	int			i;
@@ -61,18 +61,15 @@ t_tokens	*tokens_struct(t_parse *info, t_cmd_info *cmd, t_leaks **heap)
 		tokens->str = cmd->all_token[i];
 		tokens->type_qoute = set_flag_qoutes(tokens->str);
 		tokens->sign_dollar = set_flag_dollar(tokens);
-		while (tokens->str[++s])
-			if (tokens->str[s] == -1)
-				tokens->str[s] = 32;
 		tokens->type = get_type_token(cmd->all_token, type, i, heap);
 		type = tokens->type;
 		tokens->next = NULL;
-		add_node_to_struct(&info->token, tokens);
+		add_node_to_struct(&cmd->token, tokens);
 	}
-	return (info->token);
+	return (cmd->token);
 }
 
-t_cmd_info	*cmd_info_struct(t_parse *data_info)
+t_cmd_info	*cmd_info_struct(t_parse *data)
 {
 	t_cmd_info	*cmd;
 	int			i;
@@ -80,18 +77,19 @@ t_cmd_info	*cmd_info_struct(t_parse *data_info)
 
 	i = -1;
 	cmd = NULL;
-	while (++i < data_info->nbr_cmd)
+	while (++i < data->nbr_cmd)
 	{
-		cmd = ft_malloc(sizeof(t_cmd_info), &data_info->heap);
+		cmd = ft_malloc(sizeof(t_cmd_info), &data->heap);
 		s = -1;
-		cmd->cmd_line = data_info->all_cmd[i];
-		cmd->all_token = ft_split(data_info->all_cmd[i], 32, &data_info->heap);
+		cmd->cmd_line = data->all_cmd[i];
+		cmd->all_token = ft_split(data->all_cmd[i], 32, '\t', &data->heap);
 		cmd->nbr_token = 0;
 		cmd->next = NULL;
+		cmd->token = NULL;
 		while (cmd->all_token[++s])
 			cmd->nbr_token++;
-		tokens_struct(data_info, cmd, &data_info->heap);
-		add_to_struct(&data_info->cmd_info, cmd);
+		add_to_struct(&data->cmd_info, cmd);
+		tokens_struct(cmd, &data->heap);
 	}
-	return (data_info->cmd_info);
+	return (data->cmd_info);
 }

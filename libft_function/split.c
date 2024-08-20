@@ -6,13 +6,13 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/18 17:12:35 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/08/18 17:12:49 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/08/20 10:45:43 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-static int	count_str(char const *str, char c)
+static int	count_str(char const *str, char c, char c1)
 {
 	int	i;
 	int	leng;
@@ -21,32 +21,32 @@ static int	count_str(char const *str, char c)
 	leng = 0;
 	while (str[i] != 0)
 	{
-		while (str[i] == c && str[i] != 0)
+		while (str[i] && (str[i] == c || str[i] == c1))
 			i++;
-		if (str[i] != c && str[i] != 0)
+		if (str[i] && str[i] != c && str[i] != c1)
 			leng++;
-		while (str[i] != c && str[i] != 0)
+		while (str[i] && str[i] != c && str[i] != c1)
 			i++;
 	}
 	return (leng);
 }
 
-static int	start(char const *str, char c)
+static int	start(char const *str, char c, char c1)
 {
 	int	l;
 
 	l = 0;
-	while (str[l] != 0 && str[l] == c)
+	while (str[l] && (str[l] == c || str[l] == c1))
 		l++;
 	return (l);
 }
 
-static int	endstr(char const *str, char c)
+static int	endstr(char const *str, char c, char c1)
 {
 	int	l;
 
 	l = 0;
-	while (str[l] != 0 && str[l] != c)
+	while (str[l] && str[l] != c && str[l] != c1)
 		l++;
 	return (l);
 }
@@ -69,7 +69,7 @@ static char	*coppy(char const *str, int l, t_leaks **heap)
 	return (s1);
 }
 
-char	**ft_split(char const *s, char c, t_leaks **heap)
+char	**ft_split(char const *s, char c, char c1, t_leaks **heap)
 {
 	int		i;
 	char	**all;
@@ -81,14 +81,14 @@ char	**ft_split(char const *s, char c, t_leaks **heap)
 	i = 0;
 	if (s == NULL)
 		return (NULL);
-	len = count_str(s, c);
+	len = count_str(s, c, c1);
 	all = ft_malloc(sizeof(char *) * (len + 1), heap);
 	if (all == NULL)
 		return (NULL);
 	while (i < len)
 	{
-		size += start(s + size, c);
-		end = endstr(s + size, c);
+		size += start(s + size, c, c1);
+		end = endstr(s + size, c, c1);
 		all[i] = coppy(s + size, end, heap);
 		size += end;
 		i++;

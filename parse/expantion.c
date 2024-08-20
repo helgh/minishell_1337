@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/18 16:59:51 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/08/18 18:17:09 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/08/20 14:38:46 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,25 +50,31 @@ char	*remove_qoutes(char *str, char c, t_leaks **heap)
 	return (s);
 }
 
-void	expantion(t_parse *data, t_tokens *token)
+void	expantion(t_parse *data)
 {
 	t_tokens	*tok;
 	t_tokens	*prev;
+	t_cmd_info	*tmp;
 
-	tok = token;
 	prev = NULL;
-	while (tok)
+	tmp = data->cmd_info;
+	while (tmp)
 	{
-		if (tok->type_qoute == 1)
-			tok->str = remove_qoutes(tok->str, 39, &data->heap);
-		else if (tok->type_qoute != 1)
+		tok = tmp->token;
+		while (tok)
 		{
-			if (tok->sign_dollar == 1)
-				tok->str = set_value(data, tok->str, &data->heap);
-			if (tok->type_qoute == 2)
-				tok->str = remove_qoutes(tok->str, 34, &data->heap);
+			if (tok->type_qoute == 1)
+				tok->str = remove_qoutes(tok->str, 39, &data->heap);
+			else if (tok->type_qoute != 1)
+			{
+				if (tok->sign_dollar == 1)
+					tok->str = set_value(data, tok->str, &data->heap);
+				else if (tok->type_qoute == 2)
+					tok->str = remove_qoutes(tok->str, 34, &data->heap);
+			}
+			prev = tok;
+			tok = tok->next;
 		}
-		prev = tok;
-		tok = tok->next;
+		tmp = tmp->next;
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/18 16:53:52 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/08/18 18:20:25 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/08/20 11:31:17 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,9 +34,17 @@ int	set_flag_dollar(t_tokens *token)
 	i = -1;
 	while (token->str[++i])
 	{
+		if (token->str[i] == -1)
+			token->str[i] = 32;
+		else if (token->str[i] == -2)
+			token->str[i] = '\t';
+	}
+	i = -1;
+	while (token->str[++i])
+	{
 		if (token->type_qoute == 2 || token->type_qoute == 0)
 			if (token->str[i] == '$')
-				return(1);
+				return (1);
 	}
 	return (0);
 }
@@ -87,7 +95,8 @@ char	*get_type_token(char **spl, char *type, int s, t_leaks **heap)
 		return (ft_dup_str("app_file", heap));
 	else if (s == 0 || !ft_strcmp(type, "delim") || !ft_strcmp(type, "in_file"))
 		return (ft_dup_str("cmd", heap));
-	else if (!check_option(spl[s]) && (!ft_strcmp(type, "cmd") || !ft_strcmp(type, "option")))
-		return (ft_dup_str("option", heap));
+	else if (!check_option(spl[s]))
+		if (!ft_strcmp(type, "cmd") || !ft_strcmp(type, "option"))
+			return (ft_dup_str("option", heap));
 	return (ft_dup_str("arg", heap));
 }

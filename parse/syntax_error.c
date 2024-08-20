@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/18 16:56:36 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/08/18 18:19:05 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/08/20 12:25:46 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ int	check_if_only_space_and_tab(char *str)
 	return (0);
 }
 
-int	check_if_operator(char *type)
+int	if_operator(char *type)
 {
 	if (!ft_strcmp(type, "red_in"))
 		return (0);
@@ -45,17 +45,17 @@ int	check_syntax_error(t_parse *data)
 	int			flag;
 
 	i = -1;
-	tmp = data->token;
 	cmd = data->cmd_info;
 	while (++i < data->nbr_cmd)
 	{
+		tmp = cmd->token;
 		s = -1;
 		flag = 0;
 		while (++s < cmd->nbr_token)
 		{
-			if ((s + 1) == cmd->nbr_token && check_if_operator(tmp->type) == 0)
+			if ((s + 1) == cmd->nbr_token && !if_operator(tmp->type))
 				return (0);
-			else if (check_if_operator(tmp->type) == 0 && check_if_operator(tmp->next->type) == 0)
+			else if (!if_operator(tmp->type) && !if_operator(tmp->next->type))
 				return (0);
 			flag = 1;
 			tmp = tmp->next;
