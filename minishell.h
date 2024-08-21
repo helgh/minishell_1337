@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 09:42:01 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/08/21 12:46:23 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/08/21 16:54:10 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 # include <stdlib.h>
 # include <fcntl.h>
 # include <limits.h>
+# include <signal.h>
 # include <string.h>
 # include <readline/readline.h>
 # include <readline/history.h>
@@ -33,6 +34,8 @@
 # define APPEND			7
 # define UNSET			8
 
+
+extern int global_v;
 // typedef struct s_leaks t_leaks;
 
 typedef struct s_env
@@ -125,6 +128,7 @@ int			pars_variable(char *var);
 int			is_special_char(char c);
 int			is_number(char c);
 void		get_pwd();
+void		signal_handler(int sig);
 // void		init_env(char **env, t_leaks **heap);
 void		no_env(void);
 // t_env		*global_env(void	*var, void *egal, void	*value, int operation);

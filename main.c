@@ -6,12 +6,13 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 09:44:43 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/08/21 15:21:50 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/08/21 18:17:07 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+int global_v ;
 t_env	*global_env(void *var, void *value, int operation, t_env *env)
 {
 	void			*ret;
@@ -104,6 +105,8 @@ int	cmp_str(char *str)
 	int	i;
 
 	i = -1;
+	if (!str)
+		return (1) ;
 	while (str[++i] && (str[i] == 32 || str[i] == '\t'))
 		;
 	if (!ft_strncmp(&str[i], "exit", 4))
@@ -111,7 +114,35 @@ int	cmp_str(char *str)
 			return (0);
 	return (1);
 }
+void	signal_handler(int sig)
+{
+	if (sig == SIGINT)
+	{
+		printf("\n");
+		rl_replace_line("", 0);
+		rl_on_new_line();
+		rl_redisplay();
+	}
+}
 
+int	parsing_part(t_parse *data, char **envp)
+{
+	while (1)
+	{
+		data->cmd_info = NULL;
+		data->r_line = readline("\033[0;31mM_H$\033[0m ");
+		if (!cmp_str(data->r_line))
+			return (free_all_memory(data->heap), free(data->r_line), 1);
+		if (!data->r_line)
+			exit(0);
+		parsing(data->r_line, envp, data);
+		if (*data->r_line)
+			add_history(data->r_line);
+		free(data->r_line);
+		// execution_part(data);
+	}
+	return (0);
+}
 int	main(int ac, char **av, char **envp)
 {
 	t_parse	*data_info;
@@ -119,37 +150,16 @@ int	main(int ac, char **av, char **envp)
 
 	(void) av;
 	(void) envp;
+	rl_catch_signals = 0;
+	signal(SIGINT, signal_handler);
+	signal(SIGQUIT, SIG_IGN);
 	if (ac != 1)
 		exit(EXIT_FAILURE);
-	atexit(leaks);
 	data_info = malloc(sizeof(t_parse));
 	data_info->heap = NULL;
 	data_info->exit_status = 0;
 	data_info->envir = env;
-	init_env(envp, data_info);
-	rl_readline_name = "myshell";
-	while (1)
-	{
-		// data_info->token = NULL;
-		data_info->cmd_info = NULL;
-		data_info->r_line = readline("\033[0;31mM_H$\033[0m ");
-		if (!cmp_str(data_info->r_line))
-			return (free_all_memory(data_info->heap), free(data_info), free(data_info->r_line), printf("exit\n"), 1);
-		parsing(data_info->r_line, envp, data_info);
-		t_cmd_info *ok;
-		ok = data_info->cmd_info;
-		while (ok)
-		{
-			while (ok->token)
-			{
-				printf("%s -- %s\n", ok->token->type, ok->token->str);
-				ok->token = ok->token->next;
-			}
-			ok = ok->next;
-		}
-		if (*data_info->r_line)
-			add_history(data_info->r_line);
-		free(data_info->r_line);
-	}
-	// free_all_memory(data_info->heap);
+	// init_env(envp, data_info);
+	if (parsing_part(data_info, envp) == 1)
+		return (free(data_info), printf("exit\n"));
 }

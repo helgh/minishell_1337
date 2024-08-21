@@ -6,24 +6,43 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/21 12:44:54 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/08/21 15:18:44 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/08/21 18:15:45 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
+
+void handler(int sig)
+{
+	if (sig == SIGINT)
+	{
+		close (0);
+		global_v = 1;
+	}
+}
+
+void ft_restore_input()
+{
+	open("/dev/tty", O_RDONLY);
+}
 static char	*read_herdoc(t_parse *data, char *str, int flag)
 {
 	char	*line;
 	char	*new_line;
 	char	*herdoc;
 
+	signal(SIGINT, handler);
+	signal(SIGQUIT, SIG_IGN);
 	herdoc = ft_dup_str("", &data->heap);
 	while (1)
 	{
 		line = readline("> ");
-		if (!ft_strcmp(str, line))
-			return (free(line), herdoc);
+		if (global_v == 1 || !line || !ft_strcmp(str, line))
+		{
+			free(line);
+			break ;
+		}
 		new_line = ft_strjoin(line, "\n", &data->heap);
 		free (line);
 		if (*data->r_line)
@@ -33,6 +52,8 @@ static char	*read_herdoc(t_parse *data, char *str, int flag)
 		else
 			herdoc = ft_strjoin(herdoc, set_value(data, new_line, &data->heap), &data->heap);
 	}
+	// ft_restore_input();
+	signal(SIGINT, signal_handler);
 	return (herdoc);
 }
 
