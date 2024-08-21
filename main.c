@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 09:44:43 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/08/20 14:39:09 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/08/21 12:50:02 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,6 @@ void init_env(char **env, t_parse *data)
 // 	return (count);
 // }
 
-
 int	parsing(char *str, char **env, t_parse *data_info)
 {
 	(void) env;
@@ -91,6 +90,7 @@ int	parsing(char *str, char **env, t_parse *data_info)
 	if (check_syntax_error(data_info) == 0)
 		return (printf("M_H: syntax error near unexpected token `newline'\n"));
 	expantion(data_info);
+	expand_herdoc(data_info);
 	return (0);
 }
 
@@ -114,9 +114,8 @@ int	cmp_str(char *str)
 
 int	main(int ac, char **av, char **envp)
 {
-	char	*line;
 	t_parse	*data_info;
-	static t_env	envir[ARG_MAX];
+	static t_env	env[ARG_MAX];
 
 	(void) av;
 	(void) envp;
@@ -126,31 +125,31 @@ int	main(int ac, char **av, char **envp)
 	data_info = malloc(sizeof(t_parse));
 	data_info->heap = NULL;
 	data_info->exit_status = 0;
-	data_info->envir = envir;
+	data_info->envir = env;
 	init_env(envp, data_info);
 	rl_readline_name = "myshell";
 	while (1)
 	{
 		// data_info->token = NULL;
 		data_info->cmd_info = NULL;
-		line = readline("\033[0;31mM_H$\033[0m ");
-		if (!cmp_str(line))
-			return (free_all_memory(data_info->heap), free(data_info), free(line), printf("exit\n"), 1);
-		parsing(line, envp, data_info);
-		t_cmd_info *ok;
-		ok = data_info->cmd_info;
-		while (ok)
-		{
-			while (ok->token)
-			{
-				printf("%s -- %s\n", ok->token->type, ok->token->str);
-				ok->token = ok->token->next;
-			}
-			ok = ok->next;
-		}
-		if (*line)
-			add_history(line);
-		free(line);
+		data_info->r_line = readline("\033[0;31mM_H$\033[0m ");
+		if (!cmp_str(data_info->r_line))
+			return (free_all_memory(data_info->heap), free(data_info), free(data_info->r_line), printf("exit\n"), 1);
+		parsing(data_info->r_line, envp, data_info);
+		// t_cmd_info *ok;
+		// ok = data_info->cmd_info;
+		// while (ok)
+		// {
+		// 	while (ok->token)
+		// 	{
+		// 		printf("%s -- %s\n", ok->token->type, ok->token->str);
+		// 		ok->token = ok->token->next;
+		// 	}
+		// 	ok = ok->next;
+		// }
+		if (*data_info->r_line)
+			add_history(data_info->r_line);
+		free(data_info->r_line);
 	}
 	// free_all_memory(data_info->heap);
 }

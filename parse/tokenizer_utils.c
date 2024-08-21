@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/18 16:53:52 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/08/20 11:31:17 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/08/21 12:58:26 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,10 @@ char	*get_type_token(char **spl, char *type, int s, t_leaks **heap)
 	if (!ft_strcmp(spl[s], ">"))
 		return (ft_dup_str("red_out", heap));
 	else if (!ft_strcmp(spl[s], "<"))
+	{
+		printf("%s = %d\n", spl[s], ft_strcmp(spl[s], "<"));
 		return (ft_dup_str("red_in", heap));
+	}
 	else if (!ft_strcmp(spl[s], ">>"))
 		return (ft_dup_str("append", heap));
 	else if (!ft_strcmp(spl[s], "<<"))
@@ -93,6 +96,8 @@ char	*get_type_token(char **spl, char *type, int s, t_leaks **heap)
 		return (ft_dup_str("delim", heap));
 	else if (s > 0 && !ft_strcmp(spl[s - 1], ">>"))
 		return (ft_dup_str("app_file", heap));
+	else if (s > 0 && ft_strcmp(spl[0], "<<") && !ft_strcmp(type, "delim"))
+		return (ft_dup_str("arg", heap));
 	else if (s == 0 || !ft_strcmp(type, "delim") || !ft_strcmp(type, "in_file"))
 		return (ft_dup_str("cmd", heap));
 	else if (!check_option(spl[s]))

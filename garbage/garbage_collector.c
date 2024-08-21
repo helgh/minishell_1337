@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/18 16:38:52 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/08/18 17:39:08 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/08/20 16:06:04 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ void	*ft_malloc(size_t size, t_leaks **heap)
 
 	new = malloc (size);
 	if (!new)
-		exit(EXIT_FAILURE);
+		return (free_all_memory(*heap), NULL);
 	leaks_collector(new, heap);
 	return (new);
 }

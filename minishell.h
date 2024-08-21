@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 09:42:01 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/08/20 14:12:13 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/08/21 12:46:23 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,13 +28,19 @@
 # define SET			2
 # define ADD			3
 # define INIT			4
+# define PRINT_ENV		5
+# define PRINT_EXP		6
+# define APPEND			7
+# define UNSET			8
 
 // typedef struct s_leaks t_leaks;
 
 typedef struct s_env
 {
-	char	*var;
-	char	*value;
+	char			*var; /* hadi dyal */
+	char			*value;
+	char			*egal;
+	struct s_env	*next;
 }			t_env;
 
 typedef struct s_leaks
@@ -65,11 +71,12 @@ typedef struct s_cmd_info
 typedef struct s_parse
 {
 	char		*line;
+	char		*r_line;
 	char		**all_cmd;
 	int			nbr_cmd;
 	int			exit_status;
 	t_env		*envir;
-	t_cmd_info	*cmd_info;
+	t_cmd_info	*cmd_info; 
 	t_leaks		*heap;
 }				t_parse;
 
@@ -77,6 +84,7 @@ char		**ft_split(char const *s, char c, char c1, t_leaks **heap);
 char		*ft_dup_str(char *s1, t_leaks **heap);
 char		*i_to_a(int n);
 char		*join_str(t_parse *data, char *str, char *s, int l);
+char		*ft_strjoin(char *s1, char *s2, t_leaks **heap);
 int			ft_strcmp(const char *s1, const char *s2);
 int			ft_strlen(char *str);
 int			ft_strncmp(const char *s1, const char *s2, size_t n);
@@ -101,8 +109,25 @@ int			set_flag_dollar(t_tokens *token);
 int			set_flag_qoutes(char *str);
 t_cmd_info	*cmd_info_struct(t_parse *data_info);
 t_tokens	*tokens_struct(t_cmd_info *cmd, t_leaks **heap);
+void		expand_herdoc(t_parse *data);
 
 void		*ft_malloc(size_t size, t_leaks **heap);
 int			cmp_str(char *str);
+void		add_to_env(char *var, char *egal,  char *value);
+void		append_value(char *var,char *value);
+void		set_var_to_env(char *var, char *value);
+void		print_env();
+void		print_export();
+void		unset_var_from_env(char	*var);
+void		append_value(char *var,char *value);
+void		add_to_env(char *var, char *egal,  char *value);
+int			pars_variable(char *var);
+int			is_special_char(char c);
+int			is_number(char c);
+void		get_pwd();
+// void		init_env(char **env, t_leaks **heap);
+void		no_env(void);
+// t_env		*global_env(void	*var, void *egal, void	*value, int operation);
+char		**spl_msh(char *s, char c, t_leaks **heap);
 
 #endif
