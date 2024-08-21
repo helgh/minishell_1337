@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/21 12:44:54 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/08/21 13:02:23 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/08/21 15:18:44 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ static char	*read_herdoc(t_parse *data, char *str, int flag)
 void	expand_herdoc(t_parse *data)
 {
 	t_cmd_info	*cmd;
+	t_tokens	*tok;
 	char		*type;
 	char		*str;
 	int			i;
@@ -50,14 +51,15 @@ void	expand_herdoc(t_parse *data)
 	while (++i < data->nbr_cmd)
 	{
 		s = -1;
+		tok = cmd->token;
 		while (++s < cmd->nbr_token)
 		{
-			type = cmd->token->type;
-			str = cmd->token->str;
-			flag = cmd->token->type_qoute;
+			type = tok->type;
+			str = tok->str;
+			flag = tok->type_qoute;
 			if (!ft_strcmp(type, "delim"))
-				cmd->token->str = read_herdoc(data, str, flag);
-			cmd->token = cmd->token->next;
+				tok->str = read_herdoc(data, str, flag);
+			tok = tok->next;
 		}
 		cmd = cmd->next;
 	}

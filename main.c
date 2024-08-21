@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 09:44:43 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/08/21 12:50:02 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/08/21 15:21:50 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,17 +136,17 @@ int	main(int ac, char **av, char **envp)
 		if (!cmp_str(data_info->r_line))
 			return (free_all_memory(data_info->heap), free(data_info), free(data_info->r_line), printf("exit\n"), 1);
 		parsing(data_info->r_line, envp, data_info);
-		// t_cmd_info *ok;
-		// ok = data_info->cmd_info;
-		// while (ok)
-		// {
-		// 	while (ok->token)
-		// 	{
-		// 		printf("%s -- %s\n", ok->token->type, ok->token->str);
-		// 		ok->token = ok->token->next;
-		// 	}
-		// 	ok = ok->next;
-		// }
+		t_cmd_info *ok;
+		ok = data_info->cmd_info;
+		while (ok)
+		{
+			while (ok->token)
+			{
+				printf("%s -- %s\n", ok->token->type, ok->token->str);
+				ok->token = ok->token->next;
+			}
+			ok = ok->next;
+		}
 		if (*data_info->r_line)
 			add_history(data_info->r_line);
 		free(data_info->r_line);

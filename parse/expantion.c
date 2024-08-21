@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/18 16:59:51 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/08/20 14:38:46 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/08/21 15:02:24 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,9 +67,9 @@ void	expantion(t_parse *data)
 				tok->str = remove_qoutes(tok->str, 39, &data->heap);
 			else if (tok->type_qoute != 1)
 			{
-				if (tok->sign_dollar == 1)
+				if (tok->sign_dollar == 1 && ft_strcmp(tok->type, "delim"))
 					tok->str = set_value(data, tok->str, &data->heap);
-				else if (tok->type_qoute == 2)
+				if (tok->type_qoute == 2)
 					tok->str = remove_qoutes(tok->str, 34, &data->heap);
 			}
 			prev = tok;
