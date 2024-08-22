@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 09:44:43 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/08/21 18:17:07 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/08/22 17:03:45 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,44 +60,22 @@ void init_env(char **env, t_parse *data)
 	}
 }
 
-// int	count_size(t_cmd_info *lst)
-// {
-// 	int			count;
-// 	t_cmd_info	*ptr;
-
-// 	count = 0;
-// 	if (lst == NULL)
-// 		return (0);
-// 	ptr = lst;
-// 	while (ptr != NULL)
-// 	{
-// 		count++;
-// 		ptr = ptr->next;
-// 	}
-// 	return (count);
-// }
-
-int	parsing(char *str, char **env, t_parse *data_info)
+void	print_error(int flag, char *str)
 {
-	(void) env;
-	if (check_if_only_space_and_tab(str) == 0)
-		return (1);
-	if (!check_qoutes(str, length_line(str), data_info))
-		return (free(str), 1);
-	if (!split_and_replace(data_info))
-		return (printf("Failed allocation!\n"));
-	if (!cmd_info_struct(data_info))
-		return (printf("Failed allocation!\n"));
-	if (check_syntax_error(data_info) == 0)
-		return (printf("M_H: syntax error near unexpected token `newline'\n"));
-	expantion(data_info);
-	expand_herdoc(data_info);
-	return (0);
-}
+	if (flag == F_ALLOC)
+		printf("M_H: Failed allocation!\n");
+	else if (flag == S_ERROR)
+		printf("M_H: syntax error near unexpected token `newline'\n");
+	else if (flag == NSFOD)
+		printf("M_H: %s: No such file or directory\n", str);
+	else if (flag == U_QOUTE)
+		printf("Error: Unclosed qoutes!\n");
+	else if (flag == EXIT)
+	{
+		printf("exit\n");
+		exit(1);
 
-void	leaks()
-{
-	system("leaks -quiet minishell");
+	}
 }
 
 int	cmp_str(char *str)
@@ -114,35 +92,52 @@ int	cmp_str(char *str)
 			return (0);
 	return (1);
 }
-void	signal_handler(int sig)
+
+void	parsing(char *str, t_parse *data_info)
 {
-	if (sig == SIGINT)
-	{
-		printf("\n");
-		rl_replace_line("", 0);
-		rl_on_new_line();
-		rl_redisplay();
-	}
+	if (!check_if_only_space_and_tab(str))
+		return ;
+	if (!check_qoutes(str, length_line(str), data_info))
+		return ;
+	if (!split_and_replace(data_info))
+		return (print_error(F_ALLOC, NULL));
+	if (!cmd_info_struct(data_info))
+		return (print_error(F_ALLOC, NULL));
+	if (!check_syntax_error(data_info))
+		return (print_error(S_ERROR, NULL));
+	expantion(data_info);
+	expand_herdoc(data_info);
 }
 
-int	parsing_part(t_parse *data, char **envp)
+
+void	parsing_part(t_parse *data)
 {
+	signal_loop();
 	while (1)
 	{
 		data->cmd_info = NULL;
 		data->r_line = readline("\033[0;31mM_H$\033[0m ");
-		if (!cmp_str(data->r_line))
-			return (free_all_memory(data->heap), free(data->r_line), 1);
-		if (!data->r_line)
-			exit(0);
-		parsing(data->r_line, envp, data);
+		if (!data->r_line || !cmp_str(data->r_line))
+			return (free(data->r_line));
+		parsing(data->r_line, data);
 		if (*data->r_line)
 			add_history(data->r_line);
 		free(data->r_line);
 		// execution_part(data);
 	}
-	return (0);
 }
+
+t_parse	*init_struct(char **envp)
+{
+	data_info = malloc(sizeof(t_parse));
+	if (data_info)
+		return (print_error(F_ALLOC, NULL), NULL);
+	data_info->heap = NULL;
+	data_info->exit_status = 0;
+	data_info->envir = init_env(envp, data_info);
+	return (data_info);
+}
+
 int	main(int ac, char **av, char **envp)
 {
 	t_parse	*data_info;
@@ -150,16 +145,12 @@ int	main(int ac, char **av, char **envp)
 
 	(void) av;
 	(void) envp;
-	rl_catch_signals = 0;
-	signal(SIGINT, signal_handler);
-	signal(SIGQUIT, SIG_IGN);
 	if (ac != 1)
 		exit(EXIT_FAILURE);
-	data_info = malloc(sizeof(t_parse));
-	data_info->heap = NULL;
-	data_info->exit_status = 0;
-	data_info->envir = env;
-	// init_env(envp, data_info);
-	if (parsing_part(data_info, envp) == 1)
-		return (free(data_info), printf("exit\n"));
+	data_info = init_struct(envp);
+	if (!data_info)
+		return ;
+	parsing_part(data_info);
+	free_all_memory(data_info->heap);
+	print_error(EXIT, NULL);
 }

@@ -1,31 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   strcmp.c                                           :+:      :+:    :+:   */
+/*   signal_herdoc.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/08/18 17:15:42 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/08/22 15:45:44 by hael-ghd         ###   ########.fr       */
+/*   Created: 2024/08/22 15:20:13 by hael-ghd          #+#    #+#             */
+/*   Updated: 2024/08/22 15:51:33 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-int	ft_strcmp(const char *s1, const char *s2)
+void	ft_restore_input(void)
 {
-	size_t			i;
-	unsigned char	*d1;
-	unsigned char	*d2;
+	open("/dev/tty", O_RDONLY);
+}
 
-	d1 = (unsigned char *)s1;
-	d2 = (unsigned char *)s2;
-	i = 0;
-	while (d1[i] || d2[i])
+void	handler(int sig)
+{
+	if (sig == SIGINT)
 	{
-		if (d1[i] != d2[i])
-			return (d1[i] - d2[i]);
-		i++;
+		close (0);
+		global_v = 1;
 	}
-	return (0);
+}
+
+void	signal_herdoc(void)
+{
+	signal(SIGINT, handler);
+	signal(SIGQUIT, SIG_IGN);
 }
