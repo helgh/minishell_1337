@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 09:44:43 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/08/23 15:38:07 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/08/23 19:29:06 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,10 @@ void	init_env(char **env, t_parse *data)
 void	print_error(int flag, char *str)
 {
 	if (flag == F_ALLOC)
+	{
 		printf("M_H: Failed allocation!\n");
+		exit(1);
+	}
 	else if (flag == S_ERROR)
 		printf("M_H: syntax error near unexpected token `newline'\n");
 	else if (flag == NSFOD)
@@ -92,6 +95,103 @@ int	cmp_str(char *str)
 	return (1);
 }
 
+int	count(t_parse *data, t_cmd_info *cmd, int flag)
+{
+	char		*type;
+	int			i;
+	int			nb;
+	int			nb_files;
+	t_tokens	*tok;
+
+	i = -1;
+	nb = 0;
+	nb_files = 0;
+	(void) data;
+	tok = cmd->token;
+	while (++i < cmd->nbr_token)
+	{
+		type = tok->type;
+		if (!ft_strcmp(type, "cmd") || !ft_strcmp(type, "option") 
+				|| !ft_strcmp(type, "arg") || !ft_strcmp(type, "delim"))
+			nb++;
+		else
+			nb_files++;
+		tok = tok->next;
+	}
+	if (flag == 0)
+		return (nb);
+	return (nb_files);
+}
+
+char	**div_arg(t_cmd_info *cmd, char **spl)
+{
+	int			i;
+	int			s;
+	t_tokens	*tok = NULL;
+
+	i = 0;
+	s = 0;
+	tok = cmd->token;
+	while (tok)
+	{
+		if (!ft_strcmp(tok->type, "cmd") && i == 0)
+			i = 1;
+		else if (!ft_strcmp(tok->type, "cmd") || !ft_strcmp(tok->type, "option")
+				|| !ft_strcmp(tok->type, "arg") || !ft_strcmp(tok->type, "delim"))
+			spl[s++] = tok->str;
+		tok = tok->next;
+	}
+	spl[s] = NULL;
+	return (spl);
+}
+
+char	**cmd_opt_arg(t_parse * data, t_cmd_info *cmd, int len)
+{
+	t_tokens	*tok;
+	char		**spl;
+	char		**str;
+
+	spl = ft_malloc(sizeof(char *) * (len + 1), &data->heap);
+	tok = cmd->token;
+	if (len == 0)
+		return (NULL);
+	while (tok)
+	{
+		if (!ft_strcmp(tok->type, "cmd"))
+		{
+			spl[0] = tok->str;
+			break ;
+		}
+		tok = tok->next;
+	}
+	str = spl + 1;
+	str = div_arg(cmd, str);
+	return (spl);
+}
+
+void	ready_for_exec(t_parse *data)
+{
+	t_cmd_info	*cmd;
+	t_exec		*exec;
+	int			i;
+
+	cmd = data->cmd_info;
+	i = -1;
+	while (++i < data->nbr_cmd)
+	{
+		exec = ft_malloc(sizeof(exec), &data->heap);
+		exec->cmd = cmd_opt_arg(data, cmd, count(data, cmd, 0));
+		// cmd->exec->files = files(data, cmd, count(data, cmd, 1));
+		// cmd->exec->next = NULL;
+		// add_to_next(&cmd->exec, exec);
+		// cmd = cmd->next;
+	}
+	i = -1;
+	while (exec->cmd[++i])
+		printf("%s -- ", exec->cmd[i]);
+	printf("\n");
+}
+
 void	parsing(char *str, t_parse *data_info)
 {
 	if (!check_if_only_space_and_tab(str))
@@ -106,11 +206,14 @@ void	parsing(char *str, t_parse *data_info)
 		return (print_error(S_ERROR, NULL));
 	expantion(data_info);
 	expand_herdoc(data_info);
+	ready_for_exec(data_info);
 }
-
 
 void	parsing_part(t_parse *data)
 {
+	int s;
+	t_cmd_info	*cmd;
+	t_tokens	*tok;
 	signal_loop();
 	while (1)
 	{
@@ -121,6 +224,19 @@ void	parsing_part(t_parse *data)
 		parsing(data->r_line, data);
 		if (*data->r_line)
 			add_history(data->r_line);
+		cmd = data->cmd_info;
+		int i = -1;
+		while (++i < data->nbr_cmd)
+		{
+			s = -1;
+			tok = cmd->token;
+			while (++s < cmd->nbr_token)
+			{
+				printf("%s == %s\n", tok->str, tok->type);
+				tok = tok->next;
+			}
+			cmd = cmd->next;
+		}
 		free(data->r_line);
 		// execution_part(data);
 	}
@@ -140,6 +256,11 @@ t_parse	*init_struct(char **envp, t_env *env)
 	return (data_info);
 }
 
+void	leaks(void)
+{
+	system("leaks -quiet minishell");
+}
+
 int	main(int ac, char **av, char **envp)
 {
 	t_parse	*data_info;
@@ -147,6 +268,7 @@ int	main(int ac, char **av, char **envp)
 
 	(void) av;
 	(void) envp;
+	atexit(leaks);
 	if (ac != 1)
 		exit(EXIT_FAILURE);
 	data_info = init_struct(envp, env);

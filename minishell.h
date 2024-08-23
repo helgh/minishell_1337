@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 09:42:01 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/08/23 15:38:04 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/08/23 16:19:21 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,13 @@ typedef struct s_leaks
 	struct s_leaks	*next;
 }				t_leaks;
 
+typedef struct s_exec
+{
+	char			**cmd;
+	char			**files;
+	struct s_exec	*next;
+}				t_exec;
+
 typedef struct s_tokens
 {
 	char				*str;
@@ -72,6 +79,7 @@ typedef struct s_cmd_info
 	char				**all_token;
 	int					nbr_token;
 	t_tokens			*token;
+	t_exec				*exec;
 	struct s_cmd_info	*next;
 }				t_cmd_info;
 
