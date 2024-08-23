@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/21 12:44:54 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/08/22 15:45:38 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/08/23 15:36:29 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,13 +19,12 @@ static char	*read_herdoc(t_parse *data, char *str, int flag)
 	char	*herdoc;
 
 	herdoc = ft_dup_str("", &data->heap);
+	signal_herdoc();
 	while (1)
 	{
 		line = readline("> ");
-		if(!line)
-			return (printf("%s", herdoc), NULL);
-		if (!ft_strcmp(str, line))
-			return (free(line), herdoc);
+		if (!line || !ft_strcmp(str, line))
+			return (free(line), ft_restore_input(), herdoc);
 		new_line = ft_strjoin(line, "\n", &data->heap);
 		free (line);
 		if (*data->r_line)

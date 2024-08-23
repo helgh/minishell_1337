@@ -6,13 +6,12 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 09:44:43 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/08/22 17:03:45 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/08/23 15:38:07 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int global_v ;
 t_env	*global_env(void *var, void *value, int operation, t_env *env)
 {
 	void			*ret;
@@ -44,7 +43,7 @@ t_env	*global_env(void *var, void *value, int operation, t_env *env)
 	return (NULL);
 }
 
-void init_env(char **env, t_parse *data)
+void	init_env(char **env, t_parse *data)
 {
 	int i = 0;
 	char **spl;
@@ -127,14 +126,17 @@ void	parsing_part(t_parse *data)
 	}
 }
 
-t_parse	*init_struct(char **envp)
+t_parse	*init_struct(char **envp, t_env *env)
 {
+	t_parse	*data_info;
+
 	data_info = malloc(sizeof(t_parse));
-	if (data_info)
+	if (!data_info)
 		return (print_error(F_ALLOC, NULL), NULL);
 	data_info->heap = NULL;
 	data_info->exit_status = 0;
-	data_info->envir = init_env(envp, data_info);
+	data_info->envir = env;
+	init_env(envp, data_info);
 	return (data_info);
 }
 
@@ -147,9 +149,9 @@ int	main(int ac, char **av, char **envp)
 	(void) envp;
 	if (ac != 1)
 		exit(EXIT_FAILURE);
-	data_info = init_struct(envp);
+	data_info = init_struct(envp, env);
 	if (!data_info)
-		return ;
+		return (1);
 	parsing_part(data_info);
 	free_all_memory(data_info->heap);
 	print_error(EXIT, NULL);

@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 09:42:01 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/08/22 16:47:48 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/08/23 15:38:04 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,14 +33,13 @@
 # define PRINT_EXP		6
 # define APPEND			7
 # define UNSET			8
+
 # define F_ALLOC		1
 # define S_ERROR		2
 # define NSFOD			3
 # define U_QOUTE		4
 # define EXIT			5
 
-
-extern int global_v;
 // typedef struct s_leaks t_leaks;
 
 typedef struct s_env
@@ -139,6 +138,9 @@ void		no_env(void);
 // t_env		*global_env(void	*var, void *egal, void	*value, int operation);
 char		**spl_msh(char *s, char c, t_leaks **heap);
 void		signal_loop(void);
+void		ft_restore_input(void);
+void		signal_herdoc(void);
 void		print_error(int flag, char *str);
+void		signal_handler(int sig);
 
 #endif

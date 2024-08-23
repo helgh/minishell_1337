@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 20:04:13 by mthamir           #+#    #+#             */
-/*   Updated: 2024/08/20 15:56:42 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/08/22 17:44:37 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,12 +82,12 @@ void	no_env(t_parse *data)
 	cwd = getcwd(cwd, 0);
 	if (!cwd)
 		printf("its error ");
-	while (i > 0)
+	while (--i >= 0)
 	{
-		
-	global_env("PWD", ft_strdup(cwd), "=", INIT);
-	global_env("SHLVL", "1", "=",ADD);
-	global_env("_", "/usr/bin/./minishell","=", ADD);
+		global_env("PWD", ft_strdup(cwd), "=", INIT);
+		global_env("SHLVL", "1", "=",ADD);
+		global_env("_", "/usr/bin/./minishell","=", ADD);
+	}
 }
 
 /*________________________________________________________________________________*/

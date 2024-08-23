@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/18 16:53:52 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/08/21 12:58:26 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/08/23 14:05:22 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,10 +80,7 @@ char	*get_type_token(char **spl, char *type, int s, t_leaks **heap)
 	if (!ft_strcmp(spl[s], ">"))
 		return (ft_dup_str("red_out", heap));
 	else if (!ft_strcmp(spl[s], "<"))
-	{
-		printf("%s = %d\n", spl[s], ft_strcmp(spl[s], "<"));
 		return (ft_dup_str("red_in", heap));
-	}
 	else if (!ft_strcmp(spl[s], ">>"))
 		return (ft_dup_str("append", heap));
 	else if (!ft_strcmp(spl[s], "<<"))
