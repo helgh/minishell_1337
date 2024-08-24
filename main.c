@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 09:44:43 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/08/23 19:29:06 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/08/24 12:55:10 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -151,10 +151,10 @@ char	**cmd_opt_arg(t_parse * data, t_cmd_info *cmd, int len)
 	char		**spl;
 	char		**str;
 
-	spl = ft_malloc(sizeof(char *) * (len + 1), &data->heap);
-	tok = cmd->token;
 	if (len == 0)
 		return (NULL);
+	spl = ft_malloc(sizeof(char *) * (len + 1), &data->heap);
+	tok = cmd->token;
 	while (tok)
 	{
 		if (!ft_strcmp(tok->type, "cmd"))
@@ -169,51 +169,95 @@ char	**cmd_opt_arg(t_parse * data, t_cmd_info *cmd, int len)
 	return (spl);
 }
 
-void	ready_for_exec(t_parse *data)
+void	add_to_next(t_exec **lst, t_exec *new)
+{
+	t_exec	*ptr;
+
+	if (lst == NULL)
+		return ;
+	if (*lst == NULL)
+	{
+		*lst = new;
+		return ;
+	}
+	ptr = *lst;
+	while (ptr->next != NULL)
+		ptr = ptr->next;
+	ptr->next = new;
+}
+
+char	**files(t_parse *data, t_cmd_info *cmd, int len)
+{
+	t_tokens	*tok;
+	char		**spl;
+	int			i;
+
+	i = -1;
+	if (len == 0)
+		return (NULL);
+	spl = ft_malloc(sizeof(char *) * (len + 1), &data->heap);
+	tok = cmd->token;
+	while (tok)
+	{
+		if (!ft_strcmp(tok->str, "<") || !ft_strcmp(tok->str, ">")
+				|| !ft_strcmp(tok->str, ">>"))
+			spl[++i] = tok->str;
+		else if (!ft_strcmp(tok->type, "in_file") || !ft_strcmp(tok->type, "out_file")
+				|| !ft_strcmp(tok->type, "app_file"))
+			spl[++i] = tok->str;
+		tok = tok->next;
+	}
+	spl[++i] = NULL;
+	return (spl);
+}
+
+t_exec	*ready_for_exec(t_parse *data)
 {
 	t_cmd_info	*cmd;
 	t_exec		*exec;
+	t_exec		*tmp;
 	int			i;
 
 	cmd = data->cmd_info;
 	i = -1;
+	exec = NULL;
 	while (++i < data->nbr_cmd)
 	{
-		exec = ft_malloc(sizeof(exec), &data->heap);
-		exec->cmd = cmd_opt_arg(data, cmd, count(data, cmd, 0));
-		// cmd->exec->files = files(data, cmd, count(data, cmd, 1));
-		// cmd->exec->next = NULL;
-		// add_to_next(&cmd->exec, exec);
-		// cmd = cmd->next;
+		tmp = ft_malloc(sizeof(t_exec), &data->heap);
+		tmp->cmd = cmd_opt_arg(data, cmd, count(data, cmd, 0));
+		tmp->files = files(data, cmd, count(data, cmd, 1));
+		tmp->next = NULL;
+		add_to_next(&exec, tmp);
+		cmd = cmd->next;
 	}
-	i = -1;
-	while (exec->cmd[++i])
-		printf("%s -- ", exec->cmd[i]);
-	printf("\n");
+	return (exec);
 }
 
-void	parsing(char *str, t_parse *data_info)
+t_exec	*parsing(char *str, t_parse *data_info)
 {
+	t_exec	*exec;
+
 	if (!check_if_only_space_and_tab(str))
-		return ;
+		return (NULL);
 	if (!check_qoutes(str, length_line(str), data_info))
-		return ;
+		return (NULL);
 	if (!split_and_replace(data_info))
-		return (print_error(F_ALLOC, NULL));
+		return (print_error(F_ALLOC, NULL) ,NULL);
 	if (!cmd_info_struct(data_info))
-		return (print_error(F_ALLOC, NULL));
+		return (print_error(F_ALLOC, NULL), NULL);
 	if (!check_syntax_error(data_info))
-		return (print_error(S_ERROR, NULL));
+		return (print_error(S_ERROR, NULL), NULL);
 	expantion(data_info);
 	expand_herdoc(data_info);
-	ready_for_exec(data_info);
+	exec = ready_for_exec(data_info);
+	return (exec);
 }
 
 void	parsing_part(t_parse *data)
 {
-	int s;
+	// int s;
 	t_cmd_info	*cmd;
-	t_tokens	*tok;
+	t_exec		*tok;
 	signal_loop();
 	while (1)
 	{
@@ -221,22 +265,23 @@ void	parsing_part(t_parse *data)
 		data->r_line = readline("\033[0;31mM_H$\033[0m ");
 		if (!data->r_line || !cmp_str(data->r_line))
 			return (free(data->r_line));
-		parsing(data->r_line, data);
+		tok = parsing(data->r_line, data);
 		if (*data->r_line)
 			add_history(data->r_line);
 		cmd = data->cmd_info;
-		int i = -1;
-		while (++i < data->nbr_cmd)
-		{
-			s = -1;
-			tok = cmd->token;
-			while (++s < cmd->nbr_token)
-			{
-				printf("%s == %s\n", tok->str, tok->type);
-				tok = tok->next;
-			}
-			cmd = cmd->next;
-		}
+		// while (tok)
+		// {
+		// 	s = -1;
+		// 	printf("cmd = ");
+		// 	while (tok->cmd && tok->cmd[++s])
+		// 		printf("%s ", tok->cmd[s]);
+		// 	s = -1;
+		// 	printf("\nfiles = ");
+		// 	while (tok->files && tok->files[++s])
+		// 		printf("%s ", tok->files[s]);
+		// 	printf("\n");
+		// 	tok = tok->next;
+		// }
 		free(data->r_line);
 		// execution_part(data);
 	}
