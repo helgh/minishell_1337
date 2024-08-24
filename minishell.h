@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mthamir <mthamir@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 09:42:01 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/08/24 17:38:24 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/08/24 18:33:24 by mthamir          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,6 @@ typedef struct s_exec
 {
 	char			**cmd;
 	char			**files;
-	char			*herdoc;
 	struct s_exec	*next;
 }				t_exec;
 
@@ -80,6 +79,7 @@ typedef struct s_cmd_info
 	char				**all_token;
 	int					nbr_token;
 	t_tokens			*token;
+	t_exec				*exec;
 	struct s_cmd_info	*next;
 }				t_cmd_info;
 
