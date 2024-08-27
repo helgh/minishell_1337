@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/18 16:59:51 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/08/23 15:59:22 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/08/27 23:32:09 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,77 @@ char	*remove_qoutes(char *str, char c, t_leaks **heap)
 	return (s);
 }
 
+static char	*exp_without_quotes(t_parse *data, char *str, int *ind, t_leaks **heap)
+{
+	char	*s;
+	int		i;
+	int		start;
+
+	i = -1;
+	start = (*ind);
+	while (str[++i] && str[i] != 34 && str[i] != 39)
+		;
+	s = sub_str(str, 0, i, heap);
+	s = set_value(data, s, heap);
+	*ind += i - 1;
+	return (s);
+}
+
+static char	*exp_s_quotes(t_parse *data, char *str, int *ind, t_leaks **heap)
+{
+	char	*s;
+	int		i;
+	int		start;
+
+	i = -1;
+	(void) data;
+	start = (*ind);
+	while (str[++i] != 39)
+		;
+	s = sub_str(str, 0, i, heap);
+	*ind += i + 1;
+	return (s);
+}
+
+static char	*exp_d_quotes(t_parse *data, char *str, int *ind, t_leaks **heap)
+{
+	char	*s;
+	int		i;
+	int		start;
+
+	i = -1;
+	start = (*ind);
+	while (str[++i] != 34)
+		;
+	s = sub_str(str, 0, i, heap);
+	s = set_value(data, s, heap);
+	*ind += i + 1;
+	return (s);
+}
+
+char	*exp_in_quotes(t_parse *data, char *str, t_leaks **heap)
+{
+	char	*tmp;
+	char	*s;
+	int		i;
+	int		ind;
+
+	i = -1;
+	s = NULL;
+	ind = 0;
+	while (str[++i])
+	{
+		if (str[i] == 34)
+			tmp = exp_d_quotes(data, &str[i + 1], &i, heap);
+		else if (str[i] == 39)
+			tmp = exp_s_quotes(data, &str[i + 1], &i, heap);
+		else
+			tmp = exp_without_quotes(data, &str[i], &i, heap);
+		s = ft_strjoin(s, tmp, heap);
+	}
+	return (s);
+}
+
 void	expantion(t_parse *data)
 {
 	t_tokens	*tok;
@@ -63,15 +134,10 @@ void	expantion(t_parse *data)
 		tok = tmp->token;
 		while (tok)
 		{
-			if (tok->type_qoute == 1)
-				tok->str = remove_qoutes(tok->str, 39, &data->heap);
-			else if (tok->type_qoute != 1)
-			{
-				if (tok->sign_dollar == 1 && ft_strcmp(tok->type, "delim"))
+			if (tok->type_qoute == 0 && tok->sign_dollar == 1)
 					tok->str = set_value(data, tok->str, &data->heap);
-				if (tok->type_qoute == 2)
-					tok->str = remove_qoutes(tok->str, 34, &data->heap);
-			}
+			else if (tok->type_qoute != 0)
+				tok->str = exp_in_quotes(data, tok->str, &data->heap);
 			prev = tok;
 			tok = tok->next;
 		}

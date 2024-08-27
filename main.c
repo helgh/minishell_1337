@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 09:44:43 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/08/24 18:01:22 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/08/27 23:36:19 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -278,7 +278,7 @@ void	parsing_part(t_parse *data)
 {
 	// int s;
 	// t_cmd_info	*cmd;
-	t_exec		*exec;
+	t_exec		*tok;
 
 	signal_loop();
 	while (1)
@@ -287,7 +287,7 @@ void	parsing_part(t_parse *data)
 		data->r_line = readline("\033[0;31mM_H$\033[0m ");
 		if (!data->r_line || !cmp_str(data->r_line))
 			return (free(data->r_line));
-		exec = parsing(data->r_line, data);
+		tok = parsing(data->r_line, data);
 		if (*data->r_line)
 			add_history(data->r_line);
 		// cmd = data->cmd_info;

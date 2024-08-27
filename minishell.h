@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mthamir <mthamir@student.42.fr>            +#+  +:+       +#+        */
+/*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 09:42:01 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/08/24 18:33:24 by mthamir          ###   ########.fr       */
+/*   Updated: 2024/08/27 02:18:27 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,7 @@ typedef struct s_exec
 {
 	char			**cmd;
 	char			**files;
+	char			*herdoc;
 	struct s_exec	*next;
 }				t_exec;
 
@@ -96,6 +97,7 @@ typedef struct s_parse
 }				t_parse;
 
 char		**ft_split(char const *s, char c, char c1, t_leaks **heap);
+char		*sub_str(char *s, unsigned int start, size_t len, t_leaks **heap);
 char		*ft_dup_str(char *s1, t_leaks **heap);
 char		*i_to_a(int n);
 char		*join_str(t_parse *data, char *str, char *s, int l);
@@ -125,6 +127,7 @@ int			set_flag_qoutes(char *str);
 t_cmd_info	*cmd_info_struct(t_parse *data_info);
 t_tokens	*tokens_struct(t_cmd_info *cmd, t_leaks **heap);
 void		expand_herdoc(t_parse *data);
+char		*exp_in_qoutes(t_parse *data, char *str, t_leaks **heap);
 
 void		*ft_malloc(size_t size, t_leaks **heap);
 int			cmp_str(char *str);
