@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/28 02:31:17 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/08/28 21:44:47 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/08/28 23:26:42 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ int	count(t_parse *data, t_cmd_info *cmd, int flag)
 		if (!ft_strcmp(type, "cmd") || !ft_strcmp(type, "option") 
 				|| !ft_strcmp(type, "arg") || !ft_strcmp(type, "delim"))
 			nb++;
-		else
+		else if (ft_strcmp(type, "herdoc"))
 			nb_files++;
 		tok = tok->next;
 	}

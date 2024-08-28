@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/21 12:44:54 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/08/28 03:06:29 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/08/29 00:21:57 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ static char	*read_herdoc(t_parse *data, char *str, int flag)
 
 	herdoc = ft_dup_str("", &data->heap);
 	signal_herdoc();
+	// printf("%d\n", flag);
 	while (1)
 	{
 		line = readline("> ");

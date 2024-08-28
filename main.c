@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 09:44:43 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/08/28 02:52:58 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/08/28 23:17:03 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,9 +143,9 @@ void	parsing_part(t_parse *data)
 			printf("\nfiles = ");
 			while (exec->files && exec->files[++s])
 				printf("%s ", exec->files[s]);
-			printf("\n");
+			printf("\nherdoc = ");
 			if (exec->herdoc)
-				printf("herdoc = %s ", exec->herdoc);
+				printf("%s ", exec->herdoc);
 			printf("\n");
 			exec = exec->next;
 		}
