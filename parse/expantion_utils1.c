@@ -1,0 +1,157 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   expantion_utils1.c                                 :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/08/28 02:31:17 by hael-ghd          #+#    #+#             */
+/*   Updated: 2024/08/28 21:44:47 by hael-ghd         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "../minishell.h"
+
+void	add_to_next(t_exec **lst, t_exec *new)
+{
+	t_exec	*ptr;
+
+	if (lst == NULL)
+		return ;
+	if (*lst == NULL)
+	{
+		*lst = new;
+		return ;
+	}
+	ptr = *lst;
+	while (ptr->next != NULL)
+		ptr = ptr->next;
+	ptr->next = new;
+}
+
+int	count(t_parse *data, t_cmd_info *cmd, int flag)
+{
+	char		*type;
+	int			i;
+	int			nb;
+	int			nb_files;
+	t_tokens	*tok;
+
+	i = -1;
+	nb = 0;
+	nb_files = 0;
+	(void) data;
+	tok = cmd->token;
+	while (++i < cmd->nbr_token)
+	{
+		type = tok->type;
+		if (!ft_strcmp(type, "cmd") || !ft_strcmp(type, "option") 
+				|| !ft_strcmp(type, "arg") || !ft_strcmp(type, "delim"))
+			nb++;
+		else
+			nb_files++;
+		tok = tok->next;
+	}
+	if (flag == 0)
+		return (nb);
+	return (nb_files);
+}
+
+char	**div_arg(t_cmd_info *cmd, char **spl, int flag, t_exec *exec)
+{
+	int			i;
+	int			s;
+	t_tokens	*tok = NULL;
+
+	i = 0;
+	s = 0;
+	tok = cmd->token;
+	exec->herdoc = NULL;
+	while (flag > 0 && tok)
+	{
+		if (!ft_strcmp(tok->type, "cmd") && i == 0)
+			i = 1;
+		else if (!ft_strcmp(tok->type, "cmd") || !ft_strcmp(tok->type, "option")
+				|| !ft_strcmp(tok->type, "arg"))
+			spl[flag++] = tok->str;
+		else if (!ft_strcmp(tok->type, "delim"))
+			exec->herdoc = tok->str;
+		else if (!ft_strcmp(tok->type, "out_file"))
+			exec->herdoc = NULL;
+		tok = tok->next;
+	}
+	spl[flag] = NULL;
+	return (spl);
+}
+
+char	**cmd_opt_arg(t_parse * data, t_cmd_info *cmd, int len, t_exec *exec)
+{
+	t_tokens	*tok;
+	char		**spl;
+	int			flag;
+
+	if (len == 0)
+		return (NULL);
+	spl = ft_malloc(sizeof(char *) * (len + 1), &data->heap);
+	tok = cmd->token;
+	flag = 0;
+	while (tok)
+	{
+		if (!ft_strcmp(tok->type, "cmd"))
+		{
+			spl[0] = tok->str;
+			flag = 1;
+			break ;
+		}
+		tok = tok->next;
+	}
+	spl = div_arg(cmd, spl, flag, exec);
+	return (spl);
+}
+
+char	**files(t_parse *data, t_cmd_info *cmd, int len)
+{
+	t_tokens	*tok;
+	char		**spl;
+	int			i;
+
+	i = -1;
+	if (len == 0)
+		return (NULL);
+	spl = ft_malloc(sizeof(char *) * (len + 1), &data->heap);
+	tok = cmd->token;
+	while (tok)
+	{
+		if (!ft_strcmp(tok->type, "red_in") || !ft_strcmp(tok->type, "red_out")
+				|| !ft_strcmp(tok->type, "append"))
+			spl[++i] = tok->str;
+		else if (!ft_strcmp(tok->type, "in_file") || !ft_strcmp(tok->type, "out_file")
+				|| !ft_strcmp(tok->type, "app_file"))
+			spl[++i] = tok->str;
+		tok = tok->next;
+	}
+	spl[++i] = NULL;
+	return (spl);
+}
+
+t_exec	*ready_for_exec(t_parse *data)
+{
+	t_cmd_info	*cmd;
+	t_exec		*exec;
+	t_exec		*tmp;
+	int			i;
+
+	cmd = data->cmd_info;
+	i = -1;
+	exec = NULL;
+	while (++i < data->nbr_cmd)
+	{
+		tmp = ft_malloc(sizeof(t_exec), &data->heap);
+		tmp->cmd = cmd_opt_arg(data, cmd, count(data, cmd, 0), tmp);
+		tmp->files = files(data, cmd, count(data, cmd, 1));
+		tmp->next = NULL;
+		add_to_next(&exec, tmp);
+		cmd = cmd->next;
+	}
+	return (exec);
+}

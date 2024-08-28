@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/18 17:04:26 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/08/20 11:10:51 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/08/28 02:57:34 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,6 +81,7 @@ static char	*cmp_with_env(t_parse *data, char *str, int len)
 	while (data->envir[i].value[++l])
 		s[l] = data->envir[i].value[l];
 	s[l] = 0;
+	data->flag = 1;
 	return (s);
 }
 

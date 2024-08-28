@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/18 16:59:51 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/08/27 23:32:09 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/08/28 03:05:17 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,7 @@ char	*remove_qoutes(char *str, char c, t_leaks **heap)
 static char	*exp_without_quotes(t_parse *data, char *str, int *ind, t_leaks **heap)
 {
 	char	*s;
+	char	**spl;
 	int		i;
 	int		start;
 
@@ -62,6 +63,16 @@ static char	*exp_without_quotes(t_parse *data, char *str, int *ind, t_leaks **he
 		;
 	s = sub_str(str, 0, i, heap);
 	s = set_value(data, s, heap);
+	spl = ft_split(s, 32, '\t', heap);
+	if (*(spl + 1))
+		s = NULL;
+	while (data->flag == 1 && *spl)
+	{
+		s = ft_strjoin(s, *spl, heap);
+		s = ft_strjoin(s, " ", heap);
+		spl++;
+	}
+	data->flag = 0;
 	*ind += i - 1;
 	return (s);
 }
@@ -134,10 +145,7 @@ void	expantion(t_parse *data)
 		tok = tmp->token;
 		while (tok)
 		{
-			if (tok->type_qoute == 0 && tok->sign_dollar == 1)
-					tok->str = set_value(data, tok->str, &data->heap);
-			else if (tok->type_qoute != 0)
-				tok->str = exp_in_quotes(data, tok->str, &data->heap);
+			tok->str = exp_in_quotes(data, tok->str, &data->heap);
 			prev = tok;
 			tok = tok->next;
 		}

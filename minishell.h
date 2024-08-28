@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 09:42:01 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/08/27 02:18:27 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/08/28 02:52:38 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,6 +91,7 @@ typedef struct s_parse
 	char		**all_cmd;
 	int			nbr_cmd;
 	int			exit_status;
+	int			flag;
 	t_env		*envir;
 	t_cmd_info	*cmd_info; 
 	t_leaks		*heap;
@@ -128,6 +129,7 @@ t_cmd_info	*cmd_info_struct(t_parse *data_info);
 t_tokens	*tokens_struct(t_cmd_info *cmd, t_leaks **heap);
 void		expand_herdoc(t_parse *data);
 char		*exp_in_qoutes(t_parse *data, char *str, t_leaks **heap);
+t_exec		*ready_for_exec(t_parse *data);
 
 void		*ft_malloc(size_t size, t_leaks **heap);
 int			cmp_str(char *str);
