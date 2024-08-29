@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/18 16:59:51 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/08/29 00:21:07 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/08/29 02:21:58 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,14 +18,12 @@ static char	*exp_without_quotes(t_parse *data, t_tokens *tok, int *ind, t_leaks 
 	char	*str;
 	char	**spl;
 	int		i;
-	int		start;
 
 	i = -1;
-	start = (*ind);
 	str = tok->str;
 	while (str[++i + (*ind)] && str[i + (*ind)] != 34 && str[i + (*ind)] != 39)
 		;
-	s = sub_str(str, start, i, heap);
+	s = sub_str(str, (*ind), i, heap);
 	if (ft_strcmp(tok->type, "delim"))
 		s = set_value(data, s, heap);
 	spl = ft_split(s, 32, '\t', heap);
@@ -117,7 +115,6 @@ void	expantion(t_parse *data)
 		tok = tmp->token;
 		while (tok)
 		{
-			// printf("~~%s~~\n", tok->str);
 			tok->str = exp_in_quotes(data, tok, &data->heap);
 			prev = tok;
 			tok = tok->next;

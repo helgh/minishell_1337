@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/18 17:07:18 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/08/18 17:07:39 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/08/29 03:37:29 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ void	free_all_memory(t_leaks *heap)
 		}
 	}
 	if (heap)
-	{
+	{	
 		free (heap->adress);
 		free (heap->t_struct);
 	}

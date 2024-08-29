@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 09:42:01 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/08/28 02:52:38 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/08/29 03:15:01 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,7 +132,7 @@ char		*exp_in_qoutes(t_parse *data, char *str, t_leaks **heap);
 t_exec		*ready_for_exec(t_parse *data);
 
 void		*ft_malloc(size_t size, t_leaks **heap);
-int			cmp_str(char *str);
+int			cmp_str(char *str, t_leaks **heap);
 void		add_to_env(char *var, char *egal,  char *value);
 void		append_value(char *var,char *value);
 void		set_var_to_env(char *var, char *value);

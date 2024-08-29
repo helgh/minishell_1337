@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 09:44:43 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/08/28 23:17:03 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/08/29 03:47:54 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,18 +80,43 @@ void	print_error(int flag, char *str)
 	}
 }
 
-int	cmp_str(char *str)
+int	check_if_digit(char *str)
 {
 	int	i;
 
 	i = -1;
+	while (str[++i])
+	{
+		if (!ft_isdigit(str[i]))
+			return (1);
+	}
+	return (0);
+}
+
+int	cmp_str(char *str, t_leaks **heap)
+{
+	char	**spl;
+	int		i;
+	int		s;
+
+	i = -1;
 	if (!str)
-		return (1) ;
-	while (str[++i] && (str[i] == 32 || str[i] == '\t'))
+		return (1);
+	spl = ft_split(str, 32, '\t', heap);
+	while (spl[++i])
 		;
-	if (!ft_strncmp(&str[i], "exit", 4))
-		if (!str[i + 4] || str[i + 4] == 32 || str[i + 4] == '\t')
-			return (0);
+	s = -1;
+	if (!ft_strcmp(spl[++s], "exit"))
+	{
+		if (i == 1)
+			return (printf("exit\n"), 0);
+		if (i > 1 && check_if_digit(spl[1]))
+			return (printf("exit\nM_H: exit: %s: numeric argument required\n", spl[1]), 0);
+		else if (i == 2 && !check_if_digit(spl[1]))
+			return (printf("exit\n"), 0);
+		else if (i > 2 && !check_if_digit(spl[1]))
+			return (printf("exit\nM_H: exit: too many arguments\n"), 1);
+	}
 	return (1);
 }
 
@@ -126,8 +151,8 @@ void	parsing_part(t_parse *data)
 	{
 		data->cmd_info = NULL;
 		data->r_line = readline("\033[0;31mM_H$\033[0m ");
-		if (!data->r_line || !cmp_str(data->r_line))
-			return (free(data->r_line));
+		if (!data->r_line || !cmp_str(data->r_line, &data->heap))
+			return (free(data->r_line), free_all_memory(data->heap));
 		exec = parsing(data->r_line, data);
 		// execution_part(data, exec);
 		if (*data->r_line)
@@ -187,6 +212,7 @@ int	main(int ac, char **av, char **envp)
 	if (!data_info)
 		return (1);
 	parsing_part(data_info);
-	free_all_memory(data_info->heap);
-	print_error(EXIT, NULL);
+	// free_all_memory(data_info->heap);
+	free (data_info);
+	// print_error(EXIT, NULL);
 }
