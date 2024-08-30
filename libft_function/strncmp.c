@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/18 17:16:04 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/08/18 17:17:31 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/08/31 00:29:40 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,5 +31,7 @@ int	ft_strncmp(const char *s1, const char *s2, size_t n)
 			return (s10[i] - s20[i]);
 		i++;
 	}
+	if (s20[i])
+		return (1);
 	return (0);
 }
