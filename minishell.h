@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 09:42:01 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/08/29 03:15:01 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/08/29 23:06:12 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,8 @@ typedef struct s_exec
 	char			**cmd;
 	char			**files;
 	char			*herdoc;
+	int				red_in;
+	int				red_out;
 	struct s_exec	*next;
 }				t_exec;
 

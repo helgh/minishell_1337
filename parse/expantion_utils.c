@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/18 17:04:26 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/08/28 02:57:34 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/08/30 01:27:54 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,5 +110,6 @@ char	*set_value(t_parse *data, char *str, t_leaks **heap)
 		else if (s[i] == '$' && ft_isdigit(s[i + 1]))
 			s = digit_with_dollar(data, s, i);
 	}
+	// printf("join = %s\n", s);
 	return (s);
 }

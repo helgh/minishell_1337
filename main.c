@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 09:44:43 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/08/29 03:47:54 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/08/29 23:00:17 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,7 +120,26 @@ int	cmp_str(char *str, t_leaks **heap)
 	return (1);
 }
 
-t_exec	*parsing(char *str, t_parse *data_info)
+// void	cmd_line(t_parse *data, t_exec *exec)
+// {
+// 	if (fork)
+// }
+
+// void	execution_part(t_parse *data, t_exec *exec)
+// {
+// 	int	i;
+
+// 	i = -1;
+// 	open
+// 	if (data->nbr_cmd == 1)
+// 		cmd_line(data, exec);
+// 	while (++i < data->nbr_cmd)
+// 	{
+		
+// 	}
+// }
+
+t_exec	*parsing_part(char *str, t_parse *data_info)
 {
 	t_exec	*exec;
 
@@ -140,7 +159,7 @@ t_exec	*parsing(char *str, t_parse *data_info)
 	return (exec);
 }
 
-void	parsing_part(t_parse *data)
+void	minishell(t_parse *data)
 {
 	int s;
 	// t_cmd_info	*cmd;
@@ -153,7 +172,7 @@ void	parsing_part(t_parse *data)
 		data->r_line = readline("\033[0;31mM_H$\033[0m ");
 		if (!data->r_line || !cmp_str(data->r_line, &data->heap))
 			return (free(data->r_line), free_all_memory(data->heap));
-		exec = parsing(data->r_line, data);
+		exec = parsing_part(data->r_line, data);
 		// execution_part(data, exec);
 		if (*data->r_line)
 			add_history(data->r_line);
@@ -211,7 +230,7 @@ int	main(int ac, char **av, char **envp)
 	data_info = init_struct(envp, env);
 	if (!data_info)
 		return (1);
-	parsing_part(data_info);
+	minishell(data_info);
 	// free_all_memory(data_info->heap);
 	free (data_info);
 	// print_error(EXIT, NULL);

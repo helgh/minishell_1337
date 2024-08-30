@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/28 02:31:17 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/08/28 23:26:42 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/08/29 23:15:30 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ char	**div_arg(t_cmd_info *cmd, char **spl, int flag, t_exec *exec)
 			spl[flag++] = tok->str;
 		else if (!ft_strcmp(tok->type, "delim"))
 			exec->herdoc = tok->str;
-		else if (!ft_strcmp(tok->type, "out_file"))
+		else if (!ft_strcmp(tok->type, "in_file"))
 			exec->herdoc = NULL;
 		tok = tok->next;
 	}
