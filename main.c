@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 09:44:43 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/08/29 23:00:17 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/08/30 04:04:07 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,24 +120,62 @@ int	cmp_str(char *str, t_leaks **heap)
 	return (1);
 }
 
+void	put_str(char *str, int fd)
+{
+    int i;
+
+	i = -1;
+    if (!str)
+        return ;
+	write(fd, "M_H: ", 5);
+    while (str[++i])
+        write(fd, &str[i], 1);
+	write(2, ": ", 2);
+}
+
+void	open_files(t_parse *data, t_exec *exec)
+{
+	t_exec		*ex;
+	int			i;
+
+	ex = exec;
+	(void) data;
+	while (ex)
+	{
+		i = -1;
+		while (ex->files && ex->files[++i])
+		{
+			if (!ft_strcmp(ex->files[i], "<"))
+				ex->red_in = open(ex->files[i + 1], O_RDONLY);
+			else if (!ft_strcmp(ex->files[i], ">"))
+				ex->red_out = open(ex->files[i + 1], O_CREAT | O_TRUNC | O_RDONLY, 0644);
+			else if (!ft_strcmp(ex->files[i], ">>"))
+				ex->red_out = open(ex->files[i + 1], O_CREAT | O_APPEND | O_RDONLY, 0644);
+			if (ex->red_in == -1 || ex->red_out == -1)
+				return (put_str(ex->files[i + 1], 2), perror(""));
+		}
+		ex = ex->next;
+	}
+}
+
 // void	cmd_line(t_parse *data, t_exec *exec)
 // {
 // 	if (fork)
 // }
 
-// void	execution_part(t_parse *data, t_exec *exec)
-// {
-// 	int	i;
+void	execution_part(t_parse *data, t_exec *exec)
+{
+	int	i;
 
-// 	i = -1;
-// 	open
-// 	if (data->nbr_cmd == 1)
-// 		cmd_line(data, exec);
-// 	while (++i < data->nbr_cmd)
-// 	{
+	i = -1;
+	open_files(data, exec);
+	// if (data->nbr_cmd == 1)
+	// 	cmd_line(data, exec);
+	// while (++i < data->nbr_cmd)
+	// {
 		
-// 	}
-// }
+	// }
+}
 
 t_exec	*parsing_part(char *str, t_parse *data_info)
 {
@@ -173,7 +211,7 @@ void	minishell(t_parse *data)
 		if (!data->r_line || !cmp_str(data->r_line, &data->heap))
 			return (free(data->r_line), free_all_memory(data->heap));
 		exec = parsing_part(data->r_line, data);
-		// execution_part(data, exec);
+		execution_part(data, exec);
 		if (*data->r_line)
 			add_history(data->r_line);
 		// cmd = data->cmd_info;
@@ -190,7 +228,7 @@ void	minishell(t_parse *data)
 			printf("\nherdoc = ");
 			if (exec->herdoc)
 				printf("%s ", exec->herdoc);
-			printf("\n");
+			printf("\n%d\n%d\n", exec->red_in, exec->red_out);
 			exec = exec->next;
 		}
 		free(data->r_line);

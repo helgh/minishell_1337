@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/28 02:31:17 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/08/29 23:15:30 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/08/30 03:36:46 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -149,6 +149,8 @@ t_exec	*ready_for_exec(t_parse *data)
 		tmp = ft_malloc(sizeof(t_exec), &data->heap);
 		tmp->cmd = cmd_opt_arg(data, cmd, count(data, cmd, 0), tmp);
 		tmp->files = files(data, cmd, count(data, cmd, 1));
+		tmp->red_in = 0;
+		tmp->red_out = 1;
 		tmp->next = NULL;
 		add_to_next(&exec, tmp);
 		cmd = cmd->next;

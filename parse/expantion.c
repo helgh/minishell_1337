@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/18 16:59:51 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/08/30 01:35:53 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/08/30 02:57:45 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ static char	*exp_without_quotes(t_parse *data, t_tokens *tok, int *ind, t_leaks 
 	s = sub_str(str, (*ind), i, heap);
 	if (ft_strcmp(tok->type, "delim"))
 		spl = ft_split(set_value(data, s, heap), 32, '\t', heap);
-	if (*(spl + 1))
+	if (ft_strcmp(tok->type, "delim") && *(spl + 1))
 	{
 		s = NULL;
 		while (data->flag == 1 && *spl)
