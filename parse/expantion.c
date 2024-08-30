@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/18 16:59:51 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/08/30 02:57:45 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/08/30 07:42:21 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,8 @@ static char	*exp_without_quotes(t_parse *data, t_tokens *tok, int *ind, t_leaks 
 		;
 	s = sub_str(str, (*ind), i, heap);
 	if (ft_strcmp(tok->type, "delim"))
-		spl = ft_split(set_value(data, s, heap), 32, '\t', heap);
+		s = set_value(data, s, heap);
+	spl = ft_split(s, 32, '\t', heap);
 	if (ft_strcmp(tok->type, "delim") && *(spl + 1))
 	{
 		s = NULL;
@@ -52,6 +53,8 @@ static char	*exp_s_quotes(t_parse *data, t_tokens *tok, int *ind, t_leaks **heap
 	(void) data;
 	start = (*ind);
 	str = tok->str;
+	if (data->exp == 1)
+		return (data->exp = 0, NULL);
 	while (str[++i + (*ind) + 1] != 39)
 		;
 	s = sub_str(str, start + 1, i, heap);
@@ -71,6 +74,8 @@ static char	*exp_d_quotes(t_parse *data, t_tokens *tok, int *ind, t_leaks **heap
 	start = (*ind);
 	str = tok->str;
 	type = tok->type;
+	if (data->exp == 2)
+		return (data->exp = 0, NULL);
 	while (str[++i + (*ind) + 1] != 34)
 		;
 	s = sub_str(str, start + 1, i, heap);
@@ -80,22 +85,48 @@ static char	*exp_d_quotes(t_parse *data, t_tokens *tok, int *ind, t_leaks **heap
 	return (s);
 }
 
+void	count_$_(char *str, int *ind, t_parse *data)
+{
+	int	i;
+
+	i = -1;
+	while (str[++i] == '$')
+		;
+	if (str[i] == 34 || str[i] == 39)
+	{
+		if (str[i] == 34)
+			data->exp = 2;
+		else
+			data->exp = 1;
+		*ind += i;
+	}
+	else if (i % 2 == 0)
+		*ind += (i - 1);
+	else
+		*ind += (i - 2);
+}
+
 char	*exp_in_quotes(t_parse *data, t_tokens *tok, t_leaks **heap)
 {
 	char	*tmp;
 	char	*s;
+	char	*str;
 	int		i;
 	int		ind;
 
 	i = -1;
+	tmp = NULL;
 	s = NULL;
 	ind = 0;
-	while (tok->str[++i])
+	str = tok->str;
+	while (str[++i])
 	{
-		if (tok->str[i] == 34)
+		if (str[i] == 34)
 			tmp = exp_d_quotes(data, tok, &i, heap);
-		else if (tok->str[i] == 39)
+		else if (str[i] == 39)
 			tmp = exp_s_quotes(data, tok, &i, heap);
+		else if (str[i] == '$' && (str[i + 1] == 39 || str[i + 1] == 34 || str[i + 1] == '$'))
+			count_$_(&str[i], &i, data);
 		else
 			tmp = exp_without_quotes(data, tok, &i, heap);
 		s = ft_strjoin(s, tmp, heap);

@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 09:42:01 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/08/29 23:06:12 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/08/30 07:39:31 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,6 +94,7 @@ typedef struct s_parse
 	int			nbr_cmd;
 	int			exit_status;
 	int			flag;
+	int			exp;
 	t_env		*envir;
 	t_cmd_info	*cmd_info; 
 	t_leaks		*heap;

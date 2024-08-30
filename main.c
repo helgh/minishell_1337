@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 09:44:43 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/08/30 04:04:07 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/08/30 07:39:44 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -246,6 +246,7 @@ t_parse	*init_struct(char **envp, t_env *env)
 	data_info->exit_status = 0;
 	data_info->envir = env;
 	data_info->flag = 0;
+	data_info->exp = 0;
 	init_env(envp, data_info);
 	return (data_info);
 }
