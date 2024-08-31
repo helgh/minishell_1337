@@ -1,33 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   strcmp.c                                           :+:      :+:    :+:   */
+/*   pwd.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mthamir <mthamir@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/08/18 17:15:42 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/08/27 02:30:32 by mthamir          ###   ########.fr       */
+/*   Created: 2024/08/30 02:11:12 by mthamir           #+#    #+#             */
+/*   Updated: 2024/08/30 03:05:48 by mthamir          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-int	ft_strcmp(const char *s1, const char *s2)
+void		get_pwd()
 {
-	size_t			i;
-	unsigned char	*d1;
-	unsigned char	*d2;
+	char *cwd;
 
-	d1 = (unsigned char *)s1;
-	d2 = (unsigned char *)s2;
-	i = 0;
-	if (!s1 || !s2)
-		return (1);
-	while (d1[i] || d2[i])
-	{
-		if (d1[i] != d2[i])
-			return (d1[i] - d2[i]);
-		i++;
-	}
-	return (0);
+	cwd = getcwd(NULL, 0);
+	printf("%s\n", cwd);
+	free(cwd);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mthamir <mthamir@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 09:42:01 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/08/31 02:11:20 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/08/31 02:38:41 by mthamir          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -137,27 +137,40 @@ t_exec		*ready_for_exec(t_parse *data);
 
 void		*ft_malloc(size_t size, t_leaks **heap);
 int			cmp_str(char *str, t_leaks **heap);
-void		add_to_env(char *var, char *egal,  char *value);
-void		append_value(char *var,char *value);
-void		set_var_to_env(char *var, char *value);
-void		print_env();
-void		print_export();
-void		unset_var_from_env(char	*var);
-void		append_value(char *var,char *value);
-void		add_to_env(char *var, char *egal,  char *value);
 int			pars_variable(char *var);
-int			is_special_char(char c);
-int			is_number(char c);
-void		get_pwd();
 void		signal_handler(int sig);
-// void		init_env(char **env, t_leaks **heap);
-void		no_env(void);
-// t_env		*global_env(void	*var, void *egal, void	*value, int operation);
 char		**spl_msh(char *s, char c, t_leaks **heap);
 void		signal_loop(void);
 void		ft_restore_input(void);
 void		signal_herdoc(void);
 void		print_error(int flag, char *str);
 void		signal_handler(int sig);
+
+/*_____________________________________________________________________________*/
+/* builitns declaration funtions */
+
+void	putstr_fd(char *str, int fd);
+void	ft_echo(char *str, int fd);
+void	init_env(char **env, t_parse *data);
+void	print_env(int	fd, t_parse *data);
+void	global_env(char **env, t_parse *data);
+void	add_to_env(char *var, char *egal,  char *value, t_parse *data);
+void	print_export(int	fd, t_parse *data);
+void	append_value(char *var,char *value, t_parse *data);
+void	set_var_to_env(char *var, char *egal, char *value, t_parse *data);
+int		check_export_parse(char *str);
+void	export_with_value(char *str, t_parse *data);
+void	_export_vars(char **str, t_parse *data);
+void	_export(char **str, t_parse *data);
+void	get_pwd();
+void	unset_var_from_env(char	*var, t_parse *data);
+void	_unset(t_parse *data);
+void	check_cmd(t_parse *data);
+int		already_exist(char *var, t_parse *data);
+int		check_append(char **str);
+int		with_egal(char *str);
+
+/*_____________________________________________________________________________*/
+
 
 #endif

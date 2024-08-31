@@ -1,33 +1,49 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   strcmp.c                                           :+:      :+:    :+:   */
+/*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mthamir <mthamir@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/08/18 17:15:42 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/08/27 02:30:32 by mthamir          ###   ########.fr       */
+/*   Created: 2024/08/30 02:11:03 by mthamir           #+#    #+#             */
+/*   Updated: 2024/08/30 23:52:05 by mthamir          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-int	ft_strcmp(const char *s1, const char *s2)
+void putstr_fd(char *str, int fd)
 {
-	size_t			i;
-	unsigned char	*d1;
-	unsigned char	*d2;
+	int i ;
 
-	d1 = (unsigned char *)s1;
-	d2 = (unsigned char *)s2;
-	i = 0;
-	if (!s1 || !s2)
-		return (1);
-	while (d1[i] || d2[i])
-	{
-		if (d1[i] != d2[i])
-			return (d1[i] - d2[i]);
+	i = -1;
+	if (!str)
+		return ;
+	while (str[++i])
+		write(fd, &str[i], 1);
+}
+
+int	check_option(char *option)
+{
+	int i = 0;
+
+	if (option[i] == '-')
 		i++;
+	else
+		return (1);
+	while (option[i])
+	{
+		if (option[i] == 'n')
+			i++;
+		else
+			return (1);
 	}
 	return (0);
+}
+void ft_echo(char *str, int fd, char *option, int quot)
+{
+	if (option)
+		if (check_option(option))
+			write(1, "\n", 1);
+	putstr_fd(str, fd);
 }
