@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/18 16:56:36 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/08/31 02:04:40 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/08/31 06:18:23 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,8 +53,8 @@ int	check_syntax_error(t_parse *data)
 		flag = 0;
 		while (++s < cmd->nbr_token)
 		{
-			if (!ft_strcmp(tmp->type, "delim"))
-				tmp->str = read_herdoc(data, tmp->str, tmp->type_qoute);
+			// if (!ft_strcmp(tmp->type, "delim"))
+			// 	tmp->str = read_herdoc(data, tmp->str, tmp->type_qoute);
 			if ((s + 1) == cmd->nbr_token && !if_operator(tmp->type))
 				return (0);
 			else if (!if_operator(tmp->type) && !if_operator(tmp->next->type))

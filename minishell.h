@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mthamir <mthamir@student.42.fr>            +#+  +:+       +#+        */
+/*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 09:42:01 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/08/31 02:38:41 by mthamir          ###   ########.fr       */
+/*   Updated: 2024/08/31 06:19:12 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -149,26 +149,26 @@ void		signal_handler(int sig);
 /*_____________________________________________________________________________*/
 /* builitns declaration funtions */
 
-void	putstr_fd(char *str, int fd);
-void	ft_echo(char *str, int fd);
-void	init_env(char **env, t_parse *data);
-void	print_env(int	fd, t_parse *data);
-void	global_env(char **env, t_parse *data);
-void	add_to_env(char *var, char *egal,  char *value, t_parse *data);
-void	print_export(int	fd, t_parse *data);
-void	append_value(char *var,char *value, t_parse *data);
-void	set_var_to_env(char *var, char *egal, char *value, t_parse *data);
-int		check_export_parse(char *str);
-void	export_with_value(char *str, t_parse *data);
-void	_export_vars(char **str, t_parse *data);
-void	_export(char **str, t_parse *data);
-void	get_pwd();
-void	unset_var_from_env(char	*var, t_parse *data);
-void	_unset(t_parse *data);
-void	check_cmd(t_parse *data);
-int		already_exist(char *var, t_parse *data);
-int		check_append(char **str);
-int		with_egal(char *str);
+// void	putstr_fd(char *str, int fd);
+// void	ft_echo(char *str, int fd);
+// void	init_env(char **env, t_parse *data);
+// void	print_env(int	fd, t_parse *data);
+// void	global_env(char **env, t_parse *data);
+// void	add_to_env(char *var, char *egal,  char *value, t_parse *data);
+// void	print_export(int	fd, t_parse *data);
+// void	append_value(char *var,char *value, t_parse *data);
+// void	set_var_to_env(char *var, char *egal, char *value, t_parse *data);
+// int		check_export_parse(char *str);
+// void	export_with_value(char *str, t_parse *data);
+// void	_export_vars(char **str, t_parse *data);
+// void	_export(char **str, t_parse *data);
+// void	get_pwd();
+// void	unset_var_from_env(char	*var, t_parse *data);
+// void	_unset(t_parse *data);
+// void	check_cmd(t_parse *data);
+// int		already_exist(char *var, t_parse *data);
+// int		check_append(char **str);
+// int		with_egal(char *str);
 
 /*_____________________________________________________________________________*/
 

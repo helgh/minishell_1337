@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/18 16:59:51 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/08/31 00:31:45 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/08/31 06:38:18 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,8 @@ static char	*exp_without_quotes(t_parse *data, t_tokens *tok, int *ind, t_leaks 
 	}
 	data->flag = 0;
 	*ind += (i - 1);
+	if (s[ft_strlen(s) - 1] == '$')
+		s[ft_strlen(s) - 1] = 0;
 	return (s);
 }
 
