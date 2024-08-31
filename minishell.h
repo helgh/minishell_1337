@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 09:42:01 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/08/30 07:39:31 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/08/31 02:11:20 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,6 +110,7 @@ int			ft_strcmp(const char *s1, const char *s2);
 int			ft_strlen(char *str);
 int			ft_strncmp(const char *s1, const char *s2, size_t n);
 int			ft_isalpha(int c);
+int			ft_isalnum(int c);
 int			ft_isdigit(int c);
 int			ft_isprint(int c);
 
@@ -130,7 +131,7 @@ int			set_flag_dollar(t_tokens *token);
 int			set_flag_qoutes(char *str);
 t_cmd_info	*cmd_info_struct(t_parse *data_info);
 t_tokens	*tokens_struct(t_cmd_info *cmd, t_leaks **heap);
-void		expand_herdoc(t_parse *data);
+char		*read_herdoc(t_parse *data, char *str, int flag);
 char		*exp_in_qoutes(t_parse *data, char *str, t_leaks **heap);
 t_exec		*ready_for_exec(t_parse *data);
 

@@ -1,36 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   join_str.c                                         :+:      :+:    :+:   */
+/*   ft_isalnum.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/08/18 17:13:27 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/08/31 02:18:57 by hael-ghd         ###   ########.fr       */
+/*   Created: 2024/08/31 02:10:34 by hael-ghd          #+#    #+#             */
+/*   Updated: 2024/08/31 02:10:52 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-char	*join_str(t_parse *data, char *str, char *s, int l)
+int	ft_isalnum(int c)
 {
-	int		i;
-	int		len;
-	char	*join;
-	int		n;
-
-	i = l;
-	while (str[++i] && (ft_isalnum(str[i]) || str[i] == 95))
-		;
-	len = ft_strlen(s) + (ft_strlen(str) - (i - l));
-	join = ft_malloc(len + 1, &data->heap);
-	n = -1;
-	while (++n < l)
-		join[n] = str[n];
-	while (s && *s)
-		join[n++] = *(s++);
-	while (i < ft_strlen(str))
-		join[n++] = str[i++];
-	join[n] = 0;
-	return (join);
+	if (ft_isalpha(c) == 1 || ft_isdigit(c) == 1)
+		return (1);
+	return (0);
 }

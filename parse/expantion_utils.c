@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/18 17:04:26 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/08/31 00:31:15 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/08/31 02:19:17 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ static char	*cmp_with_env(t_parse *data, char *str, int len)
 	char	*s;
 
 	f = len;
-	while (str[++f] && (ft_isalpha(str[f]) || str[f] == 95))
+	while (str[++f] && (ft_isalnum(str[f]) || str[f] == 95))
 		;
 	i = -1;
 	while (data->envir[++i].var)

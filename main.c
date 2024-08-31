@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 09:44:43 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/08/30 07:39:44 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/08/31 02:02:06 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -189,10 +189,10 @@ t_exec	*parsing_part(char *str, t_parse *data_info)
 		return (print_error(F_ALLOC, NULL) ,NULL);
 	if (!cmd_info_struct(data_info))
 		return (print_error(F_ALLOC, NULL), NULL);
-	expantion(data_info);
-	expand_herdoc(data_info);
 	if (!check_syntax_error(data_info))
 		return (print_error(S_ERROR, NULL), NULL);
+	expantion(data_info);
+	// expand_herdoc(data_info);
 	exec = ready_for_exec(data_info);
 	return (exec);
 }
