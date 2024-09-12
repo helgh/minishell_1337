@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/22 15:20:13 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/08/23 15:37:40 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/08/31 22:08:12 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ void	handler(int sig)
 {
 	(void) sig;
 	close (0);
+	glob_int = 1;
 }
 
 void	signal_herdoc(void)

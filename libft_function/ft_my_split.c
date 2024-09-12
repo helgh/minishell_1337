@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 20:06:11 by mthamir           #+#    #+#             */
-/*   Updated: 2024/08/20 16:13:39 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/11 21:32:46 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,9 +45,9 @@ static char	*strcp(char *str, char *s, int i)
 	return (str);
 }
 
-static char	**spl(const char *s, char c, char **str, int d, t_leaks **heap)
+static char	**spl(const char *s, char c, char **str, int d, t_parse *data)
 {
-	str[d] = ft_malloc ((size(s, c, d) + 1) * sizeof(char), heap);
+	str[d] = ft_malloc ((size(s, c, d) + 1) * sizeof(char), data);
 	if (str[d] == NULL)
 	{
 		while (d > 0)
@@ -61,7 +61,7 @@ static char	**spl(const char *s, char c, char **str, int d, t_leaks **heap)
 	return (str);
 }
 
-char	**spl_msh(char *s, char c, t_leaks **heap)
+char	**spl_msh(char *s, char c, t_parse *data)
 {
 	int		count;
 	char	**str;
@@ -72,7 +72,7 @@ char	**spl_msh(char *s, char c, t_leaks **heap)
 	if (s == NULL)
 		return (NULL);
 	count = 2;
-	str = ft_malloc ((count + 1) * sizeof (char *), heap);
+	str = ft_malloc ((count + 1) * sizeof (char *), data);
 	if (str == NULL)
 		return (NULL);
 	while (d < count)
@@ -80,7 +80,7 @@ char	**spl_msh(char *s, char c, t_leaks **heap)
 		if (*s == c)
 			s++;
 		i = size(s, c, d);
-		spl(s, c, str, d, heap);
+		spl(s, c, str, d, data);
 		strcp(str[d], s, i);
 		s = s + i;
 		d++;

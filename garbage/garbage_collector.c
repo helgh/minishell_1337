@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/18 16:38:52 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/08/23 15:56:30 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/11 20:59:16 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ static t_leaks	*leaks_collector(void *for_leaks, t_leaks **heap)
 	tmp = *heap;
 	new = malloc(sizeof(t_leaks));
 	if (!new)
-		return (free_all_memory(*heap), NULL);
+		return (NULL);
 	new->adress = for_leaks;
 	new->t_struct = new;
 	new->next = NULL;
@@ -32,14 +32,26 @@ static t_leaks	*leaks_collector(void *for_leaks, t_leaks **heap)
 	return (*heap);
 }
 
-void	*ft_malloc(size_t size, t_leaks **heap)
+void	*ft_malloc(size_t size, t_parse *data)
 {
 	char	*new;
 
 	new = malloc (size);
 	if (!new)
-		return (free_all_memory(*heap), NULL);
-	if (!leaks_collector(new, heap))
-		return (print_error(F_ALLOC, NULL), NULL);
+		return (print_error(data, F_ALLOC), NULL);
+	if (!leaks_collector(new, &data->heap))
+		return (free(new), print_error(data, F_ALLOC), NULL);
+	return (new);
+}
+
+void	*ft_env_malloc(size_t size, t_parse *data)
+{
+	char	*new;
+
+	new = malloc (size);
+	if (!new)
+		return (print_error(data, F_ALLOC), NULL);
+	if (!leaks_collector(new, &data->heap_env))
+		return (free(new), print_error(data, F_ALLOC), NULL);
 	return (new);
 }

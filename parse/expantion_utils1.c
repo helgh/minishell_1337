@@ -6,28 +6,11 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/28 02:31:17 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/08/30 03:36:46 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/11 21:45:12 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
-
-void	add_to_next(t_exec **lst, t_exec *new)
-{
-	t_exec	*ptr;
-
-	if (lst == NULL)
-		return ;
-	if (*lst == NULL)
-	{
-		*lst = new;
-		return ;
-	}
-	ptr = *lst;
-	while (ptr->next != NULL)
-		ptr = ptr->next;
-	ptr->next = new;
-}
 
 int	count(t_parse *data, t_cmd_info *cmd, int flag)
 {
@@ -92,7 +75,7 @@ char	**cmd_opt_arg(t_parse * data, t_cmd_info *cmd, int len, t_exec *exec)
 
 	if (len == 0)
 		return (NULL);
-	spl = ft_malloc(sizeof(char *) * (len + 1), &data->heap);
+	spl = ft_malloc(sizeof(char *) * (len + 1), data);
 	tok = cmd->token;
 	flag = 0;
 	while (tok)
@@ -118,7 +101,7 @@ char	**files(t_parse *data, t_cmd_info *cmd, int len)
 	i = -1;
 	if (len == 0)
 		return (NULL);
-	spl = ft_malloc(sizeof(char *) * (len + 1), &data->heap);
+	spl = ft_malloc(sizeof(char *) * (len + 1), data);
 	tok = cmd->token;
 	while (tok)
 	{
@@ -146,11 +129,14 @@ t_exec	*ready_for_exec(t_parse *data)
 	exec = NULL;
 	while (++i < data->nbr_cmd)
 	{
-		tmp = ft_malloc(sizeof(t_exec), &data->heap);
+		tmp = ft_malloc(sizeof(t_exec), data);
 		tmp->cmd = cmd_opt_arg(data, cmd, count(data, cmd, 0), tmp);
 		tmp->files = files(data, cmd, count(data, cmd, 1));
 		tmp->red_in = 0;
 		tmp->red_out = 1;
+		tmp->red_herdoc = 0;
+		tmp->check_flag = 0;
+		tmp->pos = i;
 		tmp->next = NULL;
 		add_to_next(&exec, tmp);
 		cmd = cmd->next;

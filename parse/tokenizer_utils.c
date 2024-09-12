@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/18 16:53:52 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/08/28 00:42:13 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/11 21:08:18 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,31 +75,31 @@ static int	check_option(char *str)
 	return (0);
 }
 
-char	*get_type_token(char **spl, char *type, int s, t_leaks **heap)
+char	*get_type_token(char **spl, char *type, int s, t_parse *data)
 {
 	if (!ft_strcmp(spl[s], ">"))
-		return (ft_dup_str("red_out", heap));
+		return (ft_dup_str("red_out", data));
 	else if (!ft_strcmp(spl[s], "<"))
-		return (ft_dup_str("red_in", heap));
+		return (ft_dup_str("red_in", data));
 	else if (!ft_strcmp(spl[s], ">>"))
-		return (ft_dup_str("append", heap));
+		return (ft_dup_str("append", data));
 	else if (!ft_strcmp(spl[s], "<<"))
-		return (ft_dup_str("herdoc", heap));
+		return (ft_dup_str("herdoc", data));
 	else if (s > 0 && !ft_strcmp(spl[s - 1], ">"))
-		return (ft_dup_str("out_file", heap));
+		return (ft_dup_str("out_file", data));
 	else if (s > 0 && !ft_strcmp(spl[s - 1], "<"))
-		return (ft_dup_str("in_file", heap));
+		return (ft_dup_str("in_file", data));
 	else if (s > 0 && !ft_strcmp(spl[s - 1], "<<"))
-		return (ft_dup_str("delim", heap));
+		return (ft_dup_str("delim", data));
 	else if (s > 0 && !ft_strcmp(spl[s - 1], ">>"))
-		return (ft_dup_str("app_file", heap));
+		return (ft_dup_str("app_file", data));
 	else if (s > 0 && ft_strcmp(spl[0], "<<") && !ft_strcmp(type, "delim"))
-		return (ft_dup_str("arg", heap));
+		return (ft_dup_str("arg", data));
 	else if (s == 0 || !ft_strcmp(type, "delim") || !ft_strcmp(type, "in_file")
 			|| !ft_strcmp(type, "out_file"))
-		return (ft_dup_str("cmd", heap));
+		return (ft_dup_str("cmd", data));
 	else if (!check_option(spl[s]))
 		if (!ft_strcmp(type, "cmd") || !ft_strcmp(type, "option"))
-			return (ft_dup_str("option", heap));
-	return (ft_dup_str("arg", heap));
+			return (ft_dup_str("option", data));
+	return (ft_dup_str("arg", data));
 }

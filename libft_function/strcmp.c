@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   strcmp.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mthamir <mthamir@student.42.fr>            +#+  +:+       +#+        */
+/*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/18 17:15:42 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/08/27 02:30:32 by mthamir          ###   ########.fr       */
+/*   Updated: 2024/08/22 15:45:44 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,6 @@ int	ft_strcmp(const char *s1, const char *s2)
 	d1 = (unsigned char *)s1;
 	d2 = (unsigned char *)s2;
 	i = 0;
-	if (!s1 || !s2)
-		return (1);
 	while (d1[i] || d2[i])
 	{
 		if (d1[i] != d2[i])

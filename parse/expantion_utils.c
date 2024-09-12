@@ -6,13 +6,13 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/18 17:04:26 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/08/31 02:19:17 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/12 01:45:12 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-static char	*check_exit_status(char *str, char *itoa, int len, t_leaks **heap)
+static char	*check_exit_status(char *str, char *itoa, int len, t_parse *data)
 {
 	int		i;
 	int		n;
@@ -20,7 +20,7 @@ static char	*check_exit_status(char *str, char *itoa, int len, t_leaks **heap)
 
 	i = ft_strlen(itoa);
 	n = ft_strlen(str);
-	s = ft_malloc((i * len) + n + 1, heap);
+	s = ft_malloc((i * len) + n + 1, data);
 	n = 0;
 	i = -1;
 	while (str[++i])
@@ -36,7 +36,7 @@ static char	*check_exit_status(char *str, char *itoa, int len, t_leaks **heap)
 			s[n++] = str[i];
 	}
 	s[n] = 0;
-	return (free(itoa), s);
+	return (s);
 }
 
 static char	*digit_with_dollar(t_parse *data, char *str, int l)
@@ -49,7 +49,7 @@ static char	*digit_with_dollar(t_parse *data, char *str, int l)
 	i = l;
 	i += 2;
 	len = (ft_strlen(str) - (i - l));
-	join = ft_malloc(len + 1, &data->heap);
+	join = ft_malloc(len + 1, data);
 	n = -1;
 	while (++n < l)
 		join[n] = str[n];
@@ -65,27 +65,31 @@ static char	*cmp_with_env(t_parse *data, char *str, int len)
 	int		l;
 	int		f;
 	char	*s;
+	t_env	*tmp;
 
 	f = len;
+	tmp = data->envir;
 	while (str[++f] && (ft_isalnum(str[f]) || str[f] == 95))
 		;
 	i = -1;
-	while (data->envir[++i].var)
-		if (!ft_strncmp(&str[len + 1], data->envir[i].var, f - len - 1))
+	while (tmp)
+	{
+		if (ft_strncmp(&str[len + 1], tmp->var, f - len - 1) == 0)
 			break ;
-	if (!data->envir[i].var)
+			tmp = tmp->next;
+	}
+	if (!tmp)
 		return (NULL);
-	l = ft_strlen(data->envir[i].value);
-	s = ft_malloc(l + 1, &data->heap);
+	l = ft_strlen(tmp->value);
+	s = ft_malloc(l + 1, data);
 	l = -1;
-	while (data->envir[i].value[++l])
-		s[l] = data->envir[i].value[l];
+	while (tmp->value[++l])
+		s[l] = tmp->value[l];
 	s[l] = 0;
-	data->flag = 1;
 	return (s);
 }
 
-char	*set_value(t_parse *data, char *str, t_leaks **heap)
+char	*set_value_2(t_parse *data, char *str)
 {
 	int		i;
 	int		len;
@@ -98,9 +102,9 @@ char	*set_value(t_parse *data, char *str, t_leaks **heap)
 		if (str[i] == '$' && str[i + 1] == '?')
 			len++;
 	if (len != 0)
-		s = check_exit_status(str, i_to_a(data->exit_status), len, heap);
+		s = check_exit_status(str, i_to_a(data->exit_status, data), len, data);
 	i = -1;
-	while (s[++i])
+	while (str[++i])
 	{
 		if (s[i] == '$' && (ft_isalpha(s[i + 1]) || s[i + 1] == 95))
 		{
@@ -110,5 +114,27 @@ char	*set_value(t_parse *data, char *str, t_leaks **heap)
 		else if (s[i] == '$' && ft_isdigit(s[i + 1]))
 			s = digit_with_dollar(data, s, i);
 	}
+	return (s);
+}
+
+char	*set_value(t_parse *data, char *str)
+{
+	int		i;
+	int		len;
+	char	*s;
+
+	i = -1;
+	len = 0;
+	s = str;
+	while (str[++i])
+		if (str[i] == '$' && str[i + 1] == '?')
+			len++;
+	if (len != 0)
+		s = check_exit_status(str, i_to_a(data->exit_status, data), len, data);
+	i = -1;
+	if (s[++i] == '$' && (ft_isalpha(s[i + 1]) || s[i + 1] == 95))
+		s = cmp_with_env(data, s, i);
+	else if (s[i] == '$' && ft_isdigit(s[i + 1]))
+		s = digit_with_dollar(data, s, i);
 	return (s);
 }

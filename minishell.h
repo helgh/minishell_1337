@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 09:42:01 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/08/31 06:19:12 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/12 22:51:36 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,17 +36,22 @@
 
 # define F_ALLOC		1
 # define S_ERROR		2
-# define NSFOD			3
 # define U_QOUTE		4
-# define EXIT			5
+# define MAX_HER		5
+# define EXIT			6
+
+
 
 // typedef struct s_leaks t_leaks;
+
+extern int glob_int;
 
 typedef struct s_env
 {
 	char			*var; /* hadi dyal */
 	char			*value;
 	char			*egal;
+	int				index;
 	struct s_env	*next;
 }			t_env;
 
@@ -64,6 +69,9 @@ typedef struct s_exec
 	char			*herdoc;
 	int				red_in;
 	int				red_out;
+	int				red_herdoc;
+	int				check_flag;
+	int				pos;
 	struct s_exec	*next;
 }				t_exec;
 
@@ -81,6 +89,7 @@ typedef struct s_cmd_info
 	char				*cmd_line;
 	char				**all_token;
 	int					nbr_token;
+	int					checker;
 	t_tokens			*token;
 	t_exec				*exec;
 	struct s_cmd_info	*next;
@@ -94,81 +103,97 @@ typedef struct s_parse
 	int			nbr_cmd;
 	int			exit_status;
 	int			flag;
-	int			exp;
+	char		**env;
+	int			fd[OPEN_MAX];
 	t_env		*envir;
 	t_cmd_info	*cmd_info; 
 	t_leaks		*heap;
+	t_leaks		*heap_env;
 }				t_parse;
 
-char		**ft_split(char const *s, char c, char c1, t_leaks **heap);
-char		*sub_str(char *s, unsigned int start, size_t len, t_leaks **heap);
-char		*ft_dup_str(char *s1, t_leaks **heap);
-char		*i_to_a(int n);
+char		**ft_split(char const *s, char c, char c1, t_parse *data);
+char		*sub_str(char *s, unsigned int start, size_t len, t_parse *data);
+char		*ft_dup_str(char *s1, t_parse *data);
+char		*ft_strdup(char *s1, t_parse *data);
+char		*i_to_a(int n, t_parse *data);
 char		*join_str(t_parse *data, char *str, char *s, int l);
-char		*ft_strjoin(char *s1, char *s2, t_leaks **heap);
+char		*ft_strjoin(char *s1, char *s2, t_parse *data);
+char		*ft_strjoin_env(char *s1, char *s2, t_parse *data);
 int			ft_strcmp(const char *s1, const char *s2);
 int			ft_strlen(char *str);
 int			ft_strncmp(const char *s1, const char *s2, size_t n);
-int			ft_isalpha(int c);
 int			ft_isalnum(int c);
+int			ft_isalpha(int c);
 int			ft_isdigit(int c);
 int			ft_isprint(int c);
+void		ft_putstr(char *str);
 
 void		free_all_memory(t_leaks *heap);
 
 char		*check_qoutes(char *str, int len, t_parse *data_info);
 int			length_line(char *str);
 void		expantion(t_parse *data);
-char		*remove_qoutes(char *str, char c, t_leaks **heap);
-char		*set_value(t_parse *data, char *str, t_leaks **heap);
+char		*set_value(t_parse *data, char *str);
 char		**split_and_replace(t_parse *data_info);
 void		replace_value(char **str, int i, int *s);
 int			check_if_only_space_and_tab(char *str);
 int			if_operator(char *type);
 int			check_syntax_error(t_parse *data);
-char		*get_type_token(char **spl, char *type, int s, t_leaks **heap);
+char		*get_type_token(char **spl, char *type, int s, t_parse *data);
 int			set_flag_dollar(t_tokens *token);
 int			set_flag_qoutes(char *str);
 t_cmd_info	*cmd_info_struct(t_parse *data_info);
-t_tokens	*tokens_struct(t_cmd_info *cmd, t_leaks **heap);
-char		*read_herdoc(t_parse *data, char *str, int flag);
-char		*exp_in_qoutes(t_parse *data, char *str, t_leaks **heap);
+t_tokens	*tokens_struct(t_cmd_info *cmd, t_parse *data);
+void		checker_herdoc(t_parse *data);
+int			max_herdoc(t_parse *data);
+char		*set_value_2(t_parse *data, char *str);
+void		expand_herdoc(t_parse *data);
+char		*exp_loop(t_parse *data, t_tokens *tok);
 t_exec		*ready_for_exec(t_parse *data);
+void		add_to_next(t_exec **lst, t_exec *new);
+char    	**l_list_to_array(t_parse *data);
 
-void		*ft_malloc(size_t size, t_leaks **heap);
-int			cmp_str(char *str, t_leaks **heap);
+void		*ft_malloc(size_t size, t_parse *data);
+void		*ft_env_malloc(size_t size, t_parse *data);
+int			cmp_str(char *str, t_parse *data);
 int			pars_variable(char *var);
+int			is_special_char(char c);
+int			is_number(char c);
+void		get_pwd();
 void		signal_handler(int sig);
-char		**spl_msh(char *s, char c, t_leaks **heap);
-void		signal_loop(void);
+void		no_env(void);
+char		**spl_msh(char *s, char c, t_parse *data);
+void		signal_loop();
 void		ft_restore_input(void);
 void		signal_herdoc(void);
-void		print_error(int flag, char *str);
+void		print_error(t_parse *data, int flag);
 void		signal_handler(int sig);
+void		open_files(t_parse *data, t_exec *exec);
 
 /*_____________________________________________________________________________*/
 /* builitns declaration funtions */
 
-// void	putstr_fd(char *str, int fd);
-// void	ft_echo(char *str, int fd);
-// void	init_env(char **env, t_parse *data);
-// void	print_env(int	fd, t_parse *data);
-// void	global_env(char **env, t_parse *data);
-// void	add_to_env(char *var, char *egal,  char *value, t_parse *data);
-// void	print_export(int	fd, t_parse *data);
-// void	append_value(char *var,char *value, t_parse *data);
-// void	set_var_to_env(char *var, char *egal, char *value, t_parse *data);
-// int		check_export_parse(char *str);
-// void	export_with_value(char *str, t_parse *data);
-// void	_export_vars(char **str, t_parse *data);
-// void	_export(char **str, t_parse *data);
-// void	get_pwd();
-// void	unset_var_from_env(char	*var, t_parse *data);
-// void	_unset(t_parse *data);
-// void	check_cmd(t_parse *data);
-// int		already_exist(char *var, t_parse *data);
-// int		check_append(char **str);
-// int		with_egal(char *str);
+void	putstr_fd(char *str, int fd);
+void	ft_echo(char *str, int fd);
+void	init_env(char **env, t_parse *data);
+int		print_env(t_parse *data);
+void	global_env(char **env, t_parse *data);
+void	add_to_env(char *var, char *egal,  char *value, t_parse *data);
+void	print_export(t_parse *data);
+void	append_value(char *var,char *value, t_parse *data);
+void	set_var_to_env(char *var, char *egal, char *value, t_parse *data);
+int		check_export_parse(char *str, t_parse *data);
+void	export_with_value(char *str, t_parse *data);
+void	_export_vars(char **str, t_parse *data);
+void	_export(char **str, t_parse *data);
+int 	cd(char **str, t_parse *data);
+void	get_pwd(void);
+void	unset_var_from_env(char	*var, t_parse *data);
+void	_unset(t_parse *data);
+void	check_cmd(t_parse *data);
+int		already_exist(char *var, t_parse *data);
+int		check_append(char **str);
+int		with_egal(char *str);
 
 /*_____________________________________________________________________________*/
 

@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/18 17:12:35 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/08/20 10:45:43 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/11 21:09:34 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,13 +51,13 @@ static int	endstr(char const *str, char c, char c1)
 	return (l);
 }
 
-static char	*coppy(char const *str, int l, t_leaks **heap)
+static char	*coppy(char const *str, int l, t_parse *data)
 {
 	int		i;
 	char	*s1;
 
 	i = 0;
-	s1 = ft_malloc(sizeof(char) * (l + 1), heap);
+	s1 = ft_malloc(sizeof(char) * (l + 1), data);
 	if (s1 == NULL)
 		return (NULL);
 	while (i < l)
@@ -69,7 +69,7 @@ static char	*coppy(char const *str, int l, t_leaks **heap)
 	return (s1);
 }
 
-char	**ft_split(char const *s, char c, char c1, t_leaks **heap)
+char	**ft_split(char const *s, char c, char c1, t_parse *data)
 {
 	int		i;
 	char	**all;
@@ -82,14 +82,14 @@ char	**ft_split(char const *s, char c, char c1, t_leaks **heap)
 	if (s == NULL)
 		return (NULL);
 	len = count_str(s, c, c1);
-	all = ft_malloc(sizeof(char *) * (len + 1), heap);
+	all = ft_malloc(sizeof(char *) * (len + 1), data);
 	if (all == NULL)
 		return (NULL);
 	while (i < len)
 	{
 		size += start(s + size, c, c1);
 		end = endstr(s + size, c, c1);
-		all[i] = coppy(s + size, end, heap);
+		all[i] = coppy(s + size, end, data);
 		size += end;
 		i++;
 	}

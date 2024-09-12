@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/18 16:41:22 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/08/22 16:52:16 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/11 21:43:57 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,16 +99,14 @@ char	*check_qoutes(char *str, int len, t_parse *data_info)
 	i = -1;
 	n = 0;
 	l = 0;
-	data_info->line = ft_malloc(sizeof(char) * (len + 1), &data_info->heap);
-	if (!data_info->line)
-		return (print_error(F_ALLOC, NULL), NULL);
+	data_info->line = ft_malloc(sizeof(char) * (len + 1), data_info);
 	while (str[++i])
 	{
 		if (str[i] == '\"' || str[i] == '\'')
 		{
 			n = s_d_qoutes(&str[i], data_info->line, &l);
 			if (n == -1)
-				return (print_error(U_QOUTE, NULL), NULL);
+				return (print_error(data_info, U_QOUTE), NULL);
 			else
 				i += n;
 		}

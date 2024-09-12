@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/18 16:44:19 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/08/20 11:12:01 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/11 21:05:34 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,9 +34,7 @@ char	**split_and_replace(t_parse *data)
 	int		s;
 
 	i = -1;
-	data->all_cmd = ft_split(data->line, 124, 124, &data->heap);
-	if (!data->all_cmd)
-		return (free(data->line), NULL);
+	data->all_cmd = ft_split(data->line, 124, 124, data);
 	data->nbr_cmd = 0;
 	while (data->all_cmd[++i])
 		data->nbr_cmd++;

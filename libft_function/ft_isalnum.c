@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/08/31 02:10:34 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/08/31 02:10:52 by hael-ghd         ###   ########.fr       */
+/*   Created: 2024/08/31 22:27:30 by hael-ghd          #+#    #+#             */
+/*   Updated: 2024/08/31 22:28:53 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 int	ft_isalnum(int c)
 {
-	if (ft_isalpha(c) == 1 || ft_isdigit(c) == 1)
+	if (ft_isalpha(c) || ft_isdigit(c))
 		return (1);
 	return (0);
 }

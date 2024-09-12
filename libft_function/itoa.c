@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/18 17:10:43 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/08/18 17:11:05 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/11 21:15:34 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ static char	*dd(char *str, int c, int n)
 	return (str);
 }
 
-char	*i_to_a(int n)
+char	*i_to_a(int n, t_parse *data)
 {
 	int		i;
 	int		c;
@@ -64,9 +64,7 @@ char	*i_to_a(int n)
 
 	i = 0;
 	c = count_case(n, i);
-	str = malloc ((c + 1) * sizeof(char));
-	if (!str)
-		return (NULL);
+	str = ft_malloc ((c + 1) * sizeof(char), data);
 	d = dd(str, c, n);
 	return (d);
 }

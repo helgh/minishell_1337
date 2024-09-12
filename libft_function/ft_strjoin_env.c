@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strjoin.c                                       :+:      :+:    :+:   */
+/*   ft_strjoin_env.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/08/20 17:51:19 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/09/11 21:00:33 by hael-ghd         ###   ########.fr       */
+/*   Created: 2024/09/11 22:35:03 by hael-ghd          #+#    #+#             */
+/*   Updated: 2024/09/11 22:36:12 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ static void	coppy(char *all, char const *s)
 	all[i] = 0;
 }
 
-char	*ft_strjoin(char *s1, char *s2, t_parse *data)
+char	*ft_strjoin_env(char *s1, char *s2, t_parse *data)
 {
 	int		i;
 	int		s;
@@ -39,7 +39,7 @@ char	*ft_strjoin(char *s1, char *s2, t_parse *data)
 		i = ft_strlen(s1);
 	if (s2 != NULL)
 		s = ft_strlen(s2);
-	all = ft_malloc(sizeof(char) * (i + s + 1), data);
+	all = ft_env_malloc(sizeof(char) * (i + s + 1), data);
 	if (s1 != NULL)
 		coppy(all, s1);
 	if (s2 != NULL)
