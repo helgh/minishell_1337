@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 09:42:01 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/09/12 22:51:36 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/13 01:59:02 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,6 +113,7 @@ typedef struct s_parse
 
 char		**ft_split(char const *s, char c, char c1, t_parse *data);
 char		*sub_str(char *s, unsigned int start, size_t len, t_parse *data);
+char		*ft_strnstr(const char *haystack, const char *needle, size_t len);
 char		*ft_dup_str(char *s1, t_parse *data);
 char		*ft_strdup(char *s1, t_parse *data);
 char		*i_to_a(int n, t_parse *data);
@@ -128,8 +129,11 @@ int			ft_isdigit(int c);
 int			ft_isprint(int c);
 void		ft_putstr(char *str);
 
+void		print_error(t_parse * data, int flag);
+void		free_and_exit(t_parse *data);
 void		free_all_memory(t_leaks *heap);
 
+t_parse		*init_struct(char **envp);
 char		*check_qoutes(char *str, int len, t_parse *data_info);
 int			length_line(char *str);
 void		expantion(t_parse *data);
@@ -148,6 +152,7 @@ void		checker_herdoc(t_parse *data);
 int			max_herdoc(t_parse *data);
 char		*set_value_2(t_parse *data, char *str);
 void		expand_herdoc(t_parse *data);
+char		*check_access(t_parse *data, t_exec *ex);
 char		*exp_loop(t_parse *data, t_tokens *tok);
 t_exec		*ready_for_exec(t_parse *data);
 void		add_to_next(t_exec **lst, t_exec *new);
@@ -169,6 +174,9 @@ void		signal_herdoc(void);
 void		print_error(t_parse *data, int flag);
 void		signal_handler(int sig);
 void		open_files(t_parse *data, t_exec *exec);
+int			check_red_fd(t_parse *data, t_exec *ex, int flag);
+void		dup_input(t_exec *ex);
+void		dup_output(t_exec *ex, int i, int *pipe_fd);
 
 /*_____________________________________________________________________________*/
 /* builitns declaration funtions */
@@ -179,13 +187,13 @@ void	init_env(char **env, t_parse *data);
 int		print_env(t_parse *data);
 void	global_env(char **env, t_parse *data);
 void	add_to_env(char *var, char *egal,  char *value, t_parse *data);
-void	print_export(t_parse *data);
+int		print_export(t_parse *data);
 void	append_value(char *var,char *value, t_parse *data);
 void	set_var_to_env(char *var, char *egal, char *value, t_parse *data);
 int		check_export_parse(char *str, t_parse *data);
 void	export_with_value(char *str, t_parse *data);
-void	_export_vars(char **str, t_parse *data);
-void	_export(char **str, t_parse *data);
+int		_export_vars(char **str, t_parse *data);
+int		_export(char **str, t_parse *data);
 int 	cd(char **str, t_parse *data);
 void	get_pwd(void);
 void	unset_var_from_env(char	*var, t_parse *data);

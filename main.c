@@ -6,168 +6,20 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 09:44:43 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/09/12 23:11:12 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/13 02:34:47 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	free_and_exit(t_parse *data)
-{
-	if (data->heap)
-		free_all_memory(data->heap);
-	if (data->heap_env)
-		free_all_memory(data->heap_env);
-	if (data->r_line)
-		free(data->r_line);
-	if (data)
-		free(data);
-	exit (EXIT_FAILURE);
-}
-
-void	print_error(t_parse * data, int flag)
-{
-	if (flag == F_ALLOC)
-	{
-		putstr_fd("M_H: Failed allocation!\n", 2);
-		free_and_exit(data);
-	}
-	else if (flag == S_ERROR)
-		putstr_fd("M_H: syntax error near unexpected token `newline'\n", 2);
-	else if (flag == U_QOUTE)
-		putstr_fd("Error: Unclosed qoutes!\n", 2);
-	else if (flag == MAX_HER)
-	{
-		putstr_fd("M_H: maximum here-document count exceeded\n", 2);
-		free_and_exit(data);
-	}
-}
-
-char	*ft_strnstr(const char *haystack, const char *needle, size_t len)
-{
-	size_t	i;
-	size_t	j;
-	char	*str;
-	char	*tofind;
-
-	i = 0;
-	str = (char *) haystack;
-	tofind = (char *) needle;
-	if (tofind[i] == 0)
-		return (str);
-	while (i < len && str[i] != 0)
-	{
-		j = 0;
-		while (str[i + j] == tofind[j] && (i + j) < len)
-		{
-			if (tofind[j + 1] == 0)
-				return (str + i);
-			j++;
-		}
-		i++;
-	}
-	return (0);
-}
-
-t_parse	*init_struct(char **envp)
-{
-	t_parse	*data_info;
-
-	data_info = malloc(sizeof(t_parse));
-	if (!data_info)
-		return (putstr_fd("M_H: Failed allocation!\n", 2), NULL);
-	data_info->envir = NULL;
-	data_info->heap = NULL;
-	data_info->heap_env = NULL;
-	data_info->env = NULL;
-	data_info->exit_status = 0;
-	data_info->flag = 0;
-	init_env(envp, data_info);
-	return (data_info);
-}
-
-int	check_red_fd(t_parse *data, t_exec *ex)
-{
-	int	i;
-
-	i = -1;
-	if (ex->check_flag == -1)
-		return (1);
-	if (ex->herdoc)
-	{
-		ex->red_herdoc = open("/tmp/herdoc", O_RDONLY);
-		if (ex->red_herdoc == -1)
-		{
-			putstr_fd("file_herdoc", 2);
-			perror("");
-			return (1);
-		}
-		while (data->fd[++i] != -1)
-			;
-		data->fd[i] = ex->red_herdoc;
-		data->fd[++i] = -1;
-	}
-	return (0);
-}
-
-char	*path_env(char **envp)
-{
-	char	*envir;
-
-	while (ft_strncmp(*envp, "PATH=", 5) != 0)
-		envp++;
-	envir = ft_strnstr(*envp, "/", 6);
-	return (envir);
-}
-
-int		execute_cmd(char **cmd, char *path, char **envp)
+void	execute_cmd(char **cmd, char *path, char **envp)
 {
 	if (execve(path, cmd, envp))
 		printf("error");
-	return (0);
+	exit(EXIT_FAILURE);
 }
 
-int		check_slash(char *str)
-{
-	int	i;
-
-	i = -1;
-	while (str[++i])
-	{
-		if (str[i] == '/')
-			return (1);
-	}
-	return (0);
-}
-
-int		check_access(t_parse *data, t_exec *ex)
-{
-	char	**spl_env;
-	char	**s;
-	char	*path;
-
-	spl_env = ft_split(path_env(data->env), ':', ':', data);
-	s = spl_env;
-	path = ex->cmd[0];
-	while (!check_slash(ex->cmd[0]) && *(spl_env++) != NULL)
-	{
-		*spl_env = ft_strjoin(*spl_env, "/", data);
-		path = ft_strjoin(*spl_env, ex->cmd[0], data);
-		if (access(path, F_OK | X_OK) == -1 && *(spl_env + 1) == NULL)
-		{
-			putstr_fd("M_H: ", 2);
-			putstr_fd(ex->cmd[0], 2);
-			putstr_fd(": command not found\n", 2);
-			return (-1);
-		}
-		else if (access(path, F_OK | X_OK) != -1)
-			break ;
-	}
-	execute_cmd(ex->cmd, path, data->env);
-	return (0);
-}
-
-int	arg_env(char **cmd)
+int	arg_env(t_parse *data, char **cmd)
 {
 	int	i;
 
@@ -179,20 +31,11 @@ int	arg_env(char **cmd)
 			putstr_fd("env: ", 2);
 			putstr_fd(cmd[i], 2);
 			putstr_fd(": No such file or directory\n", 2);
+			data->exit_status = 1;
 			return (1);
 		}
 	}
 	return (0);
-}
-
-void	dup_files(t_exec *ex, int i, int *pipe_fd)
-{
-	close(pipe_fd[0]);
-	if (ex->red_out == 1 && i == 0)
-		dup2(pipe_fd[1], STDOUT_FILENO);
-	else
-		dup2(ex->red_out, STDOUT_FILENO);
-	close(pipe_fd[1]);
 }
 
 int	check_if_builtin(t_parse *data, t_exec *ex)
@@ -207,35 +50,51 @@ int	check_if_builtin(t_parse *data, t_exec *ex)
 
 void	exec_builtin(t_parse *data, t_exec *ex, int i, int *pipe_fd)
 {
-	dup_files(ex, i, pipe_fd);
+	int	std_out;
+
+	std_out = dup(STDOUT_FILENO);
+	if (i != 1)
+		dup2(pipe_fd[0], 0);
+	dup_output(ex, i, pipe_fd);
 	if (!ft_strcmp(ex->cmd[0], "env"))
 	{
-		if (!arg_env(ex->cmd))
-			print_env(data);
+		if (!arg_env(data, ex->cmd))
+			data->exit_status = print_env(data);
 	}
-	// else if (!ft_strcmp(ex->cmd[0], "export"))
-	// 	_export(ex->cmd, data);
+	else if (!ft_strcmp(ex->cmd[0], "export"))
+		data->exit_status = _export(ex->cmd, data);
+	dup2(std_out, STDOUT_FILENO);
+	close(std_out);
 }
 
 void	child_process(t_parse *data, t_exec *ex, int i, int *pipe_fd)
 {
-	int	pid;
+	int		pid;
+	char	*path;
 
+	path = check_access(data, ex);
 	pid = fork();
 	if (pid < 0)
 		return ;
 	else if (pid == 0)
 	{
-		if (ex->red_herdoc)
-			dup2(ex->red_herdoc, 0);
-		else if (ex->red_in)
-			dup2(ex->red_in, 0);
-		dup_files(ex, i, pipe_fd);
-		check_access(data, ex);
+		if (!path)
+			exit(127);
+		dup_input(ex);
+		dup_output(ex, i, pipe_fd);
+		execute_cmd(ex->cmd, path, data->env);
 	}
 	else
 	{
 		close(pipe_fd[1]);
+		if (i == 1)
+		{
+			waitpid(pid, &data->exit_status, 0);
+			if (WIFEXITED(data->exit_status))
+        		data->exit_status = WEXITSTATUS(data->exit_status);
+			// else if (WIFSIGNALED(data->exit_status))
+       		// 	data->exit_status = WTERMSIG(data->exit_status);
+		}
 		dup2(pipe_fd[0], 0);
 		close(pipe_fd[0]);
 	}
@@ -247,10 +106,10 @@ void	_exec(t_parse *data, t_exec *ex, int i)
 
 	if (pipe(pipe_fd) == -1)
 		return (print_error(data, F_ALLOC));
-	// if (!check_if_builtin(data, ex))
-	// 	exec_builtin(data, ex, i, pipe_fd);
-	// else
-	child_process(data, ex, i, pipe_fd);
+	if (!check_if_builtin(data, ex))
+		exec_builtin(data, ex, i, pipe_fd);
+	else
+		child_process(data, ex, i, pipe_fd);
 }
 
 void	execution_part(t_parse *data, t_exec *exec)
@@ -270,7 +129,7 @@ void	execution_part(t_parse *data, t_exec *exec)
 	{
 		if (i == data->nbr_cmd - 1)
 			flag = 1;
-		if (!check_red_fd(data, ex))
+		if (!check_red_fd(data, ex, flag))
 			_exec(data, ex, flag);
 		ex = ex->next;
 	}
@@ -331,10 +190,14 @@ int	main(int ac, char **av, char **envp)
 
 	(void) av;
 	if (ac != 1)
-		exit(EXIT_FAILURE);
+	{
+		putstr_fd("M_H: ", 2);
+		putstr_fd(av[1], 2);
+		putstr_fd(": No such file or directory\n", 2);
+		return (1);
+	}
 	data_info = init_struct(envp);
 	if (!data_info)
 		return (1);
 	minishell(data_info);
-	// free (data_info);
 }

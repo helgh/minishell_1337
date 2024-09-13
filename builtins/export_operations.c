@@ -6,11 +6,49 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 03:29:25 by mthamir           #+#    #+#             */
-/*   Updated: 2024/09/11 23:47:34 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/13 02:00:19 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
+
+void	init_index(t_parse **data)
+{
+	t_env	*env;
+
+	env = (*data)->envir;
+	while (env)
+	{
+		env->index = 0;
+		env = env->next;
+	}
+}
+
+int	sort_list(t_parse **data)
+{
+	t_env	*slow;
+	t_env	*fast;
+	int		max;
+
+	init_index(data);
+	slow = (*data)->envir;
+	fast = (*data)->envir;
+	while (slow)
+	{
+		fast = (*data)->envir;
+		while (fast)
+		{
+			if (ft_strcmp(slow->var, fast->var) < 0)
+			{
+				fast->index++;
+				max = fast->index;
+			}
+			fast = fast->next;
+		}
+		slow = slow->next;
+	}
+	return (max);
+}
 
 void init_first(char *var, char *egal, char *value, t_parse *data)
 {
@@ -72,33 +110,33 @@ void	print_var(t_env env)
 		ft_putstr("\n");
 }
 
-// void	print_export(t_parse *data)
-// {
-	// t_env	*env;
-	// int		index;
-	// int		max;
+int	print_export(t_parse *data)
+{
+	t_env	*env;
+	int		index;
+	int		max;
 
-	// init_index(&data);
-	// env = data->envir;
-	// if (!env)
-	// 	return (putstr_fd("envriment is empty\n", 2), 1);
-	// index = 0;
-	// max = sort_list(&data);
-	// while (1)
-	// {
-	// 	env = data->envir;
-	// 	while (env)
-	// 	{
-	// 		if (index > (max + 1))
-	// 			return (0);
-	// 		if (env->index == index)
-	// 			print_var(*env);
-	// 		env = env->next;
-	// 	}
-	// 	index++;
-	// }
-	// return (0);
-// }
+	init_index(&data);
+	env = data->envir;
+	if (!env)
+		return (putstr_fd("envriment is empty\n", 2), 1);
+	index = 0;
+	max = sort_list(&data);
+	while (1)
+	{
+		env = data->envir;
+		while (env)
+		{
+			if (index > (max + 1))
+				return (0);
+			if (env->index == index)
+				print_var(*env);
+			env = env->next;
+		}
+		index++;
+	}
+	return (0);
+}
 
 void	append_value(char *var, char *value, t_parse *data)
 {

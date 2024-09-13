@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/01 23:03:37 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/09/12 01:20:54 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/13 01:42:54 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,34 @@ void	put_str(char *str, int fd)
     while (str[++i])
         write(fd, &str[i], 1);
 	write(2, ": ", 2);
+}
+
+int	check_red_fd(t_parse *data, t_exec *ex, int flag)
+{
+	int	i;
+
+	i = -1;
+	if (ex->check_flag == 1 && flag == 1)
+		data->exit_status = 1;
+	if (ex->check_flag == -1)
+		return (1);
+	if (ex->herdoc)
+	{
+		ex->red_herdoc = open("/tmp/herdoc", O_RDONLY);
+		if (ex->red_herdoc == -1)
+		{
+			putstr_fd("file_herdoc", 2);
+			perror("");
+			if (flag == 1)
+				data->exit_status = 1;
+			return (1);
+		}
+		while (data->fd[++i] != -1)
+			;
+		data->fd[i] = ex->red_herdoc;
+		data->fd[++i] = -1;
+	}
+	return (0);
 }
 
 static int	file_herdoc(t_exec *ex)
