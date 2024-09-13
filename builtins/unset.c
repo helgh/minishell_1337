@@ -6,49 +6,53 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 02:11:28 by mthamir           #+#    #+#             */
-/*   Updated: 2024/09/01 00:21:16 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/13 03:40:46 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-// void	unset_var_from_env(char	*var, t_parse *data)
-// {
-// 	t_env *tmp;
-// 	t_env *tmp1;
-// 	t_env *env ;
+static int	check_unset_parse(char *var)
+{
+	int	i;
 
-// 	env = data->envir;
-// 	if (!pars_variable(var))
-// 		{
-// 			printf("syntax error");
-// 			exit(0);
-// 		}
-// 	while (env->next && ft_strcmp(env->next->var, var))
-// 		env = env->next;
-// 	if (!env->next)
-// 		return ;
-// 	if (!ft_strcmp(env->next->var, var))
-// 	{
-// 		tmp = env;
-// 		tmp1 = tmp->next;
-// 		tmp1->next = NULL;
-// 		env = env->next->next;
-// 		tmp->next = env;
-// 		free(tmp1);
-// 	}
-// }
+	i = -1;
+	while (var[++i])
+	{
+		if (!ft_isalnum(var[i]) && var[i] != '_')
+			return (1);
+		if (i == 0 && !ft_isalpha(var[i]) && var[i] != '_')
+			return (1);
+	}
+	return (0);
+}
 
+static int	unset_var_from_env(char	*var, t_parse *data)
+{
+	t_env	*env ;
 
-// void	_unset(t_parse *data)
-// {
-// 	char **str ;
-// 	int i = 1;
-// 	str = ft_split(data->r_line, 32, 9, &data->heap);
+	env = data->envir;
+	if (check_unset_parse(var))
+	{
+		printf("M_H: unset: `%s\': not a valid identifier", var);
+		return (1);
+	}
+	while (env->next && ft_strcmp(env->next->var, var))
+		env = env->next;
+	if (env->next)
+		env->next = env->next->next;
+	return (0);
+}
 
-// 	while (str[i])
-// 	{
-// 		unset_var_from_env(str[i], data);
-// 		i++;
-// 	}
-// }
+int	_unset(char **str, t_parse *data)
+{
+	int	i;
+	int	ret;
+
+	i = 0;
+	ret = 0;
+	while (str[++i])
+		if (unset_var_from_env(str[i], data))
+			ret = 1;
+	return (ret);
+}

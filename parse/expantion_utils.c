@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/18 17:04:26 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/09/12 01:45:12 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/13 03:48:37 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,7 @@ static char	*cmp_with_env(t_parse *data, char *str, int len)
 	l = ft_strlen(tmp->value);
 	s = ft_malloc(l + 1, data);
 	l = -1;
-	while (tmp->value[++l])
+	while (tmp->value && tmp->value[++l])
 		s[l] = tmp->value[l];
 	s[l] = 0;
 	return (s);

@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 09:44:43 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/09/13 02:34:47 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/13 04:01:55 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 void	execute_cmd(char **cmd, char *path, char **envp)
 {
 	if (execve(path, cmd, envp))
-		printf("error");
+		perror("M_H");
 	exit(EXIT_FAILURE);
 }
 
@@ -45,6 +45,12 @@ int	check_if_builtin(t_parse *data, t_exec *ex)
 		return (0);
 	else if (!ft_strcmp(ex->cmd[0], "export"))
 		return (0);
+	else if (!ft_strcmp(ex->cmd[0], "cd"))
+		return (0);
+	else if (!ft_strcmp(ex->cmd[0], "echo"))
+		return (0);
+	else if (!ft_strcmp(ex->cmd[0], "unset"))
+		return (0);
 	return (1);
 }
 
@@ -63,6 +69,12 @@ void	exec_builtin(t_parse *data, t_exec *ex, int i, int *pipe_fd)
 	}
 	else if (!ft_strcmp(ex->cmd[0], "export"))
 		data->exit_status = _export(ex->cmd, data);
+	else if (!ft_strcmp(ex->cmd[0], "cd"))
+		data->exit_status = cd(ex->cmd, data);
+	else if (!ft_strcmp(ex->cmd[0], "echo"))
+		data->exit_status = ft_echo(ex->cmd);
+	else if (!ft_strcmp(ex->cmd[0], "unset"))
+		data->exit_status = _unset(ex->cmd, data);
 	dup2(std_out, STDOUT_FILENO);
 	close(std_out);
 }

@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 09:42:01 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/09/13 01:59:02 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/13 03:41:11 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -182,7 +182,6 @@ void		dup_output(t_exec *ex, int i, int *pipe_fd);
 /* builitns declaration funtions */
 
 void	putstr_fd(char *str, int fd);
-void	ft_echo(char *str, int fd);
 void	init_env(char **env, t_parse *data);
 int		print_env(t_parse *data);
 void	global_env(char **env, t_parse *data);
@@ -195,11 +194,20 @@ void	export_with_value(char *str, t_parse *data);
 int		_export_vars(char **str, t_parse *data);
 int		_export(char **str, t_parse *data);
 int 	cd(char **str, t_parse *data);
+int		to_home(t_parse *data);
+int		switch_the_old(t_parse *data);
+int		to_the_root(t_parse *data);
+int		same_dir(t_parse *data);
+char	*get_value(char *var, t_parse *data);
+void	parent_removed(char *path, t_parse *data);
+int		go_to_path(char *path, t_parse *data);
+void	print_cd_err(void);
 void	get_pwd(void);
-void	unset_var_from_env(char	*var, t_parse *data);
-void	_unset(t_parse *data);
+// void	unset_var_from_env(char	*var, t_parse *data);
+int		_unset(char **str, t_parse *data);
 void	check_cmd(t_parse *data);
 int		already_exist(char *var, t_parse *data);
+int		ft_echo(char **str);
 int		check_append(char **str);
 int		with_egal(char *str);
 

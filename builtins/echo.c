@@ -6,15 +6,15 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 02:11:03 by mthamir           #+#    #+#             */
-/*   Updated: 2024/09/03 14:48:14 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/13 03:08:02 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-void putstr_fd(char *str, int fd)
+void	putstr_fd(char *str, int fd)
 {
-	int i ;
+	int	i;
 
 	i = -1;
 	if (!str)
@@ -23,27 +23,44 @@ void putstr_fd(char *str, int fd)
 		write(fd, &str[i], 1);
 }
 
-// int	check_option(char *option)
-// {
-// 	int i = 0;
+static int	check_n_option(char *str)
+{
+	int	i;
 
-// 	if (option[i] == '-')
-// 		i++;
-// 	else
-// 		return (1);
-// 	while (option[i])
-// 	{
-// 		if (option[i] == 'n')
-// 			i++;
-// 		else
-// 			return (1);
-// 	}
-// 	return (0);
-// }
-// void ft_echo(char *str, int fd, char *option, int quot)
-// {
-// 	if (option)
-// 		if (check_option(option))
-// 			write(1, "\n", 1);
-// 	putstr_fd(str, fd);
-// }
+	i = -1;
+	if (!str)
+		return (-1);
+	if (str[++i] != '-')
+		return (1);
+	while (str[++i] == 'n')
+		;
+	if (str[i] == 0)
+		return (2);
+	return (1);
+}
+
+int	ft_echo(char **str)
+{
+	int	i;
+	int	j;
+	int	newline;
+
+	newline = 1;
+	j = 0;
+	if (!str[1])
+		return (ft_putstr("\n"), 0);
+	while (str[++j] && check_n_option(str[j]) != 1)
+		;
+	i = j;
+	if (i > 1)
+		newline = 0;
+	while (str[i] && i != -1)
+	{
+		ft_putstr(str[i++]);
+		if (str[i])
+			ft_putstr(" ");
+	}
+	if (newline)
+		ft_putstr("\n");
+	return (0);
+}
