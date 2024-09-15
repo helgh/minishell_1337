@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/13 00:03:46 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/09/15 00:52:27 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/15 02:07:51 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,7 @@ char	*check_access(t_parse *data, t_exec *ex)
 	ex->cmd = get_cmd(data, ex);
 	if (!ex->cmd)
 		return (NULL);
+	path = ex->cmd[0];
 	while (!check_slash(ex->cmd[0]) && *(spl_env++) != NULL)
 	{
 		*spl_env = ft_strjoin(*spl_env, "/", data);

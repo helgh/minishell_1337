@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 02:11:28 by mthamir           #+#    #+#             */
-/*   Updated: 2024/09/13 03:40:46 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/15 02:03:50 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,9 @@ static int	unset_var_from_env(char	*var, t_parse *data)
 	env = data->envir;
 	if (check_unset_parse(var))
 	{
-		printf("M_H: unset: `%s\': not a valid identifier", var);
+		putstr_fd("M_H: unset: `", 2);
+		putstr_fd(var, 2);
+		putstr_fd("': not a valid identifier\n", 2);
 		return (1);
 	}
 	while (env->next && ft_strcmp(env->next->var, var))

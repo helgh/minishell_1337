@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 09:44:43 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/09/15 01:18:52 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/15 02:08:24 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ int	arg_env(t_parse *data, char **cmd)
 			putstr_fd("env: ", 2);
 			putstr_fd(cmd[i], 2);
 			putstr_fd(": No such file or directory\n", 2);
-			data->exit_status = 1;
+			data->exit_status = 127;
 			return (1);
 		}
 	}
@@ -171,12 +171,17 @@ void	execution_part(t_parse *data, t_exec *exec)
 	if (WIFSIGNALED(data->exit_status))
 	{
 		if (WTERMSIG(data->exit_status) == SIGINT)
+		{
 			write(1, "\n", 1);
-		if (WTERMSIG(data->exit_status) == SIGQUIT)
+			data->exit_status = WTERMSIG(data->exit_status) + 128;
+		}
+		else if (WTERMSIG(data->exit_status) == SIGQUIT)
+		{
 			printf("Quit: 3\n");
-		data->exit_status = WTERMSIG(data->exit_status) + 128;
+			data->exit_status = WTERMSIG(data->exit_status) + 128;
+		}
 	}
-	else
+	else if (WIFEXITED(data->exit_status))
 		data->exit_status = WEXITSTATUS(data->exit_status);
 	dup2(std_in, STDIN_FILENO);
 	close (std_in);
@@ -217,6 +222,7 @@ void	minishell(t_parse *data)
 		if (!data->r_line)
 			return (free_and_exit(data, 1));
 		exec = parsing_part(data->r_line, data);
+		// printf("%s\n", exec->cmd[0]);
 		if (exec)
 			execution_part(data, exec);
 		if (*data->r_line)
