@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 09:42:01 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/09/14 01:35:56 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/15 03:19:55 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,6 +118,7 @@ char		*sub_str(char *s, unsigned int start, size_t len, t_parse *data);
 char		*ft_strnstr(const char *haystack, const char *needle, size_t len);
 char		*ft_dup_str(char *s1, t_parse *data);
 char		*ft_strdup(char *s1, t_parse *data);
+int			ft_atoi(const char *str);
 char		*i_to_a(int n, t_parse *data);
 char		*join_str(t_parse *data, char *str, char *s, int l);
 char		*ft_strjoin(char *s1, char *s2, t_parse *data);
@@ -211,6 +212,9 @@ int		already_exist(char *var, t_parse *data);
 int		ft_echo(char **str);
 int		check_append(char **str);
 int		with_egal(char *str);
+void	increment_shlvl(t_parse *data);
+void	init_index(t_parse **data);
+int		sort_list(t_parse **data);
 
 /*_____________________________________________________________________________*/
 

@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 03:29:25 by mthamir           #+#    #+#             */
-/*   Updated: 2024/09/13 23:42:37 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/15 03:19:31 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,32 +22,6 @@ void	init_index(t_parse **data)
 		env->index = 0;
 		env = env->next;
 	}
-}
-
-int	sort_list(t_parse **data)
-{
-	t_env	*slow;
-	t_env	*fast;
-	int		max;
-
-	init_index(data);
-	slow = (*data)->envir;
-	fast = (*data)->envir;
-	while (slow)
-	{
-		fast = (*data)->envir;
-		while (fast)
-		{
-			if (ft_strcmp(slow->var, fast->var) < 0)
-			{
-				fast->index++;
-				max = fast->index;
-			}
-			fast = fast->next;
-		}
-		slow = slow->next;
-	}
-	return (max);
 }
 
 void init_first(char *var, char *egal, char *value, t_parse *data)

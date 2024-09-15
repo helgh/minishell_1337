@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 09:44:43 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/09/15 02:08:24 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/15 04:26:38 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,8 +79,6 @@ void	exec_builtin(t_parse *data, t_exec *ex, int i, int *pipe_fd)
 		data->exit_status = _unset(ex->cmd, data);
 	else if (!ft_strcmp(ex->cmd[0], "pwd"))
 		data->exit_status = get_pwd();
-	// else if (!ft_strcmp(ex->cmd[0], "exit"))
-	// 	data->exit_status = ft_exit(ex->cmd);
 	dup2(std_out, STDOUT_FILENO);
 	close(std_out);
 }
@@ -222,7 +220,6 @@ void	minishell(t_parse *data)
 		if (!data->r_line)
 			return (free_and_exit(data, 1));
 		exec = parsing_part(data->r_line, data);
-		// printf("%s\n", exec->cmd[0]);
 		if (exec)
 			execution_part(data, exec);
 		if (*data->r_line)
@@ -248,5 +245,6 @@ int	main(int ac, char **av, char **envp)
 	data_info = init_struct(envp);
 	if (!data_info)
 		return (1);
+	increment_shlvl(data_info);
 	minishell(data_info);
 }

@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/06 12:43:11 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/09/11 21:00:43 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/15 04:26:22 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,6 @@ char    **l_list_to_array(t_parse *data)
         list[i] = ft_strjoin(list[i], head->value, data);
         head = head->next;
     }
-    list[i] = NULL;
+    list[++i] = NULL;
     return (list);
 }
