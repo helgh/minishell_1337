@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/18 17:14:42 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/08/18 17:15:03 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/14 02:26:55 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,10 @@ int	ft_strlen(char *str)
 {
 	int	i;
 
-	i = -1;
-	if (!str)
+	i = 0;
+	if (!str || str[0] == 0)
 		return (0);
-	while (str[++i])
-		;
+	while (str[i])
+		i++;
 	return (i);
 }

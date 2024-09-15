@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 02:10:41 by mthamir           #+#    #+#             */
-/*   Updated: 2024/09/13 02:02:35 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/14 03:56:42 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,12 +54,7 @@ void	export_with_value(char *str, t_parse *data)
 			set_var_to_env(spl[0], "=", spl[1], data);
 	}
 	else if (spl)
-	{
-		if (!spl[1])
-			add_to_env(spl[0], "=", NULL, data);
-		else
-			add_to_env(spl[0], "=", spl[1], data);
-	}
+		add_to_env(spl[0], "=", spl[1], data);
 }
 
 int	with_egal(char *str)
@@ -100,7 +95,7 @@ int	_export_vars(char **str, t_parse *data)
 				if (!already_exist(str[i], data))
 					continue ;
 				else
-					add_to_env(str[i], NULL, NULL, data);
+					add_to_env(str[i], NULL, "\0", data);
 			}
 		}
 	}

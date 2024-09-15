@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/12 23:45:14 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/09/12 23:46:25 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/14 01:37:01 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ void	free_all_memory(t_leaks *heap)
 	}
 }
 
-void	free_and_exit(t_parse *data)
+void	free_and_exit(t_parse *data, unsigned char ex)
 {
 	if (data->heap)
 		free_all_memory(data->heap);
@@ -43,7 +43,7 @@ void	free_and_exit(t_parse *data)
 		free(data->r_line);
 	if (data)
 		free(data);
-	exit (EXIT_FAILURE);
+	exit(ex);
 }
 
 void	print_error(t_parse * data, int flag)
@@ -51,7 +51,7 @@ void	print_error(t_parse * data, int flag)
 	if (flag == F_ALLOC)
 	{
 		putstr_fd("M_H: Failed allocation!\n", 2);
-		free_and_exit(data);
+		free_and_exit(data, 1);
 	}
 	else if (flag == S_ERROR)
 		putstr_fd("M_H: syntax error near unexpected token `newline'\n", 2);
@@ -60,6 +60,6 @@ void	print_error(t_parse * data, int flag)
 	else if (flag == MAX_HER)
 	{
 		putstr_fd("M_H: maximum here-document count exceeded\n", 2);
-		free_and_exit(data);
+		free_and_exit(data, 1);
 	}
 }

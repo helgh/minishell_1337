@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/28 02:31:17 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/09/11 21:45:12 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/15 00:38:45 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,16 +50,16 @@ char	**div_arg(t_cmd_info *cmd, char **spl, int flag, t_exec *exec)
 	s = 0;
 	tok = cmd->token;
 	exec->herdoc = NULL;
-	while (flag > 0 && tok)
+	while (tok)
 	{
-		if (!ft_strcmp(tok->type, "cmd") && i == 0)
+		if (!ft_strcmp(tok->type, "cmd") && tok->str[0] && i == 0)
 			i = 1;
-		else if (!ft_strcmp(tok->type, "cmd") || !ft_strcmp(tok->type, "option")
-				|| !ft_strcmp(tok->type, "arg"))
+		else if ((!ft_strcmp(tok->type, "cmd") || !ft_strcmp(tok->type, "option")
+				|| !ft_strcmp(tok->type, "arg")) && tok->str[0])
 			spl[flag++] = tok->str;
-		else if (!ft_strcmp(tok->type, "delim"))
+		else if (!ft_strcmp(tok->type, "delim") && tok->str[0])
 			exec->herdoc = tok->str;
-		else if (!ft_strcmp(tok->type, "in_file"))
+		else if (!ft_strcmp(tok->type, "in_file") && tok->str[0])
 			exec->herdoc = NULL;
 		tok = tok->next;
 	}
@@ -67,7 +67,7 @@ char	**div_arg(t_cmd_info *cmd, char **spl, int flag, t_exec *exec)
 	return (spl);
 }
 
-char	**cmd_opt_arg(t_parse * data, t_cmd_info *cmd, int len, t_exec *exec)
+char	**cmd_opt_arg(t_parse *data, t_cmd_info *cmd, int len, t_exec *exec)
 {
 	t_tokens	*tok;
 	char		**spl;
@@ -80,10 +80,11 @@ char	**cmd_opt_arg(t_parse * data, t_cmd_info *cmd, int len, t_exec *exec)
 	flag = 0;
 	while (tok)
 	{
-		if (!ft_strcmp(tok->type, "cmd"))
+		if (!ft_strcmp(tok->type, "cmd") && tok->str[0])
 		{
 			spl[0] = tok->str;
 			flag = 1;
+			exec->flag_ex = tok->flag_ex;
 			break ;
 		}
 		tok = tok->next;
@@ -135,6 +136,7 @@ t_exec	*ready_for_exec(t_parse *data)
 		tmp->red_in = 0;
 		tmp->red_out = 1;
 		tmp->red_herdoc = 0;
+		tmp->check_flag = 0;
 		tmp->check_flag = 0;
 		tmp->pos = i;
 		tmp->next = NULL;

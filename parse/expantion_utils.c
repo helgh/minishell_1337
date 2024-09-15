@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/18 17:04:26 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/09/13 03:48:37 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/15 00:37:19 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,10 +76,10 @@ static char	*cmp_with_env(t_parse *data, char *str, int len)
 	{
 		if (ft_strncmp(&str[len + 1], tmp->var, f - len - 1) == 0)
 			break ;
-			tmp = tmp->next;
+		tmp = tmp->next;
 	}
 	if (!tmp)
-		return (NULL);
+		return (ft_dup_str("", data));
 	l = ft_strlen(tmp->value);
 	s = ft_malloc(l + 1, data);
 	l = -1;

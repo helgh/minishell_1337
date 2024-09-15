@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 09:44:43 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/09/13 04:01:55 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/15 01:18:52 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,8 @@ int	check_if_builtin(t_parse *data, t_exec *ex)
 		return (0);
 	else if (!ft_strcmp(ex->cmd[0], "unset"))
 		return (0);
+	else if (!ft_strcmp(ex->cmd[0], "pwd"))
+		return (0);
 	return (1);
 }
 
@@ -75,6 +77,10 @@ void	exec_builtin(t_parse *data, t_exec *ex, int i, int *pipe_fd)
 		data->exit_status = ft_echo(ex->cmd);
 	else if (!ft_strcmp(ex->cmd[0], "unset"))
 		data->exit_status = _unset(ex->cmd, data);
+	else if (!ft_strcmp(ex->cmd[0], "pwd"))
+		data->exit_status = get_pwd();
+	// else if (!ft_strcmp(ex->cmd[0], "exit"))
+	// 	data->exit_status = ft_exit(ex->cmd);
 	dup2(std_out, STDOUT_FILENO);
 	close(std_out);
 }
@@ -84,12 +90,16 @@ void	child_process(t_parse *data, t_exec *ex, int i, int *pipe_fd)
 	int		pid;
 	char	*path;
 
+	signal(SIGQUIT, SIG_IGN);
+	signal(SIGINT, SIG_IGN);
 	path = check_access(data, ex);
 	pid = fork();
 	if (pid < 0)
 		return ;
 	else if (pid == 0)
 	{
+		signal(SIGQUIT, SIG_DFL);
+		signal(SIGINT, SIG_DFL);
 		if (!path)
 			exit(127);
 		dup_input(ex);
@@ -99,26 +109,35 @@ void	child_process(t_parse *data, t_exec *ex, int i, int *pipe_fd)
 	else
 	{
 		close(pipe_fd[1]);
-		if (i == 1)
-		{
-			waitpid(pid, &data->exit_status, 0);
-			if (WIFEXITED(data->exit_status))
-        		data->exit_status = WEXITSTATUS(data->exit_status);
-			// else if (WIFSIGNALED(data->exit_status))
-       		// 	data->exit_status = WTERMSIG(data->exit_status);
-		}
 		dup2(pipe_fd[0], 0);
 		close(pipe_fd[0]);
 	}
 }
 
-void	_exec(t_parse *data, t_exec *ex, int i)
+static int    ft_lenl(t_exec *ex)
+{
+    t_exec   *head;
+    int     count;
+
+    count = 0;
+    head = ex;
+    while (head)
+    {
+        count++;
+        head = head->next;
+    }
+    return (count);
+}
+
+void	_exec(t_parse *data, t_exec *ex, int i, int len)
 {
 	int	pipe_fd[2];
 
 	if (pipe(pipe_fd) == -1)
 		return (print_error(data, F_ALLOC));
-	if (!check_if_builtin(data, ex))
+	if (!ft_strcmp(ex->cmd[0], "exit"))
+		ft_exit(data, ex->cmd, ex, len);
+	else if (!check_if_builtin(data, ex))
 		exec_builtin(data, ex, i, pipe_fd);
 	else
 		child_process(data, ex, i, pipe_fd);
@@ -130,6 +149,7 @@ void	execution_part(t_parse *data, t_exec *exec)
 	int		i;
 	int		flag;
 	int		std_in;
+	int		len;
 
 	i = -1;
 	ex = exec;
@@ -137,16 +157,27 @@ void	execution_part(t_parse *data, t_exec *exec)
 	open_files(data, exec);
 	std_in = dup(STDIN_FILENO);
 	data->env = l_list_to_array(data);
+	len = ft_lenl(ex);
 	while (++i < data->nbr_cmd)
 	{
 		if (i == data->nbr_cmd - 1)
 			flag = 1;
 		if (!check_red_fd(data, ex, flag))
-			_exec(data, ex, flag);
+			_exec(data, ex, flag, len);
 		ex = ex->next;
 	}
-	while (wait(NULL) != -1)
+	while (wait(&data->exit_status) != -1)
 		;
+	if (WIFSIGNALED(data->exit_status))
+	{
+		if (WTERMSIG(data->exit_status) == SIGINT)
+			write(1, "\n", 1);
+		if (WTERMSIG(data->exit_status) == SIGQUIT)
+			printf("Quit: 3\n");
+		data->exit_status = WTERMSIG(data->exit_status) + 128;
+	}
+	else
+		data->exit_status = WEXITSTATUS(data->exit_status);
 	dup2(std_in, STDIN_FILENO);
 	close (std_in);
 }
@@ -182,9 +213,9 @@ void	minishell(t_parse *data)
 	{
 		signal_loop();
 		data->cmd_info = NULL;
-		data->r_line = readline("\033[0;31mM_H$\033[0m ");
+		data->r_line = readline("\001\033[0;31m\002M_H$\001\033[0m\002 ");
 		if (!data->r_line)
-			return (free_and_exit(data));
+			return (free_and_exit(data, 1));
 		exec = parsing_part(data->r_line, data);
 		if (exec)
 			execution_part(data, exec);

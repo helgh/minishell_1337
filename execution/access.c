@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/13 00:03:46 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/09/13 04:02:19 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/15 00:52:27 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ static int	check_slash(char *str)
 	int	i;
 
 	i = -1;
-	while (str[++i])
+	while (str && str[++i])
 	{
 		if (str[i] == '/')
 			return (1);
@@ -42,12 +42,17 @@ static char	**get_cmd(t_parse *data, t_exec *ex)
 
 	i = -1;
 	str = NULL;
-	while (ex->cmd[++i])
+	if (ex->flag_ex)
 	{
-		str = ft_strjoin(str, ex->cmd[i], data);
-		str = ft_strjoin(str, " ", data);
+		i = -1;
+		while (ex->cmd[++i])
+		{
+			str = ft_strjoin(str, ex->cmd[i], data);
+			str = ft_strjoin(str, " ", data);
+		}
+		return(ft_split(str, 32, 32, data));
 	}
-	return(ft_split(str, 32, 32, data));
+	return (ex->cmd);
 }
 
 char	*check_access(t_parse *data, t_exec *ex)
@@ -57,9 +62,10 @@ char	*check_access(t_parse *data, t_exec *ex)
 	char	*path;
 
 	spl_env = ft_split(path_env(data->env), ':', ':', data);
-	s = spl_env;
+	s = spl_env; 
 	ex->cmd = get_cmd(data, ex);
-	path = ex->cmd[0];
+	if (!ex->cmd)
+		return (NULL);
 	while (!check_slash(ex->cmd[0]) && *(spl_env++) != NULL)
 	{
 		*spl_env = ft_strjoin(*spl_env, "/", data);

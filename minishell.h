@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 09:42:01 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/09/13 03:41:11 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/14 01:35:56 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,7 @@ typedef struct s_exec
 	int				red_herdoc;
 	int				check_flag;
 	int				pos;
+	int				flag_ex;
 	struct s_exec	*next;
 }				t_exec;
 
@@ -81,6 +82,7 @@ typedef struct s_tokens
 	char				*type;
 	int					type_qoute;
 	bool				sign_dollar;
+	bool				flag_ex;
 	struct s_tokens		*next;
 }						t_tokens;
 
@@ -130,7 +132,7 @@ int			ft_isprint(int c);
 void		ft_putstr(char *str);
 
 void		print_error(t_parse * data, int flag);
-void		free_and_exit(t_parse *data);
+void		free_and_exit(t_parse *data, unsigned char ex);
 void		free_all_memory(t_leaks *heap);
 
 t_parse		*init_struct(char **envp);
@@ -164,7 +166,6 @@ int			cmp_str(char *str, t_parse *data);
 int			pars_variable(char *var);
 int			is_special_char(char c);
 int			is_number(char c);
-void		get_pwd();
 void		signal_handler(int sig);
 void		no_env(void);
 char		**spl_msh(char *s, char c, t_parse *data);
@@ -202,8 +203,8 @@ char	*get_value(char *var, t_parse *data);
 void	parent_removed(char *path, t_parse *data);
 int		go_to_path(char *path, t_parse *data);
 void	print_cd_err(void);
-void	get_pwd(void);
-// void	unset_var_from_env(char	*var, t_parse *data);
+int		get_pwd(void);
+void	ft_exit(t_parse *data, char **cmd, t_exec *ex, int len);
 int		_unset(char **str, t_parse *data);
 void	check_cmd(t_parse *data);
 int		already_exist(char *var, t_parse *data);

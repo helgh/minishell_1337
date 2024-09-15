@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 20:06:11 by mthamir           #+#    #+#             */
-/*   Updated: 2024/09/11 21:32:46 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/14 03:55:10 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,22 +45,6 @@ static char	*strcp(char *str, char *s, int i)
 	return (str);
 }
 
-static char	**spl(const char *s, char c, char **str, int d, t_parse *data)
-{
-	str[d] = ft_malloc ((size(s, c, d) + 1) * sizeof(char), data);
-	if (str[d] == NULL)
-	{
-		while (d > 0)
-		{
-			d--;
-			free(str[d]);
-		}
-		free(str);
-		return (NULL);
-	}
-	return (str);
-}
-
 char	**spl_msh(char *s, char c, t_parse *data)
 {
 	int		count;
@@ -69,6 +53,7 @@ char	**spl_msh(char *s, char c, t_parse *data)
 	int		i;
 
 	d = 0;
+	i = -1;
 	if (s == NULL)
 		return (NULL);
 	count = 2;
@@ -80,7 +65,7 @@ char	**spl_msh(char *s, char c, t_parse *data)
 		if (*s == c)
 			s++;
 		i = size(s, c, d);
-		spl(s, c, str, d, data);
+		str[d] = ft_malloc ((i + 1) * sizeof(char), data);
 		strcp(str[d], s, i);
 		s = s + i;
 		d++;

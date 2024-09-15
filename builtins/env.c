@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 02:12:22 by mthamir           #+#    #+#             */
-/*   Updated: 2024/09/12 22:45:12 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/14 02:48:02 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ void	init_env(char **env, t_parse *data)
 	else
 	{
 		pwd = getcwd(NULL, 0);
-		add_to_env("OLDPWD", NULL, NULL, data);
+		add_to_env("OLDPWD", NULL, "\0", data);
 		add_to_env("PWD", "=", pwd, data);
 		add_to_env("SHLVL", "=", "1", data);
 		add_to_env("_", "=", "/usr/bin/env", data);
@@ -73,7 +73,7 @@ int	print_env(t_parse *data)
 	{
 		if (env->egal)
 		{
-			if (env->value)
+			if (env->value && env->value[0] != '\0')
 			{
 				ft_putstr(env->var);
 				ft_putstr(env->egal);
@@ -104,5 +104,5 @@ void	global_env(char **env, t_parse *data)
 		if (ft_strcmp(spl[0], "OLDPWD"))
 			add_to_env(spl[0], "=", spl[1], data);
 	}
-	add_to_env("OLDPWD", NULL, NULL, data);
+	add_to_env("OLDPWD", NULL, "\0", data);
 }

@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/18 16:59:51 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/09/11 21:44:56 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/15 00:06:55 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,7 +98,7 @@ char	*count_$_(char *str, int *ind, t_parse *data)
 	return (s);
 }
 
-static char	*exp_d_quotes(t_parse *data, t_tokens *tok, int *ind)
+static char	*exp_d_quotes(t_parse *data, t_tokens *tok, int *ind, char *line)
 {
 	char	*s;
 	char	*tmp;
@@ -123,6 +123,8 @@ static char	*exp_d_quotes(t_parse *data, t_tokens *tok, int *ind)
 			tmp = get_str(&str[i + (*ind) + 1], &i, data);
 		s = ft_strjoin(s, tmp, data);
 	}
+	if ((!s || !s[0]) && !line)
+		s = ft_dup_str("\1", data);
 	*ind += (i + 1);
 	return (s);
 }
@@ -176,7 +178,7 @@ char	*handle_exp(t_parse *data, t_tokens *tok, char *s)
 	char	**spl;
 
 	spl = ft_split(s, 32, '\t', data);
-	if (ft_strcmp(tok->type, "delim") && spl && *(spl + 1))
+	if (ft_strcmp(tok->type, "delim") && spl && *spl && *(spl + 1))
 	{
 		s = NULL;
 		while (*(spl + 1))
@@ -184,6 +186,7 @@ char	*handle_exp(t_parse *data, t_tokens *tok, char *s)
 			s = ft_strjoin(s, *spl, data);
 			s = ft_strjoin(s, " ", data);
 			spl++;
+			tok->flag_ex = 1;
 		}
 		s = ft_strjoin(s, *spl, data);
 	}
@@ -208,7 +211,7 @@ char	*exp_loop(t_parse *data, t_tokens *tok)
 		if (str[i] == 39)
 			tmp = exp_s_quotes(data, tok, &i);
 		else if (str[i] == 34)
-			tmp = exp_d_quotes(data, tok, &i);
+			tmp = exp_d_quotes(data, tok, &i, s);
 		else
 		{
 			tmp = exp_without_quotes(data, tok, &i);
@@ -217,6 +220,21 @@ char	*exp_loop(t_parse *data, t_tokens *tok)
 		s = ft_strjoin(s, tmp, data);
 	}
 	return (s);
+}
+
+char	*update(t_parse *data, char *str)
+{
+	char	*s;
+	int		len;
+
+	s = str;
+	len = ft_strlen(s);
+	while (--len >= 0)
+	{
+		if (s[len] == '\1' && s[len + 1] != 0)
+			return (ft_dup_str(&s[len + 1], data));
+	}
+	return (str);
 }
 
 void	expantion(t_parse *data)
@@ -233,6 +251,7 @@ void	expantion(t_parse *data)
 		while (tok)
 		{
 			tok->str = exp_loop(data, tok);
+			tok->str = update(data, tok->str);
 			prev = tok;
 			tok = tok->next;
 		}
