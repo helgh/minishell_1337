@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 09:42:01 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/09/15 03:19:55 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/16 03:08:56 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@
 # include <limits.h>
 # include <signal.h>
 # include <string.h>
+# include <termios.h>
 # include <readline/readline.h>
 # include <readline/history.h>
 
@@ -170,7 +171,7 @@ int			is_number(char c);
 void		signal_handler(int sig);
 void		no_env(void);
 char		**spl_msh(char *s, char c, t_parse *data);
-void		signal_loop();
+void		signal_loop(t_parse *data);
 void		ft_restore_input(void);
 void		signal_herdoc(void);
 void		print_error(t_parse *data, int flag);
@@ -215,6 +216,9 @@ int		with_egal(char *str);
 void	increment_shlvl(t_parse *data);
 void	init_index(t_parse **data);
 int		sort_list(t_parse **data);
+void	_exec(t_parse *data, t_exec *ex, int i, int len);
+int		arg_env(t_parse *data, char **cmd);
+void	status(t_parse *data, int flag);
 
 /*_____________________________________________________________________________*/
 

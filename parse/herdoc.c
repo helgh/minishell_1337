@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/21 12:44:54 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/09/12 23:39:28 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/16 03:12:07 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ static char	*remov_sign(char *str, t_parse *data)
 	int		l;
 
 	i = -1;
-	s = ft_malloc(ft_strlen(str), data);
+	s = ft_malloc(ft_strlen(str) + 1, data);
 	l = 0;
 	while (str[++i])
 	{
@@ -74,16 +74,16 @@ static char	*read_herdoc(t_parse *data, char *str, int flag, int s)
 
 	i = -1;
 	herdoc = NULL;
-	signal_herdoc();
 	while (1)
 	{
+		signal_herdoc();
 		line = readline("> ");
 		if (!line)
-			return (ft_restore_input(), NULL);
+			return (ft_restore_input(), ft_dup_str("\3", data));
 		if (!ft_strcmp(str, line))
 		{
 			if (!herdoc)
-				return (free(line), ft_dup_str("", data));
+				return (ft_dup_str("\3", data));
 			return (free(line), herdoc);
 		}
 		if (*data->r_line)
@@ -104,8 +104,6 @@ void	expand_herdoc(t_parse *data)
 {
 	t_cmd_info	*cmd;
 	t_tokens	*tok;
-	char		*type;
-	char		*str;
 	int			i;
 	int			s;
 
@@ -117,13 +115,10 @@ void	expand_herdoc(t_parse *data)
 		tok = cmd->token;
 		while (++s < cmd->nbr_token)
 		{
-			type = tok->type;
-			str = tok->str;
-			if (!glob_int && !ft_strcmp(type, "delim"))
-				tok->str = read_herdoc(data, str, tok->type_qoute, s);
+			if (!glob_int && !ft_strcmp(tok->type, "delim"))
+				tok->str = read_herdoc(data, tok->str, tok->type_qoute, s);
 			tok = tok->next;
 		}
 		cmd = cmd->next;
 	}
-	glob_int = 0;
 }

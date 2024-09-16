@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/22 15:14:00 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/09/14 22:18:07 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/16 03:08:24 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,9 @@ void	signal_handler(int sig)
 	rl_redisplay();
 }
 
-void	signal_loop(void)
+void	signal_loop(t_parse *data)
 {
+	(void) data;
 	rl_catch_signals = 0;
 	signal(SIGINT, signal_handler);
 	signal(SIGQUIT, SIG_IGN);

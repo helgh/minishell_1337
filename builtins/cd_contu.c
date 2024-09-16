@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/07 16:38:41 by mthamir           #+#    #+#             */
-/*   Updated: 2024/09/10 17:17:37 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/16 00:34:04 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ int	to_home(t_parse *data)
 	t_env	*head;
 	char	*home;
 
-	head = data->envir->next;
+	head = data->envir;
 	cwd = getcwd(NULL, 0);
 	if (!cwd)
 		return (perror("cd: "), 1);
@@ -76,5 +76,5 @@ int	to_home(t_parse *data)
 		return (free(cwd), perror("cd: "), 1);
 	set_var_to_env("OLDPWD", "=", cwd, data);
 	set_var_to_env("PWD", "=", home, data);
-	return (free(cwd), free(home), 0);
+	return (free(cwd), 0);
 }

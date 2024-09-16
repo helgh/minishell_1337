@@ -6,140 +6,11 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 09:44:43 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/09/15 04:26:38 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/16 03:12:46 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-void	execute_cmd(char **cmd, char *path, char **envp)
-{
-	if (execve(path, cmd, envp))
-		perror("M_H");
-	exit(EXIT_FAILURE);
-}
-
-int	arg_env(t_parse *data, char **cmd)
-{
-	int	i;
-
-	i = -1;
-	while (cmd[++i])
-	{
-		if (ft_strcmp(cmd[i], "env"))
-		{
-			putstr_fd("env: ", 2);
-			putstr_fd(cmd[i], 2);
-			putstr_fd(": No such file or directory\n", 2);
-			data->exit_status = 127;
-			return (1);
-		}
-	}
-	return (0);
-}
-
-int	check_if_builtin(t_parse *data, t_exec *ex)
-{
-	(void) data;
-	if (!ft_strcmp(ex->cmd[0], "env"))
-		return (0);
-	else if (!ft_strcmp(ex->cmd[0], "export"))
-		return (0);
-	else if (!ft_strcmp(ex->cmd[0], "cd"))
-		return (0);
-	else if (!ft_strcmp(ex->cmd[0], "echo"))
-		return (0);
-	else if (!ft_strcmp(ex->cmd[0], "unset"))
-		return (0);
-	else if (!ft_strcmp(ex->cmd[0], "pwd"))
-		return (0);
-	return (1);
-}
-
-void	exec_builtin(t_parse *data, t_exec *ex, int i, int *pipe_fd)
-{
-	int	std_out;
-
-	std_out = dup(STDOUT_FILENO);
-	if (i != 1)
-		dup2(pipe_fd[0], 0);
-	dup_output(ex, i, pipe_fd);
-	if (!ft_strcmp(ex->cmd[0], "env"))
-	{
-		if (!arg_env(data, ex->cmd))
-			data->exit_status = print_env(data);
-	}
-	else if (!ft_strcmp(ex->cmd[0], "export"))
-		data->exit_status = _export(ex->cmd, data);
-	else if (!ft_strcmp(ex->cmd[0], "cd"))
-		data->exit_status = cd(ex->cmd, data);
-	else if (!ft_strcmp(ex->cmd[0], "echo"))
-		data->exit_status = ft_echo(ex->cmd);
-	else if (!ft_strcmp(ex->cmd[0], "unset"))
-		data->exit_status = _unset(ex->cmd, data);
-	else if (!ft_strcmp(ex->cmd[0], "pwd"))
-		data->exit_status = get_pwd();
-	dup2(std_out, STDOUT_FILENO);
-	close(std_out);
-}
-
-void	child_process(t_parse *data, t_exec *ex, int i, int *pipe_fd)
-{
-	int		pid;
-	char	*path;
-
-	signal(SIGQUIT, SIG_IGN);
-	signal(SIGINT, SIG_IGN);
-	path = check_access(data, ex);
-	pid = fork();
-	if (pid < 0)
-		return ;
-	else if (pid == 0)
-	{
-		signal(SIGQUIT, SIG_DFL);
-		signal(SIGINT, SIG_DFL);
-		if (!path)
-			exit(127);
-		dup_input(ex);
-		dup_output(ex, i, pipe_fd);
-		execute_cmd(ex->cmd, path, data->env);
-	}
-	else
-	{
-		close(pipe_fd[1]);
-		dup2(pipe_fd[0], 0);
-		close(pipe_fd[0]);
-	}
-}
-
-static int    ft_lenl(t_exec *ex)
-{
-    t_exec   *head;
-    int     count;
-
-    count = 0;
-    head = ex;
-    while (head)
-    {
-        count++;
-        head = head->next;
-    }
-    return (count);
-}
-
-void	_exec(t_parse *data, t_exec *ex, int i, int len)
-{
-	int	pipe_fd[2];
-
-	if (pipe(pipe_fd) == -1)
-		return (print_error(data, F_ALLOC));
-	if (!ft_strcmp(ex->cmd[0], "exit"))
-		ft_exit(data, ex->cmd, ex, len);
-	else if (!check_if_builtin(data, ex))
-		exec_builtin(data, ex, i, pipe_fd);
-	else
-		child_process(data, ex, i, pipe_fd);
-}
 
 void	execution_part(t_parse *data, t_exec *exec)
 {
@@ -147,7 +18,6 @@ void	execution_part(t_parse *data, t_exec *exec)
 	int		i;
 	int		flag;
 	int		std_in;
-	int		len;
 
 	i = -1;
 	ex = exec;
@@ -155,32 +25,15 @@ void	execution_part(t_parse *data, t_exec *exec)
 	open_files(data, exec);
 	std_in = dup(STDIN_FILENO);
 	data->env = l_list_to_array(data);
-	len = ft_lenl(ex);
 	while (++i < data->nbr_cmd)
 	{
 		if (i == data->nbr_cmd - 1)
 			flag = 1;
 		if (!check_red_fd(data, ex, flag))
-			_exec(data, ex, flag, len);
+			_exec(data, ex, flag, data->nbr_cmd);
 		ex = ex->next;
 	}
-	while (wait(&data->exit_status) != -1)
-		;
-	if (WIFSIGNALED(data->exit_status))
-	{
-		if (WTERMSIG(data->exit_status) == SIGINT)
-		{
-			write(1, "\n", 1);
-			data->exit_status = WTERMSIG(data->exit_status) + 128;
-		}
-		else if (WTERMSIG(data->exit_status) == SIGQUIT)
-		{
-			printf("Quit: 3\n");
-			data->exit_status = WTERMSIG(data->exit_status) + 128;
-		}
-	}
-	else if (WIFEXITED(data->exit_status))
-		data->exit_status = WEXITSTATUS(data->exit_status);
+	status(data, flag);
 	dup2(std_in, STDIN_FILENO);
 	close (std_in);
 }
@@ -189,6 +42,7 @@ t_exec	*parsing_part(char *str, t_parse *data_info)
 {
 	t_exec	*exec;
 
+	exec = NULL;
 	if (!check_if_only_space_and_tab(str))
 		return (NULL);
 	if (!check_qoutes(str, length_line(str), data_info))
@@ -204,29 +58,34 @@ t_exec	*parsing_part(char *str, t_parse *data_info)
 	expand_herdoc(data_info);
 	if (!check_syntax_error(data_info))
 		return (print_error(data_info, S_ERROR), NULL);
-	exec = ready_for_exec(data_info);
+	if (!glob_int)
+		exec = ready_for_exec(data_info);
 	return (exec);
 }
 
 void	minishell(t_parse *data)
 {
-	t_exec		*exec;
+	t_exec			*exec;
+	struct termios	attr;
 
 	while (1)
 	{
-		signal_loop();
+		signal_loop(data);
 		data->cmd_info = NULL;
 		data->r_line = readline("\001\033[0;31m\002M_H$\001\033[0m\002 ");
 		if (!data->r_line)
-			return (free_and_exit(data, 1));
+			return (free_and_exit(data, 0));
 		exec = parsing_part(data->r_line, data);
-		if (exec)
-			execution_part(data, exec);
+		tcgetattr(STDIN_FILENO, &attr);
 		if (*data->r_line)
 			add_history(data->r_line);
+		if (exec)
+			execution_part(data, exec);
 		free(data->r_line);
 		free_all_memory(data->heap);
 		data->heap = NULL;
+		tcsetattr(STDIN_FILENO, TCSANOW, &attr);
+		glob_int = 0;
 	}
 }
 
@@ -240,11 +99,12 @@ int	main(int ac, char **av, char **envp)
 		putstr_fd("M_H: ", 2);
 		putstr_fd(av[1], 2);
 		putstr_fd(": No such file or directory\n", 2);
-		return (1);
+		return (127);
 	}
 	data_info = init_struct(envp);
 	if (!data_info)
 		return (1);
 	increment_shlvl(data_info);
 	minishell(data_info);
+	return (0);
 }
