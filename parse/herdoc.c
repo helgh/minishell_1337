@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/21 12:44:54 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/09/16 19:53:53 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/16 23:19:24 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ static char	*join_expand(t_parse *data, char *herdoc, char *new_line, int flag)
 	return (herdoc);
 }
 
-static char	*read_herdoc(t_parse *data, char *str, int flag, int s)
+static char	*read_herdoc(t_parse *data, t_cmd_info *cmd, t_tokens *tok, int s)
 {
 	char	*line;
 	char	*new_line;
@@ -80,7 +80,7 @@ static char	*read_herdoc(t_parse *data, char *str, int flag, int s)
 		line = readline("> ");
 		if (!line)
 			return (ft_restore_input(), NULL);
-		if (!ft_strcmp(str, line))
+		if (!ft_strcmp(tok->str, line))
 		{
 			if (!herdoc)
 				return (ft_dup_str("\3", data));
@@ -88,13 +88,13 @@ static char	*read_herdoc(t_parse *data, char *str, int flag, int s)
 		}
 		if (*data->r_line)
 			add_history(data->r_line);
-		if (data->cmd_info->checker == -1 || data->cmd_info->checker != s)
+		if (cmd->checker == -1 || cmd->checker != s)
 			free(line);
 		else
 		{
 			new_line = ft_strjoin(line, "\n", data);
 			free (line);
-			herdoc = join_expand(data, herdoc, new_line, flag);
+			herdoc = join_expand(data, herdoc, new_line, tok->type_qoute);
 		}
 	}
 	return (herdoc);
@@ -116,7 +116,7 @@ void	expand_herdoc(t_parse *data)
 		while (++s < cmd->nbr_token)
 		{
 			if (!glob_int && !ft_strcmp(tok->type, "delim"))
-				tok->str = read_herdoc(data, tok->str, tok->type_qoute, s);
+				tok->str = read_herdoc(data, cmd, tok, s);
 			if (glob_int)
 			{
 				data->exit_status = 1;

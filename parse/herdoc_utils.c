@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/06 11:34:56 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/09/06 12:41:00 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/16 23:11:08 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,9 +42,9 @@ void	checker_herdoc(t_parse *data)
 		s = -1;
 		while (++s < cmd->nbr_token)
 		{
-			if (!ft_strcmp(tok->type, "red_in"))
+			if (!ft_strcmp(tok->type, "in_file"))
 				cmd->checker = -1;
-			else
+			else if (!ft_strcmp(tok->type, "delim"))
 				cmd->checker = s;
 			tok = tok->next;
 		}
