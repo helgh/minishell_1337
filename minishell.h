@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 09:42:01 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/09/16 03:08:56 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/16 20:14:19 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,6 @@ typedef struct s_exec
 	int				red_out;
 	int				red_herdoc;
 	int				check_flag;
-	int				pos;
 	int				flag_ex;
 	struct s_exec	*next;
 }				t_exec;
@@ -206,7 +205,7 @@ void	parent_removed(char *path, t_parse *data);
 int		go_to_path(char *path, t_parse *data);
 void	print_cd_err(void);
 int		get_pwd(void);
-void	ft_exit(t_parse *data, char **cmd, t_exec *ex, int len);
+void	ft_exit(t_parse *data, char **cmd, t_exec *ex);
 int		_unset(char **str, t_parse *data);
 void	check_cmd(t_parse *data);
 int		already_exist(char *var, t_parse *data);
@@ -216,9 +215,9 @@ int		with_egal(char *str);
 void	increment_shlvl(t_parse *data);
 void	init_index(t_parse **data);
 int		sort_list(t_parse **data);
-void	_exec(t_parse *data, t_exec *ex, int i, int len);
+void	_exec(t_parse *data, t_exec *ex, int i);
 int		arg_env(t_parse *data, char **cmd);
-void	status(t_parse *data, int flag);
+void	status(t_parse *data);
 
 /*_____________________________________________________________________________*/
 

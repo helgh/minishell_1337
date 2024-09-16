@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/16 01:55:17 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/09/16 01:58:41 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/16 22:01:20 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,11 +31,9 @@ int	arg_env(t_parse *data, char **cmd)
 	return (0);
 }
 
-void	status(t_parse *data, int flag)
+void	status(t_parse *data)
 {
-	if (flag == 1)
-		wait(&data->exit_status);
-	while (wait(NULL) != -1)
+	while (wait(&data->exit_status) != -1)
 		;
 	if (WIFSIGNALED(data->exit_status))
 	{

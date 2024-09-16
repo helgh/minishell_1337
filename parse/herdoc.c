@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/21 12:44:54 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/09/16 03:12:07 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/16 19:53:53 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,7 @@ static char	*read_herdoc(t_parse *data, char *str, int flag, int s)
 		signal_herdoc();
 		line = readline("> ");
 		if (!line)
-			return (ft_restore_input(), ft_dup_str("\3", data));
+			return (ft_restore_input(), NULL);
 		if (!ft_strcmp(str, line))
 		{
 			if (!herdoc)
@@ -117,6 +117,11 @@ void	expand_herdoc(t_parse *data)
 		{
 			if (!glob_int && !ft_strcmp(tok->type, "delim"))
 				tok->str = read_herdoc(data, tok->str, tok->type_qoute, s);
+			if (glob_int)
+			{
+				data->exit_status = 1;
+				return ;
+			}
 			tok = tok->next;
 		}
 		cmd = cmd->next;

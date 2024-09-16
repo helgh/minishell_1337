@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/01 23:03:37 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/09/13 01:42:54 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/16 20:30:41 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ int	check_red_fd(t_parse *data, t_exec *ex, int flag)
 	int	i;
 
 	i = -1;
-	if (ex->check_flag == 1 && flag == 1)
+	if (ex->check_flag == -1 && flag == 1)
 		data->exit_status = 1;
 	if (ex->check_flag == -1)
 		return (1);

@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 06:08:52 by mthamir           #+#    #+#             */
-/*   Updated: 2024/09/14 02:01:32 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/16 20:08:59 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,10 +122,10 @@ int	__exit_2(char **spl, int l)
 	return (0);
 }
 
-void	ft_exit(t_parse *data, char **cmd, t_exec *ex, int len)
+void	ft_exit(t_parse *data, char **cmd, t_exec *ex)
 {
 	(void) ex;
-	if (len == 1)
+	if (data->nbr_cmd == 1)
 		data->exit_status = __exit_1(cmd, data, 1);
 	else
 		data->exit_status = __exit_2(cmd, 0);

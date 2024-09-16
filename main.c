@@ -6,11 +6,20 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 09:44:43 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/09/16 03:12:46 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/16 22:28:06 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+void	close_files(t_parse *data)
+{
+	int	i;
+
+	i = -1;
+	while (data->fd[++i] != -1)
+		close (data->fd[i]);
+}
 
 void	execution_part(t_parse *data, t_exec *exec)
 {
@@ -29,11 +38,11 @@ void	execution_part(t_parse *data, t_exec *exec)
 	{
 		if (i == data->nbr_cmd - 1)
 			flag = 1;
-		if (!check_red_fd(data, ex, flag))
-			_exec(data, ex, flag, data->nbr_cmd);
+		_exec(data, ex, flag);
 		ex = ex->next;
 	}
-	status(data, flag);
+	status(data);
+	close_files(data);
 	dup2(std_in, STDIN_FILENO);
 	close (std_in);
 }

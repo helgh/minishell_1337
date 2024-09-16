@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/28 02:31:17 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/09/16 03:02:47 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/16 22:27:13 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,6 @@ char	**div_arg(t_cmd_info *cmd, char **spl, int flag, t_exec *exec)
 	i = 0;
 	s = 0;
 	tok = cmd->token;
-	exec->herdoc = NULL;
 	while (tok)
 	{
 		if (!ft_strcmp(tok->type, "cmd") && tok->str[0] && i == 0)
@@ -73,9 +72,9 @@ char	**cmd_opt_arg(t_parse *data, t_cmd_info *cmd, int len, t_exec *exec)
 	char		**spl;
 	int			flag;
 
-	if (len == 0)
-		return (NULL);
 	spl = ft_malloc(sizeof(char *) * (len + 1), data);
+	if (len == 0)
+		return (spl[0] = NULL, spl);
 	tok = cmd->token;
 	flag = 0;
 	while (tok)
@@ -131,14 +130,13 @@ t_exec	*ready_for_exec(t_parse *data)
 	while (++i < data->nbr_cmd)
 	{
 		tmp = ft_malloc(sizeof(t_exec), data);
+		tmp->herdoc = NULL;
 		tmp->cmd = cmd_opt_arg(data, cmd, count(data, cmd, 0), tmp);
 		tmp->files = files(data, cmd, count(data, cmd, 1));
 		tmp->red_in = 0;
 		tmp->red_out = 1;
 		tmp->red_herdoc = 0;
 		tmp->check_flag = 0;
-		tmp->check_flag = 0;
-		tmp->pos = i;
 		tmp->next = NULL;
 		add_to_next(&exec, tmp);
 		cmd = cmd->next;

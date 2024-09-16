@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/16 01:50:32 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/09/16 01:54:44 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/16 22:01:12 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,14 +64,11 @@ static void	exec_builtin(t_parse *data, t_exec *ex, int i, int *pipe_fd)
 	close(std_out);
 }
 
-static void	child_process(t_parse *data, t_exec *ex, int i, int *pipe_fd)
+static void	child_proccess(t_parse *data, t_exec *ex, int i, int *pipe_fd)
 {
 	int		pid;
 	char	*path;
 
-	signal(SIGQUIT, SIG_IGN);
-	signal(SIGINT, SIG_IGN);
-	path = check_access(data, ex);
 	pid = fork();
 	if (pid < 0)
 		return ;
@@ -79,30 +76,38 @@ static void	child_process(t_parse *data, t_exec *ex, int i, int *pipe_fd)
 	{
 		signal(SIGQUIT, SIG_DFL);
 		signal(SIGINT, SIG_DFL);
-		if (!path)
-			exit(127);
-		dup_input(ex);
-		dup_output(ex, i, pipe_fd);
-		execute_cmd(ex->cmd, path, data->env);
-	}
-	else
-	{
-		close(pipe_fd[1]);
-		dup2(pipe_fd[0], 0);
-		close(pipe_fd[0]);
+		if (!check_red_fd(data, ex, i))
+		{
+			path = check_access(data, ex);
+			if (!path)
+				exit(127);
+			dup_input(ex);
+			dup_output(ex, i, pipe_fd);
+			data->exit_status = 0;
+			execute_cmd(ex->cmd, path, data->env);
+		}
+		else
+			exit(1);
 	}
 }
 
-void	_exec(t_parse *data, t_exec *ex, int i, int len)
+void	_exec(t_parse *data, t_exec *ex, int i)
 {
 	int	pipe_fd[2];
 
 	if (pipe(pipe_fd) == -1)
 		return (print_error(data, F_ALLOC));
 	if (!ft_strcmp(ex->cmd[0], "exit"))
-		ft_exit(data, ex->cmd, ex, len);
+		ft_exit(data, ex->cmd, ex);
 	else if (!check_if_builtin(data, ex))
 		exec_builtin(data, ex, i, pipe_fd);
 	else
-		child_process(data, ex, i, pipe_fd);
+	{
+		signal(SIGQUIT, SIG_IGN);
+		signal(SIGINT, SIG_IGN);
+		child_proccess(data, ex, i, pipe_fd);
+		close(pipe_fd[1]);
+		dup2(pipe_fd[0], 0);
+		close(pipe_fd[0]);
+	}
 }
