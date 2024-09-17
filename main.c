@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 09:44:43 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/09/17 00:57:56 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/17 04:29:09 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,8 +83,11 @@ void	minishell(t_parse *data)
 		signal_loop(data);
 		data->cmd_info = NULL;
 		data->r_line = readline("\001\033[0;31m\002M_H$\001\033[0m\002 ");
+		if (glob_int)
+			data->exit_status = 1;
 		if (!data->r_line)
 			return (free_and_exit(data, 0));
+		glob_int = 0;
 		exec = parsing_part(data->r_line, data);
 		tcgetattr(STDIN_FILENO, &attr);
 		if (*data->r_line)
@@ -95,7 +98,6 @@ void	minishell(t_parse *data)
 		free_all_memory(data->heap);
 		data->heap = NULL;
 		tcsetattr(STDIN_FILENO, TCSANOW, &attr);
-		glob_int = 0;
 	}
 }
 

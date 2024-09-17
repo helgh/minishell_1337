@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/18 16:59:51 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/09/16 23:01:35 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/17 23:56:52 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,7 +116,7 @@ static char	*exp_d_quotes(t_parse *data, t_tokens *tok, int *ind, char *line)
 		else if (str[i + (*ind) + 1] == '$')
 		{
 			tmp = count_$_(&str[i + (*ind) + 1], &i, data);
-			if (tmp && ft_strcmp(tok->type, "delim"))
+			if (tmp)
 				tmp = set_value(data, tmp);
 		}
 		else
@@ -162,7 +162,7 @@ static char	*exp_without_quotes(t_parse *data, t_tokens *tok, int *ind)
 		else if (str[i + (*ind)] == '$' && !s_d_end(str[i + (*ind) + 1]))
 		{
 			tmp = count_$_(&str[i + (*ind)], &i, data);
-			if (tmp && ft_strcmp(tok->type, "delim"))
+			if (tmp)
 				tmp = set_value(data, tmp);
 		}
 		else
@@ -178,7 +178,7 @@ char	*handle_exp(t_parse *data, t_tokens *tok, char *s)
 	char	**spl;
 
 	spl = ft_split(s, 32, '\t', data);
-	if (ft_strcmp(tok->type, "delim") && spl && *spl && *(spl + 1))
+	if (spl && *spl && *(spl + 1))
 	{
 		s = NULL;
 		while (*(spl + 1))
@@ -237,6 +237,44 @@ char	*update(t_parse *data, char *str)
 	return (str);
 }
 
+void	copy_until_quote(char *str, char *s, int *i, int *j)
+{
+	char	stop;
+
+	stop = str[(*i)++];
+	while (str[*i] && str[*i] != stop)
+		s[(*j)++] = str[(*i)++];
+	if (str[*i] == stop)
+		(*i)++;
+}
+
+char	*exp_delimiter(t_parse *data, char *str)
+{
+	char	*s;
+	int		i;
+	int		j;
+
+	i = 0;
+	j = 0;
+	s = ft_malloc(ft_strlen(str) + 1, data);
+	while (str[i])
+	{
+		if (str[i] == 34 || str[i] == 39)
+			copy_until_quote(str, s, &i, &j);
+		else if (str[i] == '$' && str[i + 1] == '$')
+		{
+			s[j++] = str[i++];
+			s[j++] = str[i++];
+		}
+		else if (str[i] == '$' && (str[i + 1] == 34 || str[i + 1] == 39))
+			i++;
+		else
+			s[j++] = str[i++];
+	}
+	s[j] = 0;
+	return (s);
+}
+
 void	expantion(t_parse *data)
 {
 	t_tokens	*tok;
@@ -250,8 +288,13 @@ void	expantion(t_parse *data)
 		tok = tmp->token;
 		while (tok)
 		{
-			tok->str = exp_loop(data, tok);
-			tok->str = update(data, tok->str);
+			if (ft_strcmp(tok->type, "delim"))
+			{
+				tok->str = exp_loop(data, tok);
+				tok->str = update(data, tok->str);
+			}
+			else
+				tok->str = exp_delimiter(data, tok->str);
 			prev = tok;
 			tok = tok->next;
 		}

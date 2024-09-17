@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/18 17:04:26 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/09/16 03:04:07 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/18 00:31:04 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,16 +103,17 @@ char	*set_value_2(t_parse *data, char *str)
 			len++;
 	if (len != 0)
 		s = check_exit_status(str, i_to_a(data->exit_status, data), len, data);
-	i = -1;
-	while (str[++i])
+	i = 0;
+	while (s[i])
 	{
 		if (s[i] == '$' && (ft_isalpha(s[i + 1]) || s[i + 1] == 95))
 		{
 			s = join_str(data, s, cmp_with_env(data, s, i), i);
-			i = -1;
+			i = 0;
 		}
 		else if (s[i] == '$' && ft_isdigit(s[i + 1]))
 			s = digit_with_dollar(data, s, i);
+		i++;
 	}
 	return (s);
 }
