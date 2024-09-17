@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 09:44:43 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/09/16 22:42:17 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/17 00:57:56 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ void	execution_part(t_parse *data, t_exec *exec)
 	open_files(data, exec);
 	std_in = dup(STDIN_FILENO);
 	data->env = l_list_to_array(data);
+	data->pid = ft_malloc(sizeof(int) * data->nbr_cmd, data);
 	while (++i < data->nbr_cmd)
 	{
 		if (i == data->nbr_cmd - 1)

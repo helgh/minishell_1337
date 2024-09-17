@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 09:42:01 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/09/16 20:14:19 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/17 01:05:08 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,7 @@ typedef struct s_exec
 	int				red_herdoc;
 	int				check_flag;
 	int				flag_ex;
+	int				pos;
 	struct s_exec	*next;
 }				t_exec;
 
@@ -107,6 +108,7 @@ typedef struct s_parse
 	int			flag;
 	char		**env;
 	int			fd[OPEN_MAX];
+	int			*pid;
 	t_env		*envir;
 	t_cmd_info	*cmd_info; 
 	t_leaks		*heap;

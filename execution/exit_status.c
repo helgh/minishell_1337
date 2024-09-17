@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/16 01:55:17 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/09/16 22:01:20 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/17 01:10:11 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,9 @@ int	arg_env(t_parse *data, char **cmd)
 
 void	status(t_parse *data)
 {
-	while (wait(&data->exit_status) != -1)
+	unsigned char	c;
+
+	while (wait(NULL) != -1)
 		;
 	if (WIFSIGNALED(data->exit_status))
 	{
@@ -50,4 +52,6 @@ void	status(t_parse *data)
 	}
 	else
 		data->exit_status = WEXITSTATUS(data->exit_status);
+	c = data->exit_status;
+	data->exit_status = c;
 }

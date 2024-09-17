@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/16 01:50:32 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/09/16 22:01:12 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/17 01:06:49 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,13 +66,12 @@ static void	exec_builtin(t_parse *data, t_exec *ex, int i, int *pipe_fd)
 
 static void	child_proccess(t_parse *data, t_exec *ex, int i, int *pipe_fd)
 {
-	int		pid;
 	char	*path;
 
-	pid = fork();
-	if (pid < 0)
+	data->pid[ex->pos] = fork();
+	if (data->pid[ex->pos] < 0)
 		return ;
-	else if (pid == 0)
+	else if (data->pid[ex->pos] == 0)
 	{
 		signal(SIGQUIT, SIG_DFL);
 		signal(SIGINT, SIG_DFL);
@@ -83,7 +82,6 @@ static void	child_proccess(t_parse *data, t_exec *ex, int i, int *pipe_fd)
 				exit(127);
 			dup_input(ex);
 			dup_output(ex, i, pipe_fd);
-			data->exit_status = 0;
 			execute_cmd(ex->cmd, path, data->env);
 		}
 		else
@@ -107,6 +105,7 @@ void	_exec(t_parse *data, t_exec *ex, int i)
 		signal(SIGINT, SIG_IGN);
 		child_proccess(data, ex, i, pipe_fd);
 		close(pipe_fd[1]);
+		waitpid(data->pid[data->nbr_cmd - 1], &data->exit_status, 0);
 		dup2(pipe_fd[0], 0);
 		close(pipe_fd[0]);
 	}
