@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/12 23:45:14 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/09/14 01:37:01 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/18 00:45:06 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,16 @@ void	print_error(t_parse * data, int flag)
 	else if (flag == MAX_HER)
 	{
 		putstr_fd("M_H: maximum here-document count exceeded\n", 2);
+		free_and_exit(data, 1);
+	}
+	else if (flag == F_PIPE)
+	{
+		putstr_fd("M_H: Failed to create a pipe\n", 2);
+		free_and_exit(data, 1);
+	}
+	else if (flag == F_FORK)
+	{
+		putstr_fd("M_H: Failed to create a child proccess\n", 2);
 		free_and_exit(data, 1);
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/16 01:50:32 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/09/17 01:06:49 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/18 00:44:03 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ static void	child_proccess(t_parse *data, t_exec *ex, int i, int *pipe_fd)
 
 	data->pid[ex->pos] = fork();
 	if (data->pid[ex->pos] < 0)
-		return ;
+		print_error(data, F_FORK);
 	else if (data->pid[ex->pos] == 0)
 	{
 		signal(SIGQUIT, SIG_DFL);
@@ -94,7 +94,7 @@ void	_exec(t_parse *data, t_exec *ex, int i)
 	int	pipe_fd[2];
 
 	if (pipe(pipe_fd) == -1)
-		return (print_error(data, F_ALLOC));
+		return (print_error(data, F_PIPE));
 	if (!ft_strcmp(ex->cmd[0], "exit"))
 		ft_exit(data, ex->cmd, ex);
 	else if (!check_if_builtin(data, ex))

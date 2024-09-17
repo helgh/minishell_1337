@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 09:42:01 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/09/17 01:05:08 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/18 00:43:34 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,9 @@
 # define S_ERROR		2
 # define U_QOUTE		4
 # define MAX_HER		5
-# define EXIT			6
+# define F_PIPE			6
+# define F_FORK			7
+# define EXIT			8
 
 
 

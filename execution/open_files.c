@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/01 23:03:37 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/09/16 22:48:33 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/18 00:36:02 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,6 +91,8 @@ static int	ft_open(t_exec *ex, int *i)
 		ex->red_out = open(ex->files[*i + 1], O_CREAT | O_APPEND | O_RDWR, 0644);
 	if (ex->red_in == -1 || ex->red_out == -1)
 	{
+		ex->red_in = 0;
+		ex->red_out = 1;
 		ex->check_flag = -1;
 		put_str(ex->files[*i + 1], 2);
 		perror("");
