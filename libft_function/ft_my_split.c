@@ -6,14 +6,11 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 20:06:11 by mthamir           #+#    #+#             */
-/*   Updated: 2024/09/14 03:55:10 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/18 02:36:03 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
-
-/* my split function to use it for envirment and  export */
-
 
 static int	size(const char *s, char c, int d)
 {
@@ -26,7 +23,7 @@ static int	size(const char *s, char c, int d)
 			j++;
 	}
 	else
-		while(s[j])
+		while (s[j])
 			j++;
 	return (j);
 }
