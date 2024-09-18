@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/16 01:50:32 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/09/18 00:44:03 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/18 02:13:20 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,13 +79,14 @@ static void	child_proccess(t_parse *data, t_exec *ex, int i, int *pipe_fd)
 		{
 			path = check_access(data, ex);
 			if (!path)
-				exit(127);
+				return (close_files(data), exit(127));
 			dup_input(ex);
 			dup_output(ex, i, pipe_fd);
+			close_files(data);
 			execute_cmd(ex->cmd, path, data->env);
 		}
 		else
-			exit(1);
+			return (close_files(data), exit(1));
 	}
 }
 
