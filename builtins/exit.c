@@ -3,37 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mthamir <mthamir@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 06:08:52 by mthamir           #+#    #+#             */
-/*   Updated: 2024/09/16 20:08:59 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/18 02:34:11 by mthamir          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
-
-int	check_if_digit(char *str)
-{
-	int	i;
-
-	i = -1;
-	while (str[++i])
-	{
-		if (!ft_isdigit(str[i]))
-			return (1);
-	}
-	return (0);
-}
-
-int	print_msg(char *str, int l)
-{
-	if (l == 1)
-		putstr_fd("exit\n", 2);
-	putstr_fd("M_H: exit: ", 2);
-	putstr_fd(str, 2);
-	putstr_fd(": numeric argument required\n", 2);
-	return (-1);
-}
 
 static int	check_status(char *str, int l)
 {
@@ -96,29 +73,6 @@ int	__exit_1(char **spl, t_parse *data, int l)
 	}
 	else if (ft_strstrlen(spl) > 2 && !check_if_digit(spl[1]))
 		return (putstr_fd("exit\nM_H: exit: too many arguments\n", 2), 1);
-	return (0);
-}
-
-int	__exit_2(char **spl, int l)
-{
-	unsigned char	c;
-
-	if (!(*spl))
-		return (1);
-	if (ft_strstrlen(spl) == 1)
-		return (0);
-	if (ft_strstrlen(spl) > 1 && check_if_digit(spl[1]))
-	{
-		printf("M_H: exit: %s: numeric argument required\n", spl[1]);
-		return (255);
-	}
-	else if (ft_strstrlen(spl) == 2 && !check_if_digit(spl[1]))
-	{
-		c = check_status(spl[1], l);
-		return (c);
-	}
-	else if (ft_strstrlen(spl) > 2 && !check_if_digit(spl[1]))
-		return (putstr_fd("M_H: exit: too many arguments\n", 2), 1);
 	return (0);
 }
 

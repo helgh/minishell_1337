@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mthamir <mthamir@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 09:44:43 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/09/17 04:29:09 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/18 22:27:36 by mthamir          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,9 +66,9 @@ t_exec	*parsing_part(char *str, t_parse *data_info)
 	if (max_herdoc(data_info))
 		return (print_error(data_info, MAX_HER), NULL);
 	expand_herdoc(data_info);
-	if (!check_syntax_error(data_info))
+	if (!check_syntax_error(data_info, -1))
 		return (print_error(data_info, S_ERROR), NULL);
-	if (!glob_int)
+	if (!g_int)
 		exec = ready_for_exec(data_info);
 	return (exec);
 }
@@ -83,11 +83,11 @@ void	minishell(t_parse *data)
 		signal_loop(data);
 		data->cmd_info = NULL;
 		data->r_line = readline("\001\033[0;31m\002M_H$\001\033[0m\002 ");
-		if (glob_int)
+		if (g_int)
 			data->exit_status = 1;
 		if (!data->r_line)
 			return (free_and_exit(data, 0));
-		glob_int = 0;
+		g_int = 0;
 		exec = parsing_part(data->r_line, data);
 		tcgetattr(STDIN_FILENO, &attr);
 		if (*data->r_line)

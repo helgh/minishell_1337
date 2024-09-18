@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   expantion_utils.c                                  :+:      :+:    :+:   */
+/*   expantion_1.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mthamir <mthamir@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/18 17:04:26 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/09/18 00:31:04 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/18 03:44:59 by mthamir          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,6 @@ static char	*digit_with_dollar(t_parse *data, char *str, int l)
 
 static char	*cmp_with_env(t_parse *data, char *str, int len)
 {
-	int		i;
 	int		l;
 	int		f;
 	char	*s;
@@ -71,7 +70,6 @@ static char	*cmp_with_env(t_parse *data, char *str, int len)
 	tmp = data->envir;
 	while (str[++f] && (ft_isalnum(str[f]) || str[f] == 95))
 		;
-	i = -1;
 	while (tmp)
 	{
 		if (ft_strncmp(&str[len + 1], tmp->var, f - len - 1) == 0)

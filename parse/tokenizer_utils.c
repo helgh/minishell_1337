@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokenizer_utils.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mthamir <mthamir@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/18 16:53:52 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/09/11 21:08:18 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/18 22:28:53 by mthamir          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,7 +96,7 @@ char	*get_type_token(char **spl, char *type, int s, t_parse *data)
 	else if (s > 0 && ft_strcmp(spl[0], "<<") && !ft_strcmp(type, "delim"))
 		return (ft_dup_str("arg", data));
 	else if (s == 0 || !ft_strcmp(type, "delim") || !ft_strcmp(type, "in_file")
-			|| !ft_strcmp(type, "out_file"))
+		|| !ft_strcmp(type, "out_file"))
 		return (ft_dup_str("cmd", data));
 	else if (!check_option(spl[s]))
 		if (!ft_strcmp(type, "cmd") || !ft_strcmp(type, "option"))

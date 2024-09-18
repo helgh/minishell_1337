@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   free_memory.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mthamir <mthamir@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/18 17:07:18 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/09/12 00:06:19 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/18 22:35:06 by mthamir          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ void	free_all_memory(t_leaks *heap)
 		}
 	}
 	if (heap)
-	{	
+	{
 		free (heap->adress);
 		free (heap->t_struct);
 	}

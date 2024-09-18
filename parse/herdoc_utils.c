@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   herdoc_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mthamir <mthamir@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/06 11:34:56 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/09/16 23:11:08 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/18 22:57:48 by mthamir          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,4 +78,32 @@ int	max_herdoc(t_parse *data)
 	if (l > 16)
 		return (l);
 	return (0);
+}
+
+void	expand_herdoc(t_parse *data)
+{
+	t_cmd_info	*cmd;
+	t_tokens	*tok;
+	int			i;
+	int			s;
+
+	i = -1;
+	cmd = data->cmd_info;
+	while (++i < data->nbr_cmd)
+	{
+		s = -1;
+		tok = cmd->token;
+		while (++s < cmd->nbr_token)
+		{
+			if (!g_int && !ft_strcmp(tok->type, "delim"))
+				tok->str = read_herdoc(data, cmd, tok, s);
+			if (g_int)
+			{
+				data->exit_status = 1;
+				return ;
+			}
+			tok = tok->next;
+		}
+		cmd = cmd->next;
+	}
 }

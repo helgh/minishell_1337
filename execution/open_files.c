@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   open_files.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mthamir <mthamir@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/01 23:03:37 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/09/18 00:36:02 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/18 03:16:22 by mthamir          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,14 +14,14 @@
 
 void	put_str(char *str, int fd)
 {
-    int i;
+	int	i;
 
 	i = -1;
-    if (!str)
-        return ;
+	if (!str)
+		return ;
 	write(fd, "M_H: ", 5);
-    while (str[++i])
-        write(fd, &str[i], 1);
+	while (str[++i])
+		write(fd, &str[i], 1);
 	write(2, ": ", 2);
 }
 
@@ -78,23 +78,25 @@ static int	file_herdoc(t_exec *ex)
 static int	ft_open(t_exec *ex, int *i)
 {
 	int	f;
+	int	j;
 
 	f = 1;
+	j = *i + 1;
 	if (!ft_strcmp(ex->files[*i], "<"))
 	{
-		ex->red_in = open(ex->files[*i + 1], O_RDONLY);
+		ex->red_in = open(ex->files[j], O_RDONLY);
 		f = 0;
 	}
 	else if (!ft_strcmp(ex->files[*i], ">"))
-		ex->red_out = open(ex->files[*i + 1], O_CREAT | O_TRUNC | O_RDWR, 0644);
+		ex->red_out = open(ex->files[j], O_CREAT | O_TRUNC | O_RDWR, 0644);
 	else if (!ft_strcmp(ex->files[*i], ">>"))
-		ex->red_out = open(ex->files[*i + 1], O_CREAT | O_APPEND | O_RDWR, 0644);
+		ex->red_out = open(ex->files[j], O_CREAT | O_APPEND | O_RDWR, 0644);
 	if (ex->red_in == -1 || ex->red_out == -1)
 	{
 		ex->red_in = 0;
 		ex->red_out = 1;
 		ex->check_flag = -1;
-		put_str(ex->files[*i + 1], 2);
+		put_str(ex->files[j], 2);
 		perror("");
 		return (-1);
 	}

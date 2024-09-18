@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   expantion_utils1.c                                 :+:      :+:    :+:   */
+/*   expantion_0.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mthamir <mthamir@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/28 02:31:17 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/09/17 01:05:58 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/18 03:42:07 by mthamir          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,8 @@ int	count(t_parse *data, t_cmd_info *cmd, int flag)
 	while (++i < cmd->nbr_token)
 	{
 		type = tok->type;
-		if (!ft_strcmp(type, "cmd") || !ft_strcmp(type, "option") 
-				|| !ft_strcmp(type, "arg") || !ft_strcmp(type, "delim"))
+		if (!ft_strcmp(type, "cmd") || !ft_strcmp(type, "option")
+			|| !ft_strcmp(type, "arg") || !ft_strcmp(type, "delim"))
 			nb++;
 		else if (ft_strcmp(type, "herdoc"))
 			nb_files++;
@@ -44,8 +44,9 @@ char	**div_arg(t_cmd_info *cmd, char **spl, int flag, t_exec *exec)
 {
 	int			i;
 	int			s;
-	t_tokens	*tok = NULL;
+	t_tokens	*tok;
 
+	tok = NULL;
 	i = 0;
 	s = 0;
 	tok = cmd->token;
@@ -53,7 +54,8 @@ char	**div_arg(t_cmd_info *cmd, char **spl, int flag, t_exec *exec)
 	{
 		if (!ft_strcmp(tok->type, "cmd") && tok->str[0] && i == 0)
 			i = 1;
-		else if ((!ft_strcmp(tok->type, "cmd") || !ft_strcmp(tok->type, "option")
+		else if ((!ft_strcmp(tok->type, "cmd")
+				|| !ft_strcmp(tok->type, "option")
 				|| !ft_strcmp(tok->type, "arg")) && tok->str[0])
 			spl[flag++] = tok->str;
 		else if (!ft_strcmp(tok->type, "delim"))
@@ -106,10 +108,11 @@ char	**files(t_parse *data, t_cmd_info *cmd, int len)
 	while (tok)
 	{
 		if (!ft_strcmp(tok->type, "red_in") || !ft_strcmp(tok->type, "red_out")
-				|| !ft_strcmp(tok->type, "append"))
+			|| !ft_strcmp(tok->type, "append"))
 			spl[++i] = tok->str;
-		else if (!ft_strcmp(tok->type, "in_file") || !ft_strcmp(tok->type, "out_file")
-				|| !ft_strcmp(tok->type, "app_file"))
+		else if (!ft_strcmp(tok->type, "in_file")
+			|| !ft_strcmp(tok->type, "out_file")
+			|| !ft_strcmp(tok->type, "app_file"))
 			spl[++i] = tok->str;
 		tok = tok->next;
 	}

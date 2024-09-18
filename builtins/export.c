@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mthamir <mthamir@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 02:10:41 by mthamir           #+#    #+#             */
-/*   Updated: 2024/09/14 03:56:42 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/18 02:46:47 by mthamir          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,12 +72,10 @@ int	with_egal(char *str)
 	return (0);
 }
 
-int	_export_vars(char **str, t_parse *data)
+int	_export_vars(char **str, t_parse *data, int i)
 {
-	int	i;
-	int ret;
+	int	ret;
 
-	i = 0;
 	ret = 0;
 	while (str[++i])
 	{
@@ -104,8 +102,11 @@ int	_export_vars(char **str, t_parse *data)
 
 int	_export(char **str, t_parse *data)
 {
+	int	i;
+
+	i = 0;
 	if (!str[1])
 		return (print_export(data));
 	else
-		return (_export_vars(str, data));
+		return (_export_vars(str, data, i));
 }

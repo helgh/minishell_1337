@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mthamir <mthamir@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 09:42:01 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/09/18 00:43:34 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/18 22:56:07 by mthamir          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@
 
 // typedef struct s_leaks t_leaks;
 
-extern int glob_int;
+extern int g_int;
 
 typedef struct s_env
 {
@@ -149,7 +149,11 @@ char		**split_and_replace(t_parse *data_info);
 void		replace_value(char **str, int i, int *s);
 int			check_if_only_space_and_tab(char *str);
 int			if_operator(char *type);
-int			check_syntax_error(t_parse *data);
+char		*exp_d_quotes(t_parse *data, t_tokens *tok, int *ind, char *line);
+char		*exp_s_quotes(t_parse *data, t_tokens *tok, int *ind);
+char		*exp_without_quotes(t_parse *data, t_tokens *tok, int *ind);
+int			sign_in_end(char *str, int *ind);
+int			check_syntax_error(t_parse *data, int i);
 char		*get_type_token(char **spl, char *type, int s, t_parse *data);
 int			set_flag_dollar(t_tokens *token);
 int			set_flag_qoutes(char *str);
@@ -159,6 +163,7 @@ void		checker_herdoc(t_parse *data);
 int			max_herdoc(t_parse *data);
 char		*set_value_2(t_parse *data, char *str);
 void		expand_herdoc(t_parse *data);
+char		*read_herdoc(t_parse *data, t_cmd_info *cmd, t_tokens *tok, int s);
 char		*check_access(t_parse *data, t_exec *ex);
 char		*exp_loop(t_parse *data, t_tokens *tok);
 t_exec		*ready_for_exec(t_parse *data);
@@ -197,7 +202,7 @@ void	append_value(char *var,char *value, t_parse *data);
 void	set_var_to_env(char *var, char *egal, char *value, t_parse *data);
 int		check_export_parse(char *str, t_parse *data);
 void	export_with_value(char *str, t_parse *data);
-int		_export_vars(char **str, t_parse *data);
+int		_export_vars(char **str, t_parse *data, int i);
 int		_export(char **str, t_parse *data);
 int 	cd(char **str, t_parse *data);
 int		to_home(t_parse *data);

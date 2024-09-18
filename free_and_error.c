@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   free_and_error.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mthamir <mthamir@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/12 23:45:14 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/09/18 00:45:06 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/18 22:34:45 by mthamir          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ void	free_all_memory(t_leaks *heap)
 		}
 	}
 	if (heap)
-	{	
+	{
 		free (heap->adress);
 		free (heap->t_struct);
 	}
@@ -46,7 +46,7 @@ void	free_and_exit(t_parse *data, unsigned char ex)
 	exit(ex);
 }
 
-void	print_error(t_parse * data, int flag)
+void	print_error(t_parse *data, int flag)
 {
 	if (flag == F_ALLOC)
 	{

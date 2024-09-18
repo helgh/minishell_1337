@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   herdoc.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mthamir <mthamir@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/21 12:44:54 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/09/17 22:51:16 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/18 22:57:21 by mthamir          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-int	glob_int;
+int	g_int;
 
 static void	get_new_ind(char *str, int *ind)
 {
@@ -65,27 +65,32 @@ static char	*join_expand(t_parse *data, char *herdoc, char *new_line, int flag)
 	return (herdoc);
 }
 
-static char	*read_herdoc(t_parse *data, t_cmd_info *cmd, t_tokens *tok, int s)
+static char	herdoc_value(t_parse *data, char line, char *str, char *herdoc)
+{
+	if (!line)
+		return (ft_restore_input(), NULL);
+	if (!ft_strcmp(str, line))
+	{
+		if (!herdoc)
+			return (ft_dup_str("\3", data));
+		return (free(line), herdoc);
+	}
+	return (NULL);
+}
+
+char	*read_herdoc(t_parse *data, t_cmd_info *cmd, t_tokens *tok, int s)
 {
 	char	*line;
 	char	*new_line;
 	char	*herdoc;
-	int		i;
 
-	i = -1;
 	herdoc = NULL;
 	while (1)
 	{
 		signal_herdoc();
 		line = readline("> ");
-		if (!line)
-			return (ft_restore_input(), NULL);
-		if (!ft_strcmp(tok->str, line))
-		{
-			if (!herdoc)
-				return (ft_dup_str("\3", data));
-			return (free(line), herdoc);
-		}
+		if (!line || !ft_strcmp(tok->str, line))
+			return (herdoc_value(data, line, tok->str, herdoc));
 		if (*data->r_line)
 			add_history(data->r_line);
 		if (cmd->checker == -1 || cmd->checker != s)
@@ -98,32 +103,4 @@ static char	*read_herdoc(t_parse *data, t_cmd_info *cmd, t_tokens *tok, int s)
 		}
 	}
 	return (herdoc);
-}
-
-void	expand_herdoc(t_parse *data)
-{
-	t_cmd_info	*cmd;
-	t_tokens	*tok;
-	int			i;
-	int			s;
-
-	i = -1;
-	cmd = data->cmd_info;
-	while (++i < data->nbr_cmd)
-	{
-		s = -1;
-		tok = cmd->token;
-		while (++s < cmd->nbr_token)
-		{
-			if (!glob_int && !ft_strcmp(tok->type, "delim"))
-				tok->str = read_herdoc(data, cmd, tok, s);
-			if (glob_int)
-			{
-				data->exit_status = 1;
-				return ;
-			}
-			tok = tok->next;
-		}
-		cmd = cmd->next;
-	}
 }

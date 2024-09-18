@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   access.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mthamir <mthamir@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/13 00:03:46 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/09/15 02:07:51 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/18 03:10:18 by mthamir          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ static char	**get_cmd(t_parse *data, t_exec *ex)
 			str = ft_strjoin(str, ex->cmd[i], data);
 			str = ft_strjoin(str, " ", data);
 		}
-		return(ft_split(str, 32, 32, data));
+		return (ft_split(str, 32, 32, data));
 	}
 	return (ex->cmd);
 }
@@ -62,7 +62,7 @@ char	*check_access(t_parse *data, t_exec *ex)
 	char	*path;
 
 	spl_env = ft_split(path_env(data->env), ':', ':', data);
-	s = spl_env; 
+	s = spl_env;
 	ex->cmd = get_cmd(data, ex);
 	if (!ex->cmd)
 		return (NULL);
