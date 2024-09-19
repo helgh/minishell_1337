@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/06 14:53:20 by mthamir           #+#    #+#             */
-/*   Updated: 2024/09/15 03:57:05 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/19 21:26:27 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ void	increment_shlvl(t_parse *data)
 	int		lvl;
 
 	shlvl = get_value("SHLVL", data);
-	if (!shlvl || !(*shlvl))
+	if (!shlvl || !(*shlvl) || ft_atoi(shlvl) > 999)
 	{
 		if (!already_exist("SHLVL", data))
 			set_var_to_env("SHLVL", "=", "1", data);
