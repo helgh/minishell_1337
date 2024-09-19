@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/16 01:50:32 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/09/19 03:59:52 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/19 23:04:26 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,13 @@
 static void	execute_cmd(char **cmd, char *path, char **envp)
 {
 	if (execve(path, cmd, envp))
-		perror("M_H");
-	exit(EXIT_FAILURE);
+	{
+		putstr_fd("M_H: ", 2);
+		putstr_fd(cmd[0], 2);
+		putstr_fd(": ", 2);
+		perror("");
+	}
+	exit(127);
 }
 
 static int	check_if_builtin(t_parse *data, t_exec *ex)
