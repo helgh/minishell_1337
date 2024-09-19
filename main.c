@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 09:44:43 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/09/19 04:08:57 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/19 23:47:29 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,10 +18,7 @@ void	close_files(t_parse *data)
 
 	i = -1;
 	while (data->fd[++i] != -1)
-	{
-		printf("red = %d --\n", data->fd[i]);
 		close (data->fd[i]);
-	}
 }
 
 void	execution_part(t_parse *data, t_exec *exec)
