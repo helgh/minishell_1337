@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mthamir <mthamir@student.42.fr>            +#+  +:+       +#+        */
+/*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 02:10:41 by mthamir           #+#    #+#             */
-/*   Updated: 2024/09/18 02:46:47 by mthamir          ###   ########.fr       */
+/*   Updated: 2024/09/18 23:48:32 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ void	export_with_value(char *str, t_parse *data)
 	char	**spl;
 
 	spl = spl_msh(str, '=', data);
-	if (spl && check_append(&spl[0]))
+	if (spl && check_append(spl[0]))
 	{
 		if (!already_exist(spl[0], data))
 			append_value(spl[0], spl[1], data);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export_1.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mthamir <mthamir@student.42.fr>            +#+  +:+       +#+        */
+/*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/18 02:48:37 by mthamir           #+#    #+#             */
-/*   Updated: 2024/09/18 03:01:11 by mthamir          ###   ########.fr       */
+/*   Updated: 2024/09/18 23:48:22 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,7 @@ int	already_exist(char *var, t_parse *data)
 	return (1);
 }
 
-int	check_append(char **str)
+int	check_append(char *str)
 {
 	int		i;
 	char	*s;

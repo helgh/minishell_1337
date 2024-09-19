@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exit_1.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mthamir <mthamir@student.42.fr>            +#+  +:+       +#+        */
+/*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/18 02:31:58 by mthamir           #+#    #+#             */
-/*   Updated: 2024/09/18 02:34:18 by mthamir          ###   ########.fr       */
+/*   Updated: 2024/09/18 23:51:18 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,16 +23,6 @@ int	check_if_digit(char *str)
 			return (1);
 	}
 	return (0);
-}
-
-int	print_msg(char *str, int l)
-{
-	if (l == 1)
-		putstr_fd("exit\n", 2);
-	putstr_fd("M_H: exit: ", 2);
-	putstr_fd(str, 2);
-	putstr_fd(": numeric argument required\n", 2);
-	return (-1);
 }
 
 int	__exit_2(char **spl, int l)

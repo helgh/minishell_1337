@@ -3,16 +3,69 @@
 /*                                                        :::      ::::::::   */
 /*   expantion.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mthamir <mthamir@student.42.fr>            +#+  +:+       +#+        */
+/*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/18 16:59:51 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/09/18 03:37:21 by mthamir          ###   ########.fr       */
+/*   Updated: 2024/09/19 01:41:31 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-char	*exp_loop(t_parse *data, t_tokens *tok)
+static void	copy_until_quote(char *str, char *s, int *i, int *j)
+{
+	char	stop;
+
+	stop = str[(*i)++];
+	while (str[*i] && str[*i] != stop)
+		s[(*j)++] = str[(*i)++];
+	if (str[*i] == stop)
+		(*i)++;
+}
+
+static char	*exp_delimiter(t_parse *data, char *str)
+{
+	char	*s;
+	int		i;
+	int		j;
+
+	i = 0;
+	j = 0;
+	s = ft_malloc(ft_strlen(str) + 1, data);
+	while (str[i])
+	{
+		if (str[i] == 34 || str[i] == 39)
+			copy_until_quote(str, s, &i, &j);
+		else if (str[i] == '$' && str[i + 1] == '$')
+		{
+			s[j++] = str[i++];
+			s[j++] = str[i++];
+		}
+		else if (str[i] == '$' && (str[i + 1] == 34 || str[i + 1] == 39))
+			i++;
+		else
+			s[j++] = str[i++];
+	}
+	s[j] = 0;
+	return (s);
+}
+
+static char	*update(t_parse *data, char *str)
+{
+	char	*s;
+	int		len;
+
+	s = str;
+	len = ft_strlen(s);
+	while (--len >= 0)
+	{
+		if (s[len] == '\1' && s[len + 1] != 0)
+			return (ft_dup_str(&s[len + 1], data));
+	}
+	return (str);
+}
+
+static char	*exp_loop(t_parse *data, t_tokens *tok)
 {
 	char	*tmp;
 	char	*s;
@@ -38,59 +91,6 @@ char	*exp_loop(t_parse *data, t_tokens *tok)
 		}
 		s = ft_strjoin(s, tmp, data);
 	}
-	return (s);
-}
-
-char	*update(t_parse *data, char *str)
-{
-	char	*s;
-	int		len;
-
-	s = str;
-	len = ft_strlen(s);
-	while (--len >= 0)
-	{
-		if (s[len] == '\1' && s[len + 1] != 0)
-			return (ft_dup_str(&s[len + 1], data));
-	}
-	return (str);
-}
-
-void	copy_until_quote(char *str, char *s, int *i, int *j)
-{
-	char	stop;
-
-	stop = str[(*i)++];
-	while (str[*i] && str[*i] != stop)
-		s[(*j)++] = str[(*i)++];
-	if (str[*i] == stop)
-		(*i)++;
-}
-
-char	*exp_delimiter(t_parse *data, char *str)
-{
-	char	*s;
-	int		i;
-	int		j;
-
-	i = 0;
-	j = 0;
-	s = ft_malloc(ft_strlen(str) + 1, data);
-	while (str[i])
-	{
-		if (str[i] == 34 || str[i] == 39)
-			copy_until_quote(str, s, &i, &j);
-		else if (str[i] == '$' && str[i + 1] == '$')
-		{
-			s[j++] = str[i++];
-			s[j++] = str[i++];
-		}
-		else if (str[i] == '$' && (str[i + 1] == 34 || str[i + 1] == 39))
-			i++;
-		else
-			s[j++] = str[i++];
-	}
-	s[j] = 0;
 	return (s);
 }
 

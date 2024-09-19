@@ -3,16 +3,26 @@
 /*                                                        :::      ::::::::   */
 /*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mthamir <mthamir@student.42.fr>            +#+  +:+       +#+        */
+/*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 06:08:52 by mthamir           #+#    #+#             */
-/*   Updated: 2024/09/18 02:34:11 by mthamir          ###   ########.fr       */
+/*   Updated: 2024/09/18 23:54:01 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-static int	check_status(char *str, int l)
+static int	print_msg(char *str, int l)
+{
+	if (l == 1)
+		putstr_fd("exit\n", 2);
+	putstr_fd("M_H: exit: ", 2);
+	putstr_fd(str, 2);
+	putstr_fd(": numeric argument required\n", 2);
+	return (-1);
+}
+
+int	check_status(char *str, int l)
 {
 	int				i;
 	int				sign;
