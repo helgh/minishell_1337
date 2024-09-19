@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   open_files.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mthamir <mthamir@student.42.fr>            +#+  +:+       +#+        */
+/*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/01 23:03:37 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/09/18 03:16:22 by mthamir          ###   ########.fr       */
+/*   Updated: 2024/09/19 04:08:38 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,23 +96,19 @@ static int	ft_open(t_exec *ex, int *i)
 		ex->red_in = 0;
 		ex->red_out = 1;
 		ex->check_flag = -1;
-		put_str(ex->files[j], 2);
-		perror("");
-		return (-1);
+		return (put_str(ex->files[j], 2), perror(""), -1);
 	}
 	return (f);
 }
 
-void	open_files(t_parse *data, t_exec *exec)
+void	open_files(t_parse *data, t_exec *exec, int f)
 {
 	t_exec		*ex;
 	int			i;
 	int			l;
-	int			f;
 
 	ex = exec;
 	l = -1;
-	f = 0;
 	while (ex)
 	{
 		i = -1;
@@ -124,6 +120,8 @@ void	open_files(t_parse *data, t_exec *exec)
 				data->fd[++l] = ex->red_in;
 			else if (f == 1)
 				data->fd[++l] = ex->red_out;
+			else if (ex->check_flag == -1)
+				break ;
 			i++;
 		}
 		ex = ex->next;

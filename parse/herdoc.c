@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/21 12:44:54 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/09/19 01:23:27 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/19 02:50:12 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ static char	*join_expand(t_parse *data, char *herdoc, char *new_line, int flag)
 static char	*herdoc_value(t_parse *data, char *line, char *str, char *herdoc)
 {
 	if (!line && g_int)
-		return (ft_restore_input(), NULL);
+		return (ft_restore_input(data), NULL);
 	if (!ft_strcmp(str, line))
 	{
 		if (!herdoc)

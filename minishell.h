@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 09:42:01 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/09/19 01:43:37 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/19 04:09:08 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -181,11 +181,11 @@ void		signal_handler(int sig);
 void		no_env(void);
 char		**spl_msh(char *s, char c, t_parse *data);
 void		signal_loop(t_parse *data);
-void		ft_restore_input(void);
+void		ft_restore_input(t_parse *data);
 void		signal_herdoc(void);
 void		print_error(t_parse *data, int flag);
 void		signal_handler(int sig);
-void		open_files(t_parse *data, t_exec *exec);
+void		open_files(t_parse *data, t_exec *exec, int f);
 int			check_red_fd(t_parse *data, t_exec *ex, int flag);
 void		dup_input(t_exec *ex);
 void		dup_output(t_exec *ex, int i, int *pipe_fd);

@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/16 01:50:32 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/09/19 01:22:43 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/19 03:59:52 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,8 @@ static int	check_if_builtin(t_parse *data, t_exec *ex)
 		return (0);
 	else if (!ft_strcmp(ex->cmd[0], "pwd"))
 		return (0);
+	else if (!ft_strcmp(ex->cmd[0], "exit"))
+		return (0);
 	return (1);
 }
 
@@ -60,6 +62,8 @@ static void	exec_builtin(t_parse *data, t_exec *ex, int i, int *pipe_fd)
 		data->exit_status = _unset(ex->cmd, data);
 	else if (!ft_strcmp(ex->cmd[0], "pwd"))
 		data->exit_status = get_pwd();
+	else if (!ft_strcmp(ex->cmd[0], "exit"))
+		ft_exit(data, ex->cmd, ex);
 	dup2(std_out, STDOUT_FILENO);
 	close(std_out);
 }
@@ -96,10 +100,16 @@ void	_exec(t_parse *data, t_exec *ex, int i)
 
 	if (pipe(pipe_fd) == -1)
 		return (print_error(data, F_PIPE));
-	if (!ft_strcmp(ex->cmd[0], "exit"))
-		ft_exit(data, ex->cmd, ex);
-	else if (!check_if_builtin(data, ex))
-		exec_builtin(data, ex, i, pipe_fd);
+	if (!check_if_builtin(data, ex))
+	{
+		if (!check_red_fd(data, ex, i))
+			exec_builtin(data, ex, i, pipe_fd);
+		else
+		{
+			close(pipe_fd[1]);
+			close(pipe_fd[0]);
+		}
+	}
 	else
 	{
 		signal(SIGQUIT, SIG_IGN);
