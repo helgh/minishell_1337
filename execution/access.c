@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   access.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mthamir <mthamir@student.42.fr>            +#+  +:+       +#+        */
+/*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/13 00:03:46 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/09/18 03:10:18 by mthamir          ###   ########.fr       */
+/*   Updated: 2024/09/19 21:20:14 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,22 @@ static int	check_slash(char *str)
 	return (0);
 }
 
+static void	is_directory(t_parse *data, t_exec *ex)
+{
+	struct stat	sb;
+	int			i;
+
+	i = stat(ex->cmd[0], &sb);
+	if (!i && S_ISDIR(sb.st_mode))
+	{
+		putstr_fd("M_H: ", 2);
+		putstr_fd(ex->cmd[0], 2);
+		putstr_fd(": is a directory\n", 2);
+		close_files(data);
+		exit (126);
+	}
+}
+
 static char	**get_cmd(t_parse *data, t_exec *ex)
 {
 	int		i;
@@ -42,6 +58,7 @@ static char	**get_cmd(t_parse *data, t_exec *ex)
 
 	i = -1;
 	str = NULL;
+	is_directory(data, ex);
 	if (ex->flag_ex)
 	{
 		i = -1;

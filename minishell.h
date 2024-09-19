@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 09:42:01 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/09/19 04:09:08 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/19 21:15:04 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@
 # include <signal.h>
 # include <string.h>
 # include <termios.h>
+# include <sys/stat.h>
 # include <readline/readline.h>
 # include <readline/history.h>
 
