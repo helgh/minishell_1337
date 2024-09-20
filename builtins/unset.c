@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 02:11:28 by mthamir           #+#    #+#             */
-/*   Updated: 2024/09/17 04:34:28 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/20 01:41:49 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ int	_unset(char **str, t_parse *data)
 	int	i;
 	int	ret;
 
-	i = -1;
+	i = 0;
 	ret = 0;
 	while (str[++i])
 		if (unset_var_from_env(str[i], data))

@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/06 14:53:20 by mthamir           #+#    #+#             */
-/*   Updated: 2024/09/19 21:26:27 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/20 22:38:02 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,5 +61,5 @@ int	sort_list(t_parse **data)
 		}
 		slow = slow->next;
 	}
-	return (max);
+	return (ft_strstrlen(l_list_to_array((*data))));
 }
