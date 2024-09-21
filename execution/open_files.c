@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/01 23:03:37 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/09/19 04:08:38 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/21 22:25:20 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,10 @@ static int	ft_open(t_exec *ex, int *i)
 
 	f = 1;
 	j = *i + 1;
-	if (!ft_strcmp(ex->files[*i], "<"))
+	if ((!ft_strcmp(ex->files[*i], ">") || !ft_strcmp(ex->files[*i], ">>"))
+		&& !ft_strcmp(ex->files[j], "\1"))
+			ex->red_out = open("", O_CREAT | O_TRUNC | O_RDWR, 0644);
+	else if (!ft_strcmp(ex->files[*i], "<"))
 	{
 		ex->red_in = open(ex->files[j], O_RDONLY);
 		f = 0;

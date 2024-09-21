@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/28 02:31:17 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/09/19 01:03:43 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/21 21:51:24 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,11 +56,11 @@ char	**div_arg(t_cmd_info *cmd, char **spl, int flag, t_exec *exec)
 			i = 1;
 		else if ((!ft_strcmp(tok->type, "cmd")
 				|| !ft_strcmp(tok->type, "option")
-				|| !ft_strcmp(tok->type, "arg")) && tok->str[0])
+				|| !ft_strcmp(tok->type, "arg")) && tok->str && tok->str[0])
 			spl[flag++] = tok->str;
 		else if (!ft_strcmp(tok->type, "delim"))
 			exec->herdoc = tok->str;
-		else if (!ft_strcmp(tok->type, "in_file") && tok->str[0])
+		else if (!ft_strcmp(tok->type, "in_file") && tok->str && tok->str[0])
 			exec->herdoc = NULL;
 		tok = tok->next;
 	}

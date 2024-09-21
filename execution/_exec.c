@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/16 01:50:32 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/09/19 23:04:26 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/21 22:07:31 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,6 +84,8 @@ static void	child_proccess(t_parse *data, t_exec *ex, int i, int *pipe_fd)
 	{
 		signal(SIGQUIT, SIG_DFL);
 		signal(SIGINT, SIG_DFL);
+		if (!ex->cmd[0] && !ex->files)
+			exit(0);
 		if (!check_red_fd(data, ex, i))
 		{
 			path = check_access(data, ex);
