@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/18 03:29:27 by mthamir           #+#    #+#             */
-/*   Updated: 2024/09/20 00:36:28 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/21 23:22:49 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,6 +96,8 @@ char	*handle_exp(t_parse *data, t_tokens *tok, char *s)
 {
 	char	**spl;
 
+	if (data->flag_spl)
+		return (s);
 	spl = ft_split(s, 32, '\t', data);
 	if (spl && *spl && *(spl + 1))
 	{

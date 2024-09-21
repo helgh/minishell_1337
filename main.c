@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 09:44:43 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/09/21 22:16:08 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/21 23:27:33 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,6 @@ t_exec	*parsing_part(char *str, t_parse *data_info)
 		return (print_error(data_info, S_ERROR), NULL);
 	if (!g_int)
 		exec = ready_for_exec(data_info);
-	// printf("files = %s\n", exec->files[1]);
 	return (exec);
 }
 
@@ -107,6 +106,8 @@ int	main(int ac, char **av, char **envp)
 	t_parse	*data_info;
 
 	(void) av;
+	if (!isatty(0))
+		return (putstr_fd("M_H: Not a valid tty\n", 2), 1);
 	if (ac != 1)
 	{
 		putstr_fd("M_H: ", 2);

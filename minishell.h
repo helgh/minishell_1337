@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 09:42:01 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/09/19 21:15:04 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/21 23:16:19 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,6 +107,7 @@ typedef struct s_parse
 	char				**env;
 	int					fd[OPEN_MAX];
 	int					*pid;
+	bool				flag_spl;
 	t_env				*envir;
 	t_cmd_info			*cmd_info;
 	t_leaks				*heap;

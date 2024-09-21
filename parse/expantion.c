@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/18 16:59:51 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/09/20 00:34:50 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/21 23:18:50 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,16 +97,17 @@ static char	*exp_loop(t_parse *data, t_tokens *tok)
 void	expantion(t_parse *data)
 {
 	t_tokens	*tok;
-	t_tokens	*prev;
 	t_cmd_info	*tmp;
 
-	prev = NULL;
 	tmp = data->cmd_info;
 	while (tmp)
 	{
 		tok = tmp->token;
+		data->flag_spl = 0;
 		while (tok)
 		{
+			if (!ft_strcmp(tok->str, "export"))
+				data->flag_spl = 1;
 			if (ft_strcmp(tok->type, "delim"))
 			{
 				tok->str = exp_loop(data, tok);
@@ -114,7 +115,6 @@ void	expantion(t_parse *data)
 			}
 			else
 				tok->str = exp_delimiter(data, tok->str);
-			prev = tok;
 			tok = tok->next;
 		}
 		tmp = tmp->next;
