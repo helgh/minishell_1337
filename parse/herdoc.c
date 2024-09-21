@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/21 12:44:54 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/09/19 02:50:12 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/21 02:20:14 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,8 +93,6 @@ char	*read_herdoc(t_parse *data, t_cmd_info *cmd, t_tokens *tok, int s)
 		line = readline("> ");
 		if (!line || !ft_strcmp(tok->str, line))
 			return (herdoc_value(data, line, tok->str, herdoc));
-		if (*data->r_line)
-			add_history(data->r_line);
 		if (cmd->checker == -1 || cmd->checker != s)
 			free(line);
 		else
