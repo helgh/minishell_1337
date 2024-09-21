@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/12 23:47:42 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/09/12 23:47:57 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/21 01:29:44 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,8 @@ char	*ft_strnstr(const char *haystack, const char *needle, size_t len)
 	i = 0;
 	str = (char *) haystack;
 	tofind = (char *) needle;
+	if (!str)
+		return (NULL);
 	if (tofind[i] == 0)
 		return (str);
 	while (i < len && str[i] != 0)

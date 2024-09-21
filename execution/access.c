@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/13 00:03:46 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/09/20 00:50:12 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/21 01:36:39 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,8 @@ static char	*path_env(char **envp)
 {
 	char	*envir;
 
-	while (ft_strncmp(*envp, "PATH=", 5) != 0)
+	envir = NULL;
+	while (*envp && ft_strncmp(*envp, "PATH=", 5))
 		envp++;
 	envir = ft_strnstr(*envp, "/", 6);
 	return (envir);
@@ -84,7 +85,7 @@ char	*check_access(t_parse *data, t_exec *ex)
 	if (!ex->cmd)
 		return (NULL);
 	path = ex->cmd[0];
-	while (!check_slash(ex->cmd[0]) && *(spl_env++) != NULL)
+	while (!check_slash(ex->cmd[0]) && s && *(spl_env++) != NULL)
 	{
 		*spl_env = ft_strjoin(*spl_env, "/", data);
 		path = ft_strjoin(*spl_env, ex->cmd[0], data);
