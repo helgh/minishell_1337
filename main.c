@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 09:44:43 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/09/21 23:27:33 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/22 00:10:18 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,8 +66,11 @@ t_exec	*parsing_part(char *str, t_parse *data_info)
 	if (max_herdoc(data_info))
 		return (print_error(data_info, MAX_HER), NULL);
 	expand_herdoc(data_info);
-	if (!check_syntax_error(data_info, -1))
+	if (data_info->r_line[0] == '&' || !check_syntax_error(data_info, -1))
+	{
+		data_info->exit_status = 258;
 		return (print_error(data_info, S_ERROR), NULL);
+	}
 	if (!g_int)
 		exec = ready_for_exec(data_info);
 	return (exec);

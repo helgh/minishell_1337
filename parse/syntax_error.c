@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   syntax_error.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mthamir <mthamir@student.42.fr>            +#+  +:+       +#+        */
+/*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/18 16:56:36 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/09/18 22:27:52 by mthamir          ###   ########.fr       */
+/*   Updated: 2024/09/22 00:09:58 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,14 +52,14 @@ int	check_syntax_error(t_parse *data, int i)
 		while (++s < cmd->nbr_token)
 		{
 			if ((s + 1) == cmd->nbr_token && !if_operator(tmp->type))
-				return (data->exit_status = 258, 0);
+				return (0);
 			else if (!if_operator(tmp->type) && !if_operator(tmp->next->type))
-				return (data->exit_status = 258, 0);
+				return (0);
 			flag = 1;
 			tmp = tmp->next;
 		}
 		if (flag == 0)
-			return (data->exit_status = 258, 0);
+			return (0);
 		cmd = cmd->next;
 	}
 	return (1);
