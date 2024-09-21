@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/21 12:44:54 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/09/21 02:20:14 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/21 23:32:11 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ static char	*herdoc_value(t_parse *data, char *line, char *str, char *herdoc)
 	if (!ft_strcmp(str, line))
 	{
 		if (!herdoc)
-			return (ft_dup_str("\3", data));
+			return (free(line), ft_dup_str("\3", data));
 		return (free(line), herdoc);
 	}
 	if (!herdoc)

@@ -6,7 +6,7 @@
 #    By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/07/27 22:23:59 by hael-ghd          #+#    #+#              #
-#    Updated: 2024/09/21 21:50:10 by hael-ghd         ###   ########.fr        #
+#    Updated: 2024/09/21 23:28:34 by hael-ghd         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,7 +18,7 @@ READ = $(shell brew --prefix readline)/lib
 
 inc = $(shell brew --prefix readline)/include
 
-FLAGS = -Wall -Wextra -Werror -g -fsanitize=address
+FLAGS = -Wall -Wextra -Werror #-g -fsanitize=address
 
 SOURCE = main.c free_and_error.c convert_to_arr.c init_struct.c ./parse/check_qoutes.c ./parse/expantion.c ./parse/expantion_0.c ./parse/expantion_1.c ./parse/expantion_2.c ./parse/expantion_3.c ./parse/spl_and_replace.c ./parse/syntax_error.c \
 			./parse/tokenizer.c ./parse/tokenizer_utils.c ./parse/herdoc.c ./parse/herdoc_utils.c ./garbage/garbage_collector.c ./libft_function/itoa.c ./libft_function/join_str.c \
