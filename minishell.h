@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 09:42:01 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/09/21 23:16:19 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/22 01:27:20 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,7 @@ typedef struct s_exec
 	int					check_flag;
 	int					flag_ex;
 	int					pos;
+	int					pid;
 	struct s_exec		*next;
 }						t_exec;
 
@@ -130,6 +131,7 @@ char		*ft_strjoin_env(char *s1, char *s2, t_parse *data);
 int			ft_strcmp(const char *s1, const char *s2);
 int			ft_strlen(char *str);
 int			ft_strncmp(const char *s1, const char *s2, size_t n);
+void		put_str(char *str, int fd);
 int			ft_isalnum(int c);
 int			ft_isalpha(int c);
 int			ft_isdigit(int c);
@@ -231,7 +233,9 @@ int			with_egal(char *str);
 void		increment_shlvl(t_parse *data);
 void		init_index(t_parse **data);
 int			sort_list(t_parse **data);
-void		_exec(t_parse *data, t_exec *ex, int i);
+void		_exec(t_parse *data, t_exec *ex, int *pipe_fd);
+int			builtins(t_parse *data, t_exec *ex, int *flag, int *pipe_fd);
+void		child_proccess(t_parse *data, t_exec *ex, int i, int *pipe_fd);
 int			arg_env(t_parse *data, char **cmd);
 void		status(t_parse *data);
 int			__exit_1(char **spl, t_parse *data, int l);

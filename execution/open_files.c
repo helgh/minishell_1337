@@ -6,23 +6,19 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/01 23:03:37 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/09/22 00:13:08 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/22 01:24:18 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-void	put_str(char *str, int fd)
+void	close_files(t_parse *data)
 {
 	int	i;
 
 	i = -1;
-	if (!str)
-		return ;
-	write(fd, "M_H: ", 5);
-	while (str[++i])
-		write(fd, &str[i], 1);
-	write(2, ": ", 2);
+	while (data->fd[++i] != -1)
+		close (data->fd[i]);
 }
 
 int	check_red_fd(t_parse *data, t_exec *ex, int flag)

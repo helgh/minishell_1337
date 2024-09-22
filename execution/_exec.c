@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/16 01:50:32 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/09/21 22:07:31 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/22 01:27:03 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,14 +73,11 @@ static void	exec_builtin(t_parse *data, t_exec *ex, int i, int *pipe_fd)
 	close(std_out);
 }
 
-static void	child_proccess(t_parse *data, t_exec *ex, int i, int *pipe_fd)
+void	child_proccess(t_parse *data, t_exec *ex, int i, int *pipe_fd)
 {
 	char	*path;
 
-	data->pid[ex->pos] = fork();
-	if (data->pid[ex->pos] < 0)
-		print_error(data, F_FORK);
-	else if (data->pid[ex->pos] == 0)
+	if (ex->pid == 0)
 	{
 		signal(SIGQUIT, SIG_DFL);
 		signal(SIGINT, SIG_DFL);
@@ -101,30 +98,24 @@ static void	child_proccess(t_parse *data, t_exec *ex, int i, int *pipe_fd)
 	}
 }
 
-void	_exec(t_parse *data, t_exec *ex, int i)
+int	builtins(t_parse *data, t_exec *ex, int *flag, int *pipe_fd)
 {
-	int	pipe_fd[2];
-
 	if (pipe(pipe_fd) == -1)
-		return (print_error(data, F_PIPE));
+		return (print_error(data, F_PIPE), 1);
+	if (ex->pos == data->nbr_cmd - 1)
+		*flag = 1;
+	else
+		*flag = 0;
 	if (!check_if_builtin(data, ex))
 	{
-		if (!check_red_fd(data, ex, i))
-			exec_builtin(data, ex, i, pipe_fd);
+		if (!check_red_fd(data, ex, *flag))
+			exec_builtin(data, ex, *flag, pipe_fd);
 		else
 		{
 			close(pipe_fd[1]);
 			close(pipe_fd[0]);
 		}
+		return (0);
 	}
-	else
-	{
-		signal(SIGQUIT, SIG_IGN);
-		signal(SIGINT, SIG_IGN);
-		child_proccess(data, ex, i, pipe_fd);
-		close(pipe_fd[1]);
-		waitpid(data->pid[data->nbr_cmd - 1], &data->exit_status, 0);
-		dup2(pipe_fd[0], 0);
-		close(pipe_fd[0]);
-	}
+	return (1);
 }

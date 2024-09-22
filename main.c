@@ -6,19 +6,39 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 09:44:43 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/09/22 00:10:18 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/22 01:23:54 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	close_files(t_parse *data)
+void	_exec(t_parse *data, t_exec *ex, int *pipe_fd)
 {
+	int	flag;
+	int	ind;
 	int	i;
 
+	flag = 0;
 	i = -1;
-	while (data->fd[++i] != -1)
-		close (data->fd[i]);
+	while (++i < data->nbr_cmd)
+	{
+		ind = builtins(data, ex, &flag, pipe_fd);
+		if (ind)
+		{
+			ex->pid = fork();
+			if (ex->pid < 0)
+				print_error(data, F_FORK);
+			signal(SIGQUIT, SIG_IGN);
+			signal(SIGINT, SIG_IGN);
+			child_proccess(data, ex, flag, pipe_fd);
+			close(pipe_fd[1]);
+			if (ex->pos == data->nbr_cmd - 1)
+				waitpid(ex->pos, &data->exit_status, 0);
+			dup2(pipe_fd[0], 0);
+			close(pipe_fd[0]);
+		}
+		ex = ex->next;
+	}
 }
 
 void	execution_part(t_parse *data, t_exec *exec)
@@ -27,6 +47,7 @@ void	execution_part(t_parse *data, t_exec *exec)
 	int		i;
 	int		flag;
 	int		std_in;
+	int		pipe_fd[2];
 
 	i = -1;
 	ex = exec;
@@ -34,14 +55,7 @@ void	execution_part(t_parse *data, t_exec *exec)
 	open_files(data, exec, 0);
 	std_in = dup(STDIN_FILENO);
 	data->env = l_list_to_array(data);
-	data->pid = ft_malloc(sizeof(int) * data->nbr_cmd, data);
-	while (++i < data->nbr_cmd)
-	{
-		if (i == data->nbr_cmd - 1)
-			flag = 1;
-		_exec(data, ex, flag);
-		ex = ex->next;
-	}
+	_exec(data, ex, pipe_fd);
 	status(data);
 	close_files(data);
 	dup2(std_in, STDIN_FILENO);
