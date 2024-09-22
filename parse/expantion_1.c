@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expantion_1.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mthamir <mthamir@student.42.fr>            +#+  +:+       +#+        */
+/*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/18 17:04:26 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/09/18 03:44:59 by mthamir          ###   ########.fr       */
+/*   Updated: 2024/09/22 17:42:26 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,7 +116,7 @@ char	*set_value_2(t_parse *data, char *str)
 	return (s);
 }
 
-char	*set_value(t_parse *data, char *str)
+char	*set_value(t_parse *data, t_tokens *tok, char *str, int flag)
 {
 	int		i;
 	int		len;
@@ -135,5 +135,7 @@ char	*set_value(t_parse *data, char *str)
 		s = cmp_with_env(data, s, i);
 	else if (s[i] == '$' && ft_isdigit(s[i + 1]))
 		s = digit_with_dollar(data, s, i);
+	if (s && !flag)
+		check_ambiguous(data, tok, s);
 	return (s);
 }

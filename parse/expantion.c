@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/18 16:59:51 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/09/21 23:18:50 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/22 17:21:52 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,6 +115,7 @@ void	expantion(t_parse *data)
 			}
 			else
 				tok->str = exp_delimiter(data, tok->str);
+			tmp->flag_ambiguous = tok->flag_ambiguous;
 			tok = tok->next;
 		}
 		tmp = tmp->next;

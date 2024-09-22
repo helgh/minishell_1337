@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 09:42:01 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/09/22 01:27:20 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/22 17:40:56 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,7 @@ typedef struct s_exec
 	int					red_herdoc;
 	int					check_flag;
 	int					flag_ex;
+	bool				flag_ambiguous;
 	int					pos;
 	int					pid;
 	struct s_exec		*next;
@@ -83,6 +84,7 @@ typedef struct s_tokens
 	int					type_qoute;
 	bool				sign_dollar;
 	bool				flag_ex;
+	bool				flag_ambiguous;
 	struct s_tokens		*next;
 }						t_tokens;
 
@@ -92,6 +94,7 @@ typedef struct s_cmd_info
 	char				**all_token;
 	int					nbr_token;
 	int					checker;
+	bool				flag_ambiguous;
 	t_tokens			*token;
 	t_exec				*exec;
 	struct s_cmd_info	*next;
@@ -149,7 +152,7 @@ t_parse		*init_struct(char **envp);
 char		*check_qoutes(char *str, int len, t_parse *data_info);
 int			length_line(char *str);
 void		expantion(t_parse *data);
-char		*set_value(t_parse *data, char *str);
+char		*set_value(t_parse *data, t_tokens *tok, char *str, int flag);
 char		**split_and_replace(t_parse *data_info);
 void		replace_value(char **str, int i, int *s);
 int			check_if_only_space_and_tab(char *str);
@@ -167,6 +170,7 @@ t_tokens	*tokens_struct(t_cmd_info *cmd, t_parse *data);
 void		checker_herdoc(t_parse *data);
 int			max_herdoc(t_parse *data);
 char		*set_value_2(t_parse *data, char *str);
+void		check_ambiguous(t_parse *data, t_tokens *tok, char *s);
 void		expand_herdoc(t_parse *data);
 char		*read_herdoc(t_parse *data, t_cmd_info *cmd, t_tokens *tok, int s);
 char		*check_access(t_parse *data, t_exec *ex);

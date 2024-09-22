@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/28 02:31:17 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/09/22 01:18:35 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/22 17:24:10 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,6 +74,7 @@ char	**cmd_opt_arg(t_parse *data, t_cmd_info *cmd, int len, t_exec *exec)
 	char		**spl;
 	int			flag;
 
+	exec->flag_ambiguous = cmd->flag_ambiguous;
 	spl = ft_malloc(sizeof(char *) * (len + 1), data);
 	if (len == 0)
 		return (spl[0] = NULL, spl);

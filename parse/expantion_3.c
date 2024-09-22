@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/18 03:29:27 by mthamir           #+#    #+#             */
-/*   Updated: 2024/09/21 23:22:49 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/22 17:39:39 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ char	*exp_d_quotes(t_parse *data, t_tokens *tok, int *ind, char *line)
 		{
 			tmp = count_cash_(&str[i + (*ind) + 1], &i, data);
 			if (tmp)
-				tmp = set_value(data, tmp);
+				tmp = set_value(data, tok, tmp, 2);
 		}
 		else
 			tmp = get_str(&str[i + (*ind) + 1], &i, data);
@@ -82,7 +82,7 @@ char	*exp_without_quotes(t_parse *data, t_tokens *tok, int *ind)
 		{
 			tmp = count_cash_(&str[i + (*ind)], &i, data);
 			if (tmp)
-				tmp = set_value(data, tmp);
+				tmp = set_value(data, tok, tmp, 0);
 		}
 		else
 			tmp = no_expand(data, &str[i + (*ind)], &i);

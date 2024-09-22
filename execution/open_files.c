@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/01 23:03:37 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/09/22 01:24:18 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/22 17:25:34 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,12 @@ int	check_red_fd(t_parse *data, t_exec *ex, int flag)
 
 static int	file_herdoc(t_exec *ex)
 {
+	if (ex->flag_ambiguous == 1)
+	{
+		putstr_fd("M_H: ambiguous redirect\n", 2);
+		ex->check_flag = -1;
+		return (-1);
+	}
 	if (ex->herdoc)
 	{
 		ex->red_herdoc = open("/tmp/herdoc", O_CREAT | O_TRUNC | O_RDWR, 0644);
@@ -111,8 +117,7 @@ void	open_files(t_parse *data, t_exec *exec, int f)
 	while (ex)
 	{
 		i = -1;
-		file_herdoc(ex);
-		while (ex->files && ex->files[++i])
+		while (file_herdoc(ex) != -1 && ex->files && ex->files[++i])
 		{
 			f = ft_open(ex, &i);
 			if (!f)

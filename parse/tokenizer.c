@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokenizer.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mthamir <mthamir@student.42.fr>            +#+  +:+       +#+        */
+/*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/18 16:48:07 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/09/18 22:28:32 by mthamir          ###   ########.fr       */
+/*   Updated: 2024/09/22 17:25:10 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,7 @@ t_tokens	*tokens_struct(t_cmd_info *cmd, t_parse *data)
 		tokens->type_qoute = set_flag_qoutes(tokens->str);
 		tokens->sign_dollar = set_flag_dollar(tokens);
 		tokens->type = get_type_token(cmd->all_token, type, i, data);
+		tokens->flag_ambiguous = 0;
 		type = tokens->type;
 		tokens->next = NULL;
 		add_to_token(&cmd->token, tokens);
@@ -85,6 +86,7 @@ t_cmd_info	*cmd_info_struct(t_parse *data)
 		cmd->cmd_line = data->all_cmd[i];
 		cmd->all_token = ft_split(data->all_cmd[i], 32, '\t', data);
 		cmd->nbr_token = 0;
+		cmd->flag_ambiguous = 0;
 		cmd->checker = -1;
 		cmd->next = NULL;
 		cmd->token = NULL;
