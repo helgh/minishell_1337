@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/22 15:20:13 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/09/19 02:53:07 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/23 13:55:31 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,6 @@ void	ft_restore_input(t_parse *data)
 		perror("");
 		free_and_exit(data, 1);
 	}
-	signal(SIGINT, signal_handler);
 }
 
 void	handler(int sig)

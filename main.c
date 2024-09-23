@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 09:44:43 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/09/22 17:15:17 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/23 17:10:30 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ void	_exec(t_parse *data, t_exec *ex, int *pipe_fd)
 			child_proccess(data, ex, flag, pipe_fd);
 			close(pipe_fd[1]);
 			if (ex->pos == data->nbr_cmd - 1)
-				waitpid(ex->pos, &data->exit_status, 0);
+				waitpid(ex->pid, &data->exit_status, 0);
 			dup2(pipe_fd[0], 0);
 			close(pipe_fd[0]);
 		}
