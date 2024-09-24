@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/18 16:48:07 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/09/22 17:25:10 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/24 22:22:10 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ t_tokens	*tokens_struct(t_cmd_info *cmd, t_parse *data)
 		tokens->str = cmd->all_token[i];
 		tokens->flag_ex = 0;
 		tokens->type_qoute = set_flag_qoutes(tokens->str);
-		tokens->sign_dollar = set_flag_dollar(tokens);
+		rep_value(tokens);
 		tokens->type = get_type_token(cmd->all_token, type, i, data);
 		tokens->flag_ambiguous = 0;
 		type = tokens->type;

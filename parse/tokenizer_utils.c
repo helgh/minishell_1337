@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokenizer_utils.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mthamir <mthamir@student.42.fr>            +#+  +:+       +#+        */
+/*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/18 16:53:52 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/09/18 22:28:53 by mthamir          ###   ########.fr       */
+/*   Updated: 2024/09/24 22:21:52 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ int	set_flag_qoutes(char *str)
 	return (0);
 }
 
-int	set_flag_dollar(t_tokens *token)
+void	rep_value(t_tokens *token)
 {
 	int	i;
 
@@ -39,14 +39,6 @@ int	set_flag_dollar(t_tokens *token)
 		else if (token->str[i] == -2)
 			token->str[i] = '\t';
 	}
-	i = -1;
-	while (token->str[++i])
-	{
-		if (token->type_qoute == 2 || token->type_qoute == 0)
-			if (token->str[i] == '$')
-				return (1);
-	}
-	return (0);
 }
 
 static int	check_option(char *str)

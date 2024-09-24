@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 09:42:01 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/09/22 17:40:56 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/24 22:23:47 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,22 +26,13 @@
 # include <readline/readline.h>
 # include <readline/history.h>
 
-# define GET			1
-# define SET			2
-# define ADD			3
-# define INIT			4
-# define PRINT_ENV		5
-# define PRINT_EXP		6
-# define APPEND			7
-# define UNSET			8
-
 # define F_ALLOC		1
 # define S_ERROR		2
-# define U_QOUTE		4
-# define MAX_HER		5
-# define F_PIPE			6
-# define F_FORK			7
-# define EXIT			8
+# define U_QOUTE		3
+# define MAX_HER		4
+# define F_PIPE			5
+# define F_FORK			6
+# define EXIT			7
 
 extern int	g_int;
 
@@ -82,7 +73,6 @@ typedef struct s_tokens
 	char				*str;
 	char				*type;
 	int					type_qoute;
-	bool				sign_dollar;
 	bool				flag_ex;
 	bool				flag_ambiguous;
 	struct s_tokens		*next;
@@ -110,7 +100,6 @@ typedef struct s_parse
 	int					flag;
 	char				**env;
 	int					fd[OPEN_MAX];
-	int					*pid;
 	bool				flag_spl;
 	t_env				*envir;
 	t_cmd_info			*cmd_info;
@@ -163,7 +152,7 @@ char		*exp_without_quotes(t_parse *data, t_tokens *tok, int *ind);
 int			sign_in_end(char *str, int *ind);
 int			check_syntax_error(t_parse *data, int i);
 char		*get_type_token(char **spl, char *type, int s, t_parse *data);
-int			set_flag_dollar(t_tokens *token);
+void		rep_value(t_tokens *token);
 int			set_flag_qoutes(char *str);
 t_cmd_info	*cmd_info_struct(t_parse *data_info);
 t_tokens	*tokens_struct(t_cmd_info *cmd, t_parse *data);
