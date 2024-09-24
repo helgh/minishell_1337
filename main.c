@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 09:44:43 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/09/23 17:10:30 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/23 19:18:07 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,8 +123,6 @@ int	main(int ac, char **av, char **envp)
 	t_parse	*data_info;
 
 	(void) av;
-	if (!isatty(0))
-		return (putstr_fd("M_H: Not a valid tty\n", 2), 1);
 	if (ac != 1)
 	{
 		putstr_fd("M_H: ", 2);
