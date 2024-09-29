@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/13 00:22:38 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/09/19 03:58:02 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/28 16:55:53 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ void	dup_output(t_exec *ex, int i, int *pipe_fd)
 	close(pipe_fd[0]);
 	if (ex->red_out == 1 && i == 0)
 		dup2(pipe_fd[1], STDOUT_FILENO);
-	else
+	else if (ex->red_out > 1)
 		dup2(ex->red_out, STDOUT_FILENO);
 	close(pipe_fd[1]);
 }

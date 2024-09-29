@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 06:08:52 by mthamir           #+#    #+#             */
-/*   Updated: 2024/09/18 23:54:01 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/29 18:04:03 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ int	check_status(char *str, int l)
 			return (print_msg(str, l));
 	}
 	if (l == 1)
-		printf("exit\n");
+		putstr_fd("exit\n", 2);
 	return (result * sign);
 }
 
@@ -66,19 +66,23 @@ int	__exit_1(char **spl, t_parse *data, int l)
 {
 	unsigned char	c;
 
-	if (!(*spl))
-		return (1);
 	if (ft_strstrlen(spl) == 1)
-		return (putstr_fd("exit\n", 2), free_and_exit(data, 0), 0);
+		return (putstr_fd("exit\n", 2), close(data->in), close_files(data), free_and_exit(data, 0), 0);
 	if (ft_strstrlen(spl) > 1 && check_if_digit(spl[1]))
 	{
-		printf("exit\nM_H: exit: %s: numeric argument required\n", spl[1]);
+		putstr_fd("M_H: exit: ", 2);
+		putstr_fd(spl[1], 2);
+		putstr_fd(": numeric argument required\n", 2);
 		c = 255;
+		close (data->in);
+		close_files(data);
 		free_and_exit(data, c);
 	}
 	else if (ft_strstrlen(spl) == 2 && !check_if_digit(spl[1]))
 	{
 		c = check_status(spl[1], l);
+		close (data->in);
+		close_files(data);
 		free_and_exit(data, c);
 	}
 	else if (ft_strstrlen(spl) > 2 && !check_if_digit(spl[1]))

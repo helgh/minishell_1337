@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 02:12:22 by mthamir           #+#    #+#             */
-/*   Updated: 2024/09/14 02:48:02 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/28 00:05:01 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,9 +53,14 @@ void	init_env(char **env, t_parse *data)
 	else
 	{
 		pwd = getcwd(NULL, 0);
+		if (!pwd)
+		{
+			perror("getcwd");
+			return ;
+		}
 		add_to_env("OLDPWD", NULL, "\0", data);
 		add_to_env("PWD", "=", pwd, data);
-		add_to_env("SHLVL", "=", "1", data);
+		add_to_env("SHLVL", "=", "", data);
 		add_to_env("_", "=", "/usr/bin/env", data);
 		add_to_env("PATH", "=", path, data);
 		free(pwd);
@@ -68,7 +73,7 @@ int	print_env(t_parse *data)
 
 	env = data->envir;
 	if (!env)
-		return (putstr_fd("envirement id empty", 2), 1);
+		return (putstr_fd("M_H: env: No such file or directory\n", 2), 1);
 	while (env)
 	{
 		if (env->egal)

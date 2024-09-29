@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 02:10:41 by mthamir           #+#    #+#             */
-/*   Updated: 2024/09/18 23:48:32 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/28 00:20:04 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,9 @@ int	_export_vars(char **str, t_parse *data, int i)
 	{
 		if (check_export_parse(str[i], data))
 		{
-			printf("M_H: export: %s : not a valid identifier\n", str[i]);
+			putstr_fd("M_H: export: `", 2);
+			putstr_fd(str[i], 2);
+			putstr_fd("' : not a valid identifier\n", 2);
 			ret = 1;
 		}
 		else

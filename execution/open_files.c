@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/01 23:03:37 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/09/22 17:25:34 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/28 16:07:22 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ int	check_red_fd(t_parse *data, t_exec *ex, int flag)
 		return (1);
 	if (ex->herdoc)
 	{
-		ex->red_herdoc = open("/tmp/herdoc", O_RDONLY);
+		ex->red_herdoc = open(ex->file_her, O_RDONLY);
 		if (ex->red_herdoc == -1)
 		{
 			put_str("file_herdoc", 2);
@@ -49,7 +49,7 @@ int	check_red_fd(t_parse *data, t_exec *ex, int flag)
 	return (0);
 }
 
-static int	file_herdoc(t_exec *ex)
+static int	file_herdoc(t_exec *ex, t_parse *data)
 {
 	if (ex->flag_ambiguous == 1)
 	{
@@ -59,7 +59,8 @@ static int	file_herdoc(t_exec *ex)
 	}
 	if (ex->herdoc)
 	{
-		ex->red_herdoc = open("/tmp/herdoc", O_CREAT | O_TRUNC | O_RDWR, 0644);
+		ex->file_her = ft_strjoin("/tmp/herdoc", i_to_a(ex->pos, data), data);
+		ex->red_herdoc = open(ex->file_her, O_CREAT | O_TRUNC | O_RDWR, 0644);
 		if (ex->red_herdoc != -1)
 		{
 			putstr_fd(ex->herdoc, ex->red_herdoc);
@@ -80,28 +81,28 @@ static int	file_herdoc(t_exec *ex)
 static int	ft_open(t_exec *ex, int *i)
 {
 	int	f;
-	int	j;
 
 	f = 1;
-	j = *i + 1;
 	if ((!ft_strcmp(ex->files[*i], ">") || !ft_strcmp(ex->files[*i], ">>"))
-		&& !ft_strcmp(ex->files[j], "\1"))
+		&& !ft_strcmp(ex->files[*i + 1], "\1"))
 		ex->red_out = open("", O_CREAT | O_TRUNC | O_RDWR, 0644);
 	else if (!ft_strcmp(ex->files[*i], "<"))
 	{
-		ex->red_in = open(ex->files[j], O_RDONLY);
+		ex->red_in = open(ex->files[*i + 1], O_RDONLY);
 		f = 0;
 	}
-	else if (!ft_strcmp(ex->files[*i], ">"))
-		ex->red_out = open(ex->files[j], O_CREAT | O_TRUNC | O_RDWR, 0644);
-	else if (!ft_strcmp(ex->files[*i], ">>"))
-		ex->red_out = open(ex->files[j], O_CREAT | O_APPEND | O_RDWR, 0644);
+	else if (!ft_strcmp(ex->files[*i], ">") && ft_strcmp(ex->files[*i + 1], "/dev/stdout"))
+		ex->red_out = open(ex->files[*i + 1], O_CREAT | O_TRUNC | O_RDWR, 0644);
+	else if (!ft_strcmp(ex->files[*i], ">>") && ft_strcmp(ex->files[*i + 1], "/dev/stdout"))
+		ex->red_out = open(ex->files[*i + 1], O_CREAT | O_APPEND | O_RDWR, 0644);
+	else
+		return (-1);
 	if (ex->red_in == -1 || ex->red_out == -1)
 	{
 		ex->red_in = 0;
 		ex->red_out = 1;
 		ex->check_flag = -1;
-		return (put_str(ex->files[j], 2), perror(""), -1);
+		return (put_str(ex->files[*i + 1], 2), perror(""), -1);
 	}
 	return (f);
 }
@@ -117,7 +118,7 @@ void	open_files(t_parse *data, t_exec *exec, int f)
 	while (ex)
 	{
 		i = -1;
-		while (file_herdoc(ex) != -1 && ex->files && ex->files[++i])
+		while (file_herdoc(ex, data) != -1 && ex->files && ex->files[++i])
 		{
 			f = ft_open(ex, &i);
 			if (!f)

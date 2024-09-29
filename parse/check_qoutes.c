@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/18 16:41:22 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/09/22 17:40:34 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/25 15:56:34 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,9 +23,9 @@ void	check_ambiguous(t_parse *data, t_tokens *tok, char *s)
 	{
 		spl = ft_split(s, 32, '\t', data);
 		len = ft_strstrlen(spl);
+		if (len != 1)
+			tok->flag_ambiguous = 1;
 	}
-	if (len)
-		tok->flag_ambiguous = 1;
 }
 
 int	length_line(char *str)

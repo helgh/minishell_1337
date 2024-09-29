@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 02:10:54 by mthamir           #+#    #+#             */
-/*   Updated: 2024/09/13 02:43:52 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/28 16:01:50 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,9 +28,9 @@ char	*get_value(char *var, t_parse *data)
 
 void	print_cd_err(void)
 {
-	printf("cd: error retrieving current directory: ");
-	printf("getcwd: cannot access parent directories: ");
-	printf("No such file or directory\n");
+	putstr_fd("cd: error retrieving current directory: ", 2);
+	putstr_fd("getcwd: cannot access parent directories: ", 2);
+	putstr_fd("No such file or directory\n", 2);
 }
 
 void	parent_removed(char *path, t_parse *data)
@@ -81,10 +81,10 @@ int	cd(char **str, t_parse *data)
 	if (!str[1] || !ft_strcmp(str[1], "~"))
 		return (to_home(data));
 	else if (!ft_strcmp(str[1], "."))
-		return (same_dir(data), 0);
+		return (same_dir(data));
 	else if (!ft_strcmp(str[1], "/.")
 		|| !strcmp(str[1], "/..") || !ft_strcmp(str[1], "/"))
-		return (to_the_root(data), 0);
+		return (to_the_root(data));
 	else if (!ft_strcmp(str[1], "-"))
 		return (switch_the_old(data), 0);
 	if (go_to_path(str[1], data))

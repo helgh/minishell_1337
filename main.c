@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 09:44:43 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/09/23 19:18:07 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/29 21:57:42 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,19 +15,18 @@
 void	_exec(t_parse *data, t_exec *ex, int *pipe_fd)
 {
 	int	flag;
-	int	ind;
 	int	i;
 
 	flag = 0;
 	i = -1;
 	while (++i < data->nbr_cmd)
 	{
-		ind = builtins(data, ex, &flag, pipe_fd);
-		if (ind)
+		if (pipe(pipe_fd) == -1)
+			return (print_error(data, F_PIPE));
+		if (i == data->nbr_cmd - 1 && !builtins(data, ex, &flag, pipe_fd))
+			;
+		else
 		{
-			ex->pid = fork();
-			if (ex->pid < 0)
-				print_error(data, F_FORK);
 			signal(SIGQUIT, SIG_IGN);
 			signal(SIGINT, SIG_IGN);
 			child_proccess(data, ex, flag, pipe_fd);
@@ -46,20 +45,25 @@ void	execution_part(t_parse *data, t_exec *exec)
 	t_exec	*ex;
 	int		i;
 	int		flag;
-	int		std_in;
 	int		pipe_fd[2];
 
 	i = -1;
 	ex = exec;
 	flag = 0;
 	open_files(data, exec, 0);
-	std_in = dup(STDIN_FILENO);
+	data->in = dup(STDIN_FILENO);
 	data->env = l_list_to_array(data);
-	_exec(data, ex, pipe_fd);
+	if (data->nbr_cmd == 1 && !ft_strcmp(ex->cmd[0], "exit"))
+	{
+		check_red_fd(data, exec, 1);
+		ft_exit(data, ex->cmd, ex);
+	}
+	else
+		_exec(data, ex, pipe_fd);
 	status(data);
+	dup2(data->in, STDIN_FILENO);
 	close_files(data);
-	dup2(std_in, STDIN_FILENO);
-	close (std_in);
+	close (data->in);
 }
 
 t_exec	*parsing_part(char *str, t_parse *data_info)
@@ -103,7 +107,7 @@ void	minishell(t_parse *data)
 		if (g_int)
 			data->exit_status = 1;
 		if (!data->r_line)
-			return (free_and_exit(data, 0));
+			return (free_and_exit(data, data->exit_status));
 		g_int = 0;
 		exec = parsing_part(data->r_line, data);
 		tcgetattr(STDIN_FILENO, &attr);

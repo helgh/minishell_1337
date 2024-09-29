@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/18 02:48:37 by mthamir           #+#    #+#             */
-/*   Updated: 2024/09/18 23:48:22 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/27 22:04:58 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@ void	print_var(t_env env)
 {
 	if (env.var)
 	{
+		if (!ft_strcmp(env.var, "_"))
+			return ;
 		ft_putstr("declare -x ");
 		ft_putstr(env.var);
 	}
@@ -48,7 +50,7 @@ int	print_export(t_parse *data)
 	init_index(&data);
 	env = data->envir;
 	if (!env)
-		return (putstr_fd("envriment is empty\n", 2), 1);
+		return (1);
 	index = 0;
 	max = sort_list(&data);
 	while (1)
