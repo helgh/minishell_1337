@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 02:10:41 by mthamir           #+#    #+#             */
-/*   Updated: 2024/09/28 00:20:04 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/30 19:57:41 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,11 +72,8 @@ int	with_egal(char *str)
 	return (0);
 }
 
-int	_export_vars(char **str, t_parse *data, int i)
+int	_export_vars(char **str, t_parse *data, int i, int ret)
 {
-	int	ret;
-
-	ret = 0;
 	while (str[++i])
 	{
 		if (check_export_parse(str[i], data))
@@ -110,5 +107,5 @@ int	_export(char **str, t_parse *data)
 	if (!str[1])
 		return (print_export(data));
 	else
-		return (_export_vars(str, data, i));
+		return (_export_vars(str, data, i, 0));
 }

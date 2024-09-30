@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 06:08:52 by mthamir           #+#    #+#             */
-/*   Updated: 2024/09/29 18:04:03 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/30 19:17:55 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,23 +67,22 @@ int	__exit_1(char **spl, t_parse *data, int l)
 	unsigned char	c;
 
 	if (ft_strstrlen(spl) == 1)
-		return (putstr_fd("exit\n", 2), close(data->in), close_files(data), free_and_exit(data, 0), 0);
+	{
+		putstr_fd("exit\n", 2);
+		return (close(data->out), close_files(data), free_and_exit(data, 0), 0);
+	}
 	if (ft_strstrlen(spl) > 1 && check_if_digit(spl[1]))
 	{
 		putstr_fd("M_H: exit: ", 2);
 		putstr_fd(spl[1], 2);
 		putstr_fd(": numeric argument required\n", 2);
 		c = 255;
-		close (data->in);
-		close_files(data);
-		free_and_exit(data, c);
+		return (close(data->out), close_files(data), free_and_exit(data, c), 0);
 	}
 	else if (ft_strstrlen(spl) == 2 && !check_if_digit(spl[1]))
 	{
 		c = check_status(spl[1], l);
-		close (data->in);
-		close_files(data);
-		free_and_exit(data, c);
+		return (close(data->out), close_files(data), free_and_exit(data, c), 0);
 	}
 	else if (ft_strstrlen(spl) > 2 && !check_if_digit(spl[1]))
 		return (putstr_fd("exit\nM_H: exit: too many arguments\n", 2), 1);

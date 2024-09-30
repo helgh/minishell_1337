@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/01 23:03:37 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/09/28 16:07:22 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/30 17:52:09 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,15 +21,13 @@ void	close_files(t_parse *data)
 		close (data->fd[i]);
 }
 
-int	check_red_fd(t_parse *data, t_exec *ex, int flag)
+int	check_red_fd(t_parse *data, t_exec *ex)
 {
 	int	i;
 
 	i = -1;
-	if (ex->check_flag == -1 && flag == 1)
-		data->exit_status = 1;
 	if (ex->check_flag == -1)
-		return (1);
+		return (data->exit_status = 1);
 	if (ex->herdoc)
 	{
 		ex->red_herdoc = open(ex->file_her, O_RDONLY);
@@ -37,9 +35,7 @@ int	check_red_fd(t_parse *data, t_exec *ex, int flag)
 		{
 			put_str("file_herdoc", 2);
 			perror("");
-			if (flag == 1)
-				data->exit_status = 1;
-			return (1);
+			return (data->exit_status = 1);
 		}
 		while (data->fd[++i] != -1)
 			;

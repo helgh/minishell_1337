@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 09:44:43 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/09/29 21:57:42 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/30 20:14:36 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,28 +14,25 @@
 
 void	_exec(t_parse *data, t_exec *ex, int *pipe_fd)
 {
-	int	flag;
 	int	i;
+	int	flag;
 
-	flag = 0;
 	i = -1;
+	flag = 0;
 	while (++i < data->nbr_cmd)
 	{
 		if (pipe(pipe_fd) == -1)
 			return (print_error(data, F_PIPE));
-		if (i == data->nbr_cmd - 1 && !builtins(data, ex, &flag, pipe_fd))
-			;
-		else
-		{
-			signal(SIGQUIT, SIG_IGN);
-			signal(SIGINT, SIG_IGN);
-			child_proccess(data, ex, flag, pipe_fd);
-			close(pipe_fd[1]);
-			if (ex->pos == data->nbr_cmd - 1)
-				waitpid(ex->pid, &data->exit_status, 0);
-			dup2(pipe_fd[0], 0);
-			close(pipe_fd[0]);
-		}
+		signal(SIGQUIT, SIG_IGN);
+		signal(SIGINT, SIG_IGN);
+		if (i == data->nbr_cmd - 1)
+			flag = 1;
+		child_proccess(data, ex, flag, pipe_fd);
+		close(pipe_fd[1]);
+		if (ex->pos == data->nbr_cmd - 1)
+			waitpid(ex->pid, &data->exit_status, 0);
+		dup2(pipe_fd[0], 0);
+		close(pipe_fd[0]);
 		ex = ex->next;
 	}
 }
@@ -43,27 +40,22 @@ void	_exec(t_parse *data, t_exec *ex, int *pipe_fd)
 void	execution_part(t_parse *data, t_exec *exec)
 {
 	t_exec	*ex;
-	int		i;
-	int		flag;
 	int		pipe_fd[2];
 
-	i = -1;
 	ex = exec;
-	flag = 0;
 	open_files(data, exec, 0);
-	data->in = dup(STDIN_FILENO);
 	data->env = l_list_to_array(data);
-	if (data->nbr_cmd == 1 && !ft_strcmp(ex->cmd[0], "exit"))
-	{
-		check_red_fd(data, exec, 1);
-		ft_exit(data, ex->cmd, ex);
-	}
+	if (data->nbr_cmd == 1 && !one_builtin(data, exec))
+		;
 	else
+	{
+		data->in = dup(STDIN_FILENO);
 		_exec(data, ex, pipe_fd);
-	status(data);
-	dup2(data->in, STDIN_FILENO);
-	close_files(data);
-	close (data->in);
+		status(data);
+		dup2(data->in, STDIN_FILENO);
+		close_files(data);
+		close (data->in);
+	}
 }
 
 t_exec	*parsing_part(char *str, t_parse *data_info)

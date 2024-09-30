@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 09:42:01 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/09/29 17:33:43 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/09/30 19:58:07 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,6 +100,7 @@ typedef struct s_parse
 	int					exit_status;
 	int					flag;
 	int					in;
+	int					out;
 	char				**env;
 	int					fd[OPEN_MAX];
 	bool				flag_spl;
@@ -185,7 +186,7 @@ void		signal_herdoc(void);
 void		print_error(t_parse *data, int flag);
 void		signal_handler(int sig);
 void		open_files(t_parse *data, t_exec *exec, int f);
-int			check_red_fd(t_parse *data, t_exec *ex, int flag);
+int			check_red_fd(t_parse *data, t_exec *ex);
 void		dup_input(t_exec *ex);
 void		dup_output(t_exec *ex, int i, int *pipe_fd);
 char		*handle_exp(t_parse *data, t_tokens *tok, char *s);
@@ -206,7 +207,7 @@ void		append_value(char *var, char *value, t_parse *data);
 void		set_var_to_env(char *var, char *egal, char *value, t_parse *data);
 int			check_export_parse(char *str, t_parse *data);
 void		export_with_value(char *str, t_parse *data);
-int			_export_vars(char **str, t_parse *data, int i);
+int			_export_vars(char **str, t_parse *data, int i, int ret);
 int			_export(char **str, t_parse *data);
 int			cd(char **str, t_parse *data);
 int			to_home(t_parse *data);
@@ -228,8 +229,6 @@ int			with_egal(char *str);
 void		increment_shlvl(t_parse *data);
 void		init_index(t_parse **data);
 int			sort_list(t_parse **data);
-void		_exec(t_parse *data, t_exec *ex, int *pipe_fd);
-int			builtins(t_parse *data, t_exec *ex, int *flag, int *pipe_fd);
 void		child_proccess(t_parse *data, t_exec *ex, int i, int *pipe_fd);
 int			arg_env(t_parse *data, char **cmd);
 void		status(t_parse *data);
@@ -239,6 +238,8 @@ int			check_if_digit(char *str);
 int			check_status(char *str, int l);
 int			ft_strstrlen(char **str);
 void		close_files(t_parse *data);
+int			one_builtin(t_parse *data, t_exec *ex);
+int			check_if_builtin(t_parse *data, t_exec *ex);
 
 /*__________________________________________________________*/
 
