@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   free_and_error.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mthamir <mthamir@student.42.fr>            +#+  +:+       +#+        */
+/*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/12 23:45:14 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/09/18 22:34:45 by mthamir          ###   ########.fr       */
+/*   Updated: 2024/10/01 16:40:56 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ void	print_error(t_parse *data, int flag)
 	else if (flag == MAX_HER)
 	{
 		putstr_fd("M_H: maximum here-document count exceeded\n", 2);
-		free_and_exit(data, 1);
+		free_and_exit(data, 2);
 	}
 	else if (flag == F_PIPE)
 	{

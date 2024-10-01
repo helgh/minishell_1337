@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/01 23:03:37 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/09/30 17:52:09 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/10/01 17:12:09 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,17 +87,17 @@ static int	ft_open(t_exec *ex, int *i)
 		ex->red_in = open(ex->files[*i + 1], O_RDONLY);
 		f = 0;
 	}
-	else if (!ft_strcmp(ex->files[*i], ">") && ft_strcmp(ex->files[*i + 1], "/dev/stdout"))
+	else if (!ft_strcmp(ex->files[*i], ">")
+		&& ft_strcmp(ex->files[*i + 1], "/dev/stdout"))
 		ex->red_out = open(ex->files[*i + 1], O_CREAT | O_TRUNC | O_RDWR, 0644);
-	else if (!ft_strcmp(ex->files[*i], ">>") && ft_strcmp(ex->files[*i + 1], "/dev/stdout"))
-		ex->red_out = open(ex->files[*i + 1], O_CREAT | O_APPEND | O_RDWR, 0644);
+	else if (!ft_strcmp(ex->files[*i], ">>")
+		&& ft_strcmp(ex->files[*i + 1], "/dev/stdout"))
+		ex->red_out = open(ex->files[*i +1], O_CREAT | O_APPEND | O_RDWR, 0644);
 	else
 		return (-1);
 	if (ex->red_in == -1 || ex->red_out == -1)
 	{
-		ex->red_in = 0;
-		ex->red_out = 1;
-		ex->check_flag = -1;
+		1 && (ex->red_in = 0, ex->red_out = 1, ex->check_flag = -1);
 		return (put_str(ex->files[*i + 1], 2), perror(""), -1);
 	}
 	return (f);
