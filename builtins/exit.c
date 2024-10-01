@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 06:08:52 by mthamir           #+#    #+#             */
-/*   Updated: 2024/09/30 19:17:55 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/10/01 20:44:14 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,8 @@ int	__exit_1(char **spl, t_parse *data, int l)
 	if (ft_strstrlen(spl) == 1)
 	{
 		putstr_fd("exit\n", 2);
-		return (close(data->out), close_files(data), free_and_exit(data, 0), 0);
+		close(data->out);
+		return (close_files(data), free_and_exit(data, data->exit_status), 0);
 	}
 	if (ft_strstrlen(spl) > 1 && check_if_digit(spl[1]))
 	{

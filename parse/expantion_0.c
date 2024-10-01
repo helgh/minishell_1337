@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/28 02:31:17 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/09/29 19:01:00 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/10/01 21:04:52 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,7 +143,7 @@ t_exec	*ready_for_exec(t_parse *data)
 		tmp->red_herdoc = 0;
 		tmp->check_flag = 0;
 		tmp->pos = i;
-		tmp->pid = 1;
+		tmp->pid = 0;
 		tmp->next = NULL;
 		add_to_next(&exec, tmp);
 		cmd = cmd->next;

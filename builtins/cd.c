@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 02:10:54 by mthamir           #+#    #+#             */
-/*   Updated: 2024/09/28 16:01:50 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/10/01 20:49:10 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,10 +44,9 @@ void	parent_removed(char *path, t_parse *data)
 	set_var_to_env("PWD", "=", join2, data);
 }
 
-int	go_to_path(char *path, t_parse *data)
+int	go_to_path(char *path, t_parse *data, char *pwd)
 {
 	char	cwd[PATH_MAX];
-	char	*pwd;
 
 	if (!getcwd(cwd, sizeof(cwd)))
 	{
@@ -67,8 +66,9 @@ int	go_to_path(char *path, t_parse *data)
 	{
 		if (chdir(path) < 0)
 			return (perror("cd"), 1);
-		set_var_to_env("PWD", "=", getcwd(NULL, 0), data);
 		set_var_to_env("OLDPWD", "=", cwd, data);
+		getcwd(cwd, sizeof(cwd));
+		set_var_to_env("PWD", "=", cwd, data);
 	}
 	return (0);
 }
@@ -76,8 +76,10 @@ int	go_to_path(char *path, t_parse *data)
 int	cd(char **str, t_parse *data)
 {
 	char	*path;
+	char	*pwd;
 
 	path = NULL;
+	pwd = NULL;
 	if (!str[1] || !ft_strcmp(str[1], "~"))
 		return (to_home(data));
 	else if (!ft_strcmp(str[1], "."))
@@ -87,7 +89,7 @@ int	cd(char **str, t_parse *data)
 		return (to_the_root(data));
 	else if (!ft_strcmp(str[1], "-"))
 		return (switch_the_old(data), 0);
-	if (go_to_path(str[1], data))
+	if (go_to_path(str[1], data, pwd))
 		return (1);
 	return (0);
 }

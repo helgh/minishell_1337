@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/07 16:38:41 by mthamir           #+#    #+#             */
-/*   Updated: 2024/09/28 00:03:19 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/10/01 17:53:51 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ int	same_dir(t_parse *data)
 
 	cwd = getcwd(NULL, 0);
 	if (!cwd)
-		return (free_and_exit(data, 1), 1);
+		return (perror(""), 1);
 	set_var_to_env("OLDPWD", "=", cwd, data);
 	set_var_to_env("PWD", "=", cwd, data);
 	return (free(cwd), 0);

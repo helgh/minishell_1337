@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/12 23:45:14 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/10/01 16:40:56 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/10/01 21:50:12 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,8 @@ void	print_error(t_parse *data, int flag)
 	}
 	else if (flag == F_FORK)
 	{
-		putstr_fd("M_H: Failed to create a child proccess\n", 2);
-		free_and_exit(data, 1);
+		putstr_fd("M_H: fork: ", 2);
+		perror("");
+		data->exit_status = 1;
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 18:39:03 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/09/30 19:54:56 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/10/01 20:51:28 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,9 @@ static void	execute_cmd(char **cmd, char *path, char **envp)
 		putstr_fd(": ", 2);
 		perror("");
 	}
-	exit(127);
+	if (access(path, F_OK))
+		exit (127);
+	exit(126);
 }
 
 void	exec_builtins(t_parse *data, t_exec *ex)
@@ -72,7 +74,7 @@ void	child_proccess(t_parse *data, t_exec *ex, int flag, int *pipe_fd)
 
 	ex->pid = fork();
 	if (ex->pid < 0)
-		print_error(data, F_FORK);
+		return (print_error(data, F_FORK));
 	if (!ex->pid)
 	{
 		signal(SIGQUIT, SIG_DFL);

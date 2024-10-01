@@ -6,13 +6,12 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 09:42:01 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/09/30 19:58:07 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/10/01 21:53:21 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
-
 # include <unistd.h>
 # include <stdio.h>
 # include <stdbool.h>
@@ -216,7 +215,7 @@ int			to_the_root(t_parse *data);
 int			same_dir(t_parse *data);
 char		*get_value(char *var, t_parse *data);
 void		parent_removed(char *path, t_parse *data);
-int			go_to_path(char *path, t_parse *data);
+int			go_to_path(char *path, t_parse *data, char *pwd);
 void		print_cd_err(void);
 int			get_pwd(void);
 void		ft_exit(t_parse *data, char **cmd, t_exec *ex);
@@ -231,7 +230,7 @@ void		init_index(t_parse **data);
 int			sort_list(t_parse **data);
 void		child_proccess(t_parse *data, t_exec *ex, int i, int *pipe_fd);
 int			arg_env(t_parse *data, char **cmd);
-void		status(t_parse *data);
+void		status(t_parse *data, int flag);
 int			__exit_1(char **spl, t_parse *data, int l);
 int			__exit_2(char **spl, int l);
 int			check_if_digit(char *str);

@@ -6,13 +6,13 @@
 /*   By: hael-ghd <hael-ghd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 09:44:43 by hael-ghd          #+#    #+#             */
-/*   Updated: 2024/09/30 20:14:36 by hael-ghd         ###   ########.fr       */
+/*   Updated: 2024/10/01 21:55:40 by hael-ghd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	_exec(t_parse *data, t_exec *ex, int *pipe_fd)
+int	_exec(t_parse *data, t_exec *ex, int *pipe_fd)
 {
 	int	i;
 	int	flag;
@@ -22,7 +22,7 @@ void	_exec(t_parse *data, t_exec *ex, int *pipe_fd)
 	while (++i < data->nbr_cmd)
 	{
 		if (pipe(pipe_fd) == -1)
-			return (print_error(data, F_PIPE));
+			return (print_error(data, F_PIPE), 1);
 		signal(SIGQUIT, SIG_IGN);
 		signal(SIGINT, SIG_IGN);
 		if (i == data->nbr_cmd - 1)
@@ -33,14 +33,18 @@ void	_exec(t_parse *data, t_exec *ex, int *pipe_fd)
 			waitpid(ex->pid, &data->exit_status, 0);
 		dup2(pipe_fd[0], 0);
 		close(pipe_fd[0]);
+		if (ex->pid < 0)
+			return (1);
 		ex = ex->next;
 	}
+	return (0);
 }
 
 void	execution_part(t_parse *data, t_exec *exec)
 {
 	t_exec	*ex;
 	int		pipe_fd[2];
+	int		flag;
 
 	ex = exec;
 	open_files(data, exec, 0);
@@ -50,8 +54,8 @@ void	execution_part(t_parse *data, t_exec *exec)
 	else
 	{
 		data->in = dup(STDIN_FILENO);
-		_exec(data, ex, pipe_fd);
-		status(data);
+		flag = _exec(data, ex, pipe_fd);
+		status(data, flag);
 		dup2(data->in, STDIN_FILENO);
 		close_files(data);
 		close (data->in);
